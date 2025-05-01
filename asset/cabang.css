@@ -1,0 +1,93 @@
+  /* ========== CABANG LENGKAP ========== */
+  .menu-card1 {
+    position: relative;
+    text-align: center;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px var(--shadow-ringan);
+    transition: var(--trans-cepat);
+    height: 400px;
+    width: 100%;
+    cursor: pointer;
+  }
+  
+  .menu-card1:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px var(--shadow-tebal);
+  }
+  
+  .branch-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: var(--trans-panjang);
+  }
+  
+  .menu-card1:hover .branch-img {
+    transform: scale(1.05);
+  }
+  
+  .location-tag {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--putih);
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 16px;
+    margin: 0;
+    z-index: 3;
+    background-color: var(--merah-utama);
+    width: auto;
+    white-space: nowrap;
+    box-shadow: 0 2px 4px var(--shadow-ringan);
+    opacity: 0;
+    transition: var(--trans-cepat);
+  }
+  
+  .menu-card1:hover .location-tag {
+    opacity: 1;
+    bottom: 80px;
+  }
+  
+  .menu-card1 h4 {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--putih);
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 16px;
+    margin: 0;
+    z-index: 2;
+    background-color: var(--merah-utama);
+    box-shadow: 0 2px 4px var(--shadow-ringan);
+    transition: var(--trans-cepat);
+  }
+  
+  .menu-card1:hover h4 {
+    background-color: var(--merah-terang);
+  }
+  
+  .judul-cabang {
+    text-align: center;
+    margin-bottom: 4rem;
+    font-family: var(--font-tangan);
+    color: var(--merah-utama);
+  }
+  
+  .judul-kecil {
+    margin-bottom: 0.5rem;
+  }
+  
+  .judul-besar {
+    margin: 0;
+  }

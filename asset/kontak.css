@@ -1,0 +1,71 @@
+ /* ========== KONTAK LENGKAP ========== */
+ .col-md-6 {
+    padding: 2rem;
+    border-radius: 10px;
+  }
+  
+  .col-md-6 h4,
+  .col-md-6 label {
+    color: var(--hitam);
+    font-weight: bold;
+  }
+  
+  .col-md-6 .form-control {
+    background-color: transparent;
+    border: 1px solid var(--hitam);
+    color: var(--hitam);
+  }
+  
+  .col-md-6 .form-control:focus {
+    background-color: transparent;
+    border-color: var(--merah-utama);
+    color: var(--hitam);
+    box-shadow: none;
+  }
+  
+  .col-md-6 .contact-options label {
+    display: block;
+    color: var(--hitam);
+    margin-bottom: 5px;
+  }
+  
+  .col-md-6 input[type="radio"] {
+    margin-right: 5px;
+    accent-color: var(--merah-utama);
+  }
+  
+  .col-md-6 .btn-primary {
+    background-color: var(--merah-utama);
+    border: none;
+    font-weight: bold;
+    padding: 0.5rem 1.5rem;
+  }
+  
+  .col-md-6 .btn-primary:hover {
+    background-color: var(--merah-hover);
+  }
+  
+  .info-kantor {
+    border: none solid var(--hitam);
+    color: var(--hitam);
+    padding: 2rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    position: relative;
+    box-shadow: 0 0 8px 8px rgba(0,0,0,0.25);
+    margin: 12px;
+  }
+  
+  .info-kantor h5 {
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .info-kantor i {
+    margin-right: 8px;
+    color: var(--hitam);
+  }
+  
+  .service-hours p {
+    margin: 1px;
+  }

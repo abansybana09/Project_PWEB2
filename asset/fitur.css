@@ -1,0 +1,46 @@
+  /* ========== FITUR LENGKAP ========== */
+  .feature img {
+    transition: var(--trans-panjang);
+    filter: drop-shadow(0 5px 15px var(--shadow-ringan));
+    transform: scale(1);
+  }
+  
+  .features .feature h3 {
+    font-size: 1em;
+    color: var(--merah-utama);
+  }
+  
+  .feature h3 {
+    margin-top: 20px;
+    color: #333;
+    transition: var(--trans-cepat);
+    position: relative;
+    display: inline-block;
+  }
+  
+  .feature h3::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 3px;
+    background: var(--hijau-tua);
+    transition: var(--trans-cepat);
+  }
+  
+  .feature:hover img {
+    transform: scale(1.1) rotate(5deg);
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
+  }
+  
+  .feature:hover h3 {
+    color: var(--hijau-tua);
+  }
+  
+  .feature:hover h3::after {
+    width: 60%;
+  }
+
+  

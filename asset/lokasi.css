@@ -1,0 +1,84 @@
+  /* ========== LOKASI LENGKAP ========== */
+  .lokasi h1 {
+    font-family: var(--font-judul);
+    font-weight: 700;
+    color: #333;
+    position: relative;
+    display: inline-block;
+  }
+  
+  .lokasi h1::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: var(--hijau-tua);
+    border-radius: 2px;
+  }
+  
+  .lokasi iframe {
+    border-radius: 15px;
+    box-shadow: 0 10px 30px var(--shadow-ringan);
+    transition: var(--trans-sedang);
+    transform: perspective(1000px) rotateX(0deg);
+    border: 3px solid var(--putih);
+  }
+  
+  .lokasi iframe:hover {
+    transform: perspective(1000px) rotateX(10deg);
+    box-shadow: 0 15px 35px var(--shadow-tebal);
+  }
+  
+  .icon-circle {
+    width: 80px;
+    height: 80px;
+    background: var(--putih);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 15px var(--shadow-ringan);
+    transition: var(--trans-cepat);
+    margin: 0 auto 20px;
+  }
+  
+  .icon-circle i {
+    font-size: 30px;
+    color: var(--hijau-tua);
+    transition: var(--trans-cepat);
+  }
+  
+  .icon-circle:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 10px 25px rgba(40, 167, 69, 0.3);
+  }
+  
+  .icon-circle:hover i {
+    transform: rotate(10deg);
+  }
+  
+  .whatsapp-icon1 {
+    font-size: 50px;
+    color: var(--hijau);
+    transition: var(--trans-cepat);
+    display: inline-block;
+  }
+  
+  .whatsapp-text {
+    font-weight: 600;
+    color: var(--hijau);
+    transition: var(--trans-cepat);
+  }
+  
+  .col-md-4:last-child:hover .whatsapp-icon1 {
+    transform: scale(1.2) rotate(5deg);
+    text-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
+  }
+  
+  .col-md-4:last-child:hover .whatsapp-text {
+    letter-spacing: 1px;
+    color: var(--hijau);
+  }
