@@ -11,6 +11,13 @@ class MenuModel {
                 'price' => 10000,
                 'whatsapp_link' => 'https://wa.me/628123456789?text=Saya%20mau%20pesan%20Tiyam%20Göveng'
             ],
+
+            [
+                'title' => 'Ayam Bakar',
+                'image' => 'img/bakar2.jpg',
+                'price' => 10000,
+                'whatsapp_link' => 'https://wa.me/628123456789?text=Saya%20mau%20pesan%20Tiyam%20Göveng'
+            ],
             // ... item lainnya
         ];
     }

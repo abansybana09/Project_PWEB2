@@ -13,11 +13,7 @@ class MenuController {
     public function showMenu() {
         $data = $this->model->getAllMenuItems();
         
-        // Tambahkan parameter quantity ke link WhatsApp
-        foreach ($data as &$item) {
-            $item['whatsapp_link'] .= '%20(%quantity%20bungkus)';
-        }
-        
+        // Hapus modifikasi link WhatsApp karena akan dihandle oleh JavaScript
         require_once __DIR__ . '/../views/menu/index.php';
     }
 }

@@ -160,3 +160,32 @@
   justify-content: center;
   border-radius: 50% !important;
 }
+
+/* Style untuk modal */
+.modal-header {
+  background-color: var(--merah-utama);
+  color: var(--putih);
+}
+
+.modal-header .btn-close {
+  filter: invert(1);
+  opacity: 0.8;
+}
+
+.modal-header .btn-close:hover {
+  opacity: 1;
+}
+
+.btn-success {
+  background-color: var(--hijau-tua);
+  border-color: var(--hijau-tua);
+}
+
+.btn-success:hover {
+  background-color: var(--hijau);
+  border-color: var(--hijau);
+}
+
+#orderForm .form-control:required {
+  border-left: 3px solid var(--merah-utama);
+}

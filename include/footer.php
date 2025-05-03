@@ -33,11 +33,13 @@
                         <i class="fab fa-youtube"></i>
                     </a>
                 </div>
-                <div class="footer-links">
+
+                <div class="class">"Hatur nuhun tos nganjang ka Warung Mang Oman!"</div>
+                <!-- <div class="footer-links">
                     <a href="Menu.php" class="text-white mx-2">Menu</a>
                     <a href="Lokasi.php" class="text-white mx-2">Lokasi</a>
                     <a href="kontak.php" class="text-white mx-2">Kontak</a>
-                </div>
+                </div> -->
             </div>
         </div>
         <div class="row mt-4">
