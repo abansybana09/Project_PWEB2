@@ -79,6 +79,38 @@
   .footer-links a:hover::after {
     width: 100%;
   }
+
+  .no-spinner {
+    appearance: textfield;
+    -moz-appearance: textfield;   /* Firefox */
+    -webkit-appearance: none;     /* Chrome, Safari */
+    width: 40px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+/* Hilangkan spinner di Chrome, Safari, Edge */
+.no-spinner::-webkit-outer-spin-button,
+.no-spinner::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Pastikan juga Firefox tidak menampilkan spinner */
+.no-spinner {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.menu-price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--merah-utama);
+    margin: 10px 0;
+}
+
   
   /* Floating WhatsApp Button */
   .whatsapp-float {

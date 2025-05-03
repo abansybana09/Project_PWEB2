@@ -88,30 +88,4 @@ function updateWhatsAppLink(linkElement) {
 }
 </script>
 
-<style>
-/* CSS untuk menghilangkan tombol spinner */
-.no-spinner {
-    -moz-appearance: textfield;
-    width: 40px;
-    text-align: center;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 5px;
-}
-
-.no-spinner::-webkit-outer-spin-button,
-.no-spinner::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-.menu-price {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #d35400;
-    margin: 10px 0;
-}
-
-</style>
-
 <?php include __DIR__ . '/../../include/footer.php'; ?>

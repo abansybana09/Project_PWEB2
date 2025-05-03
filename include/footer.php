@@ -34,7 +34,6 @@
                     </a>
                 </div>
                 <div class="footer-links">
-                    <a href="about.php" class="text-white mx-2">Tentang Kami</a>
                     <a href="Menu.php" class="text-white mx-2">Menu</a>
                     <a href="Lokasi.php" class="text-white mx-2">Lokasi</a>
                     <a href="kontak.php" class="text-white mx-2">Kontak</a>
