@@ -18,6 +18,11 @@
     display: inline-block;
   }
   
+  a, h3, span, .feature-link {
+    text-decoration: none;
+  }
+  
+  
   .feature h3::after {
     content: '';
     position: absolute;

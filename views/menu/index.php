@@ -105,13 +105,6 @@ function updateWhatsAppLink(linkElement) {
     margin: 0;
 }
 
-.quantity-selector {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
-
 .menu-price {
     font-size: 1.2rem;
     font-weight: bold;
@@ -119,33 +112,6 @@ function updateWhatsAppLink(linkElement) {
     margin: 10px 0;
 }
 
-.menu-item {
-    display: flex;
-    justify-content: center; /* Untuk menengahkan horizontal */
-    align-items: center;     /* Untuk menengahkan vertikal (jika diperlukan) */
-    padding: 10px 0;        /* Memberikan jarak atas-bawah */
-}
-
-.order-btn {
-    /* Style existing yang sudah ada */
-    background-color: var(--merah-utama);
-    color: white;
-    padding: 8px 15px;
-    border-radius: 4px;
-    text-decoration: none;
-    display: inline-flex;   /* Diubah dari inline-block ke inline-flex */
-    align-items: center;    /* Untuk menengahkan ikon dan teks vertikal */
-    gap: 8px;              /* Jarak antara ikon dan teks */
-}
-
-.order-btn:hover {
-    background-color: var(--hijau);
-    color: white;
-}
-.whatsapp-icon {
-    color: white; /* Warna ikon diubah menjadi putih */
-    font-size: 1.2em; /* Ukuran ikon */
-}
 </style>
 
 <?php include __DIR__ . '/../../include/footer.php'; ?>
