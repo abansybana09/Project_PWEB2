@@ -27,7 +27,7 @@
                     <input type="email" class="form-control" id="email" name="email" required>
                 </div>
                 <div class="mb-3 contact-options">
-                    <label class="form-label">Pilih salah satu sesuai tujuan anda</label>
+                    <label class="form-label">Pilih salah satu sesuai tujuan anda : </label>
                     <label><input type="radio" name="purpose" value="Catering"> Catering</label>
                     <label><input type="radio" name="purpose" value="Kerjasama"> Kerjasama/Partnership</label>
                     <label><input type="radio" name="purpose" value="Lainnya"> Lainnya</label>
@@ -46,7 +46,7 @@
                 <h5><strong>KANTOR</strong></h5>
                 <p><i class="fas fa-map-marker-alt"></i> Jln. Jendral Sudirman No. 45 RT 03 RW 07</p>
                 <p><i class="fab fa-whatsapp"></i> 089630152631 (Ahmad Fauzil Adhim)</p>
-                <p><i class="fas fa-envelope"></i> info@miemanyala.com</p>
+                <p><i class="fas fa-envelope"></i> info@warungmangoman.com</p>
                 <div class="service-hours mt-3">
                     <p><strong>Service Hours :</strong></p>
                     <p>Senin - Sabtu</p>
