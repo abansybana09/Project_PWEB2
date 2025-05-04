@@ -9,14 +9,14 @@ class MenuModel {
                 'title' => 'Ayam Goreng',
                 'image' => 'img/a.jpg',
                 'price' => 10000,
-                'whatsapp_link' => 'https://wa.me/628123456789?text=Saya%20mau%20pesan%20Tiyam%20Göveng'
+                'whatsapp_link' => 'https://wa.me/6289630152631'
             ],
 
             [
                 'title' => 'Ayam Bakar',
                 'image' => 'img/bakar2.jpg',
                 'price' => 10000,
-                'whatsapp_link' => 'https://wa.me/628123456789?text=Saya%20mau%20pesan%20Tiyam%20Göveng'
+                'whatsapp_link' => 'https://wa.me/6289630152631'
             ],
             // ... item lainnya
         ];

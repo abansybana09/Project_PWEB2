@@ -60,3 +60,4 @@
 </section>
 
 <?php include __DIR__ . '/../../include/footer.php'; ?>
+<?php include __DIR__ . '/../../include/script.php'; ?>

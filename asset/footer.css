@@ -50,7 +50,7 @@
   }
   
   .whatsapp-icon {
-    color: #4caf50;
+    color: var(--hijau-tua);
   }
   
   .footer-links a {
@@ -119,7 +119,7 @@
     height: 60px;
     bottom: 40px;
     right: 40px;
-    background-color: #4caf50;
+    background-color: var(--hijau-tua);
     color: #FFF;
     border-radius: 50px;
     text-align: center;
@@ -132,15 +132,15 @@
     transition: var(--trans-cepat);
     animation: pulse 2s infinite;
   }
-
+/* 
   .whatsapp-float,
 .whatsapp-float i {
   text-decoration: none !important;
-}
+} */
 
   
   .whatsapp-float:hover {
-    background-color: #388e3c;
+    background-color: var(--hijau);
     transform: scale(1.1);
     animation: none;
   }

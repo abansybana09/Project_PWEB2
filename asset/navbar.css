@@ -1,5 +1,10 @@
   /* ========== NAVBAR LENGKAP ========== */
   .navbar {
+    position: fixed; /* Ubah dari static ke fixed */
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000; /* Pastikan navbar di atas elemen lain */
     transition: var(--trans-sedang);
     background-color: transparent !important;
   }
@@ -63,3 +68,36 @@
   .navbar.scrolled .nav-link::before {
     background: var(--hijau);
   } 
+
+  @media (max-width: 990px) {
+    .navbar {
+      background-color: #ffffff !important;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      height: auto;
+      min-height: 60px;
+      z-index: 1000;
+    }
+
+    .navbar-brand img {
+      width: 60px;
+      height: auto;
+    }
+  
+    .navbar-nav .nav-link {
+      color: var(--merah-utama) !important;
+    }
+  
+    .nav-link:hover {
+      color: var(--hijau) !important;
+    }
+  
+    .nav-link::before {
+      background: var(--hijau);
+    }
+  
+    .navbar-toggler {
+      z-index: 1100;
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+  }
+  

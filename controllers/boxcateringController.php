@@ -9,4 +9,5 @@ class boxcateringController {
         // Berikan data ke view
         include __DIR__ . '../../views/boxcatering/index.php';
     }
+    
 }

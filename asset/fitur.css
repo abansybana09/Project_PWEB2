@@ -11,7 +11,7 @@
   }
   
   .feature h3 {
-    margin-top: 20px;
+    margin-top: 4px;
     color: #333;
     transition: var(--trans-cepat);
     position: relative;
@@ -48,4 +48,40 @@
     width: 60%;
   }
 
-  
+  /* Responsif untuk fitur */
+@media (max-width: 990px) {
+  .features {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 0 1px;
+  }
+
+  .feature {
+    flex: 0 1 45%;
+    margin-bottom: 2px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .feature {
+    flex: 0 1 100%;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .feature img {
+    max-width: 80%;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+  }
+
+  .feature h3 {
+    font-size: 1rem;
+  }
+}
+
+

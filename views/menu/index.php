@@ -35,7 +35,7 @@
     <button class="order-btn" 
             onclick="showOrderForm(this)"
             data-whatsapp="<?= htmlspecialchars($item['whatsapp_link']) ?>">
-        <i class="fab fa-whatsapp whatsapp-icon"></i> Pesan Sekarang
+        <i class=""></i> Pesan Sekarang
     </button>
 </div>
             </div>
@@ -65,9 +65,14 @@
           </div>
           
           <div class="mb-3">
-            <label for="customerPhone" class="form-label">No. HP *</label>
-            <input type="tel" class="form-control" id="customerPhone" required>
-          </div>
+    <label for="customerPhone" class="form-label">No. HP *</label>
+    <input type="tel" 
+           class="form-control" 
+           id="customerPhone" 
+           pattern="[0-9]*" 
+           title="Nomor HP harus berupa angka"
+           required>
+</div>
           
           <div class="mb-3">
             <label for="customerAddress" class="form-label">Alamat Pengiriman *</label>
@@ -93,108 +98,5 @@
   </div>
 </div>
 
-<script>
-// Fungsi untuk menampilkan modal form
-function showOrderForm(buttonElement) {
-    const menuCard = buttonElement.closest('.menu-card');
-    const itemName = menuCard.querySelector('.menu-title').textContent;
-    const quantity = menuCard.querySelector('.quantity-input').value;
-    const totalPrice = menuCard.querySelector('.total-price').textContent;
-    const whatsappLink = buttonElement.getAttribute('data-whatsapp');
-    
-    // Isi data ke modal
-    document.getElementById('orderItemName').value = itemName;
-    document.getElementById('orderQuantity').value = quantity;
-    document.getElementById('orderTotalPrice').value = totalPrice;
-    document.getElementById('orderWhatsappLink').value = whatsappLink;
-    document.getElementById('orderDetails').innerHTML = `
-        <strong>${itemName}</strong><br>
-        Jumlah: ${quantity} porsi
-    `;
-    document.getElementById('orderPrice').innerHTML = `
-        Total: Rp ${totalPrice}
-    `;
-    
-    // Tampilkan modal
-    const orderModal = new bootstrap.Modal(document.getElementById('orderModal'));
-    orderModal.show();
-}
-
-// Fungsi untuk submit pesanan ke WhatsApp
-function submitOrder() {
-    const customerName = document.getElementById('customerName').value;
-    const customerPhone = document.getElementById('customerPhone').value;
-    const customerAddress = document.getElementById('customerAddress').value;
-    const itemName = document.getElementById('orderItemName').value;
-    const quantity = document.getElementById('orderQuantity').value;
-    const totalPrice = document.getElementById('orderTotalPrice').value;
-    const baseWhatsappLink = document.getElementById('orderWhatsappLink').value;
-    
-    // Validasi form
-    if (!customerName || !customerPhone || !customerAddress) {
-        alert('Harap isi semua data yang wajib diisi!');
-        return;
-    }
-    
-    // Format pesan WhatsApp
-    const message = `Halo Warung Mang Oman,\n\nSaya mau pesan:\n\n*${itemName}*\nJumlah: ${quantity} porsi\nTotal: Rp ${totalPrice}\n\n*Data Pemesan:*\nNama: ${customerName}\nNo. HP: ${customerPhone}\nAlamat: ${customerAddress}`;
-    const encodedMessage = encodeURIComponent(message);
-    
-    // Gabungkan dengan base link WhatsApp
-    const whatsappUrl = `${baseWhatsappLink.split('?')[0]}?text=${encodedMessage}`;
-    
-    // Buka WhatsApp
-    window.open(whatsappUrl, '_blank');
-    
-    // Tutup modal
-    const orderModal = bootstrap.Modal.getInstance(document.getElementById('orderModal'));
-    orderModal.hide();
-    
-    // Reset form
-    document.getElementById('orderForm').reset();
-}
-
-// Fungsi untuk update quantity dan harga
-document.querySelectorAll('.quantity-btn').forEach(button => {
-    button.addEventListener('click', function() {
-        const input = this.parentElement.querySelector('.quantity-input');
-        let value = parseInt(input.value);
-        
-        if (this.classList.contains('minus') && value > 1) {
-            value--;
-        } else if (this.classList.contains('plus') && value < 10) {
-            value++;
-        }
-        
-        input.value = value;
-        updateTotalPrice(input);
-    });
-});
-
-// Fungsi untuk update harga total
-function updateTotalPrice(input) {
-    const menuCard = input.closest('.menu-card');
-    const basePrice = parseFloat(menuCard.querySelector('.base-price').value);
-    const quantity = parseInt(input.value);
-    const totalPrice = basePrice * quantity;
-    
-    menuCard.querySelector('.total-price').textContent = 
-        totalPrice.toLocaleString('id-ID');
-}
-
-// Fungsi untuk update link WhatsApp
-function updateWhatsAppLink(linkElement) {
-    const menuCard = linkElement.closest('.menu-card');
-    const quantity = menuCard.querySelector('.quantity-input').value;
-    const itemName = menuCard.querySelector('.menu-title').textContent;
-    const totalPrice = menuCard.querySelector('.total-price').textContent;
-    
-    const message = `Saya mau pesan ${quantity} ${itemName} (Total: Rp ${totalPrice})`;
-    const encodedMessage = encodeURIComponent(message);
-    
-    const originalLink = linkElement.getAttribute('href').split('?')[0];
-    linkElement.setAttribute('href', `${originalLink}?text=${encodedMessage}`);
-}
-</script>
-
 <?php include __DIR__ . '/../../include/footer.php'; ?>
+<?php include __DIR__ . '/../../include/script.php'; ?>

@@ -1,93 +1,160 @@
-  /* ========== CABANG LENGKAP ========== */
+/* ========== CABANG LENGKAP ========== */
+.menu-card1 {
+  position: relative;
+  text-align: center;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px var(--shadow-ringan);
+  transition: var(--trans-cepat);
+  height: 400px;
+  width: 100%;
+  cursor: pointer;
+}
+
+.menu-card1:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px var(--shadow-tebal);
+}
+
+.branch-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: var(--trans-panjang);
+}
+
+.menu-card1:hover .branch-img {
+  transform: scale(1.05);
+}
+
+.location-tag {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--putih);
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 16px;
+  margin: 0;
+  z-index: 3;
+  background-color: var(--merah-utama);
+  white-space: nowrap;
+  box-shadow: 0 2px 4px var(--shadow-ringan);
+  opacity: 0;
+  transition: var(--trans-cepat);
+}
+
+.menu-card1:hover .location-tag {
+  opacity: 1;
+  bottom: 80px;
+}
+
+.menu-card1 h4 {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--putih);
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 16px;
+  margin: 0;
+  z-index: 2;
+  background-color: var(--merah-utama);
+  box-shadow: 0 2px 4px var(--shadow-ringan);
+  transition: var(--trans-cepat);
+}
+
+.menu-card1:hover h4 {
+  background-color: var(--merah-terang);
+}
+
+.judul-cabang {
+  text-align: center;
+  margin-bottom: 4rem;
+  font-family: var(--font-tangan);
+  color: var(--merah-utama);
+}
+
+.judul-kecil {
+  margin-bottom: 0.5rem;
+}
+
+.judul-besar {
+  margin: 0;
+}
+
+/* ========== RESPONSIVE CABANG ========== */
+@media (max-width: 990px) {
   .menu-card1 {
-    position: relative;
-    text-align: center;
-    margin-bottom: 20px;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px var(--shadow-ringan);
-    transition: var(--trans-cepat);
-    height: 400px;
-    width: 100%;
-    cursor: pointer;
+    height: 350px;
+    margin-bottom: 30px;
   }
-  
-  .menu-card1:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px var(--shadow-tebal);
-  }
-  
-  .branch-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: var(--trans-panjang);
-  }
-  
-  .menu-card1:hover .branch-img {
-    transform: scale(1.05);
-  }
-  
-  .location-tag {
-    position: absolute;
-    bottom: 80px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: var(--putih);
-    font-weight: bold;
-    text-transform: uppercase;
-    padding: 8px 20px;
-    border-radius: 20px;
-    font-size: 16px;
-    margin: 0;
-    z-index: 3;
-    background-color: var(--merah-utama);
-    width: auto;
-    white-space: nowrap;
-    box-shadow: 0 2px 4px var(--shadow-ringan);
-    opacity: 0;
-    transition: var(--trans-cepat);
-  }
-  
-  .menu-card1:hover .location-tag {
-    opacity: 1;
-    bottom: 80px;
-  }
-  
+
+  .location-tag,
   .menu-card1 h4 {
-    position: absolute;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: var(--putih);
-    font-weight: bold;
-    text-transform: uppercase;
-    padding: 8px 20px;
-    border-radius: 20px;
-    font-size: 16px;
-    margin: 0;
-    z-index: 2;
-    background-color: var(--merah-utama);
-    box-shadow: 0 2px 4px var(--shadow-ringan);
-    transition: var(--trans-cepat);
+    font-size: 14px;
+    padding: 6px 16px;
   }
-  
-  .menu-card1:hover h4 {
-    background-color: var(--merah-terang);
-  }
-  
+
   .judul-cabang {
+    font-size: 2em;
+    margin-bottom: 3rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .menu-card1 {
+    height: 300px;
+  }
+
+  .location-tag {
+    bottom: 70px;
+    font-size: 13px;
+  }
+
+  .menu-card1 h4 {
+    bottom: 25px;
+    font-size: 13px;
+  }
+
+  .judul-cabang {
+    font-size: 1.7em;
+    margin-bottom: 2.5rem;
+  }
+
+  .menu-cabang-row .col-md-4 {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 575px) {
+  .menu-card1 {
+    height: 260px;
+  }
+
+  .location-tag {
+    bottom: 60px;
+    font-size: 12px;
+    padding: 5px 14px;
+  }
+
+  .menu-card1 h4 {
+    bottom: 20px;
+    font-size: 12px;
+    padding: 5px 14px;
+  }
+
+  .judul-cabang {
+    font-size: 1.5em;
     text-align: center;
-    margin-bottom: 4rem;
-    font-family: var(--font-tangan);
-    color: var(--merah-utama);
   }
-  
-  .judul-kecil {
-    margin-bottom: 0.5rem;
-  }
-  
-  .judul-besar {
-    margin: 0;
-  }
+}
