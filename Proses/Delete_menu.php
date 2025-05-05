@@ -1,33 +1,50 @@
 <?php
-include '../Admin/Koneksi.php';
+session_start(); // Mulai session di awal
+include '../Admin/Koneksi.php'; // Include koneksi
 
-$id = isset($_POST['id']) ? htmlentities($_POST['id']) : "";
+$id = isset($_POST['id']) ? filter_var($_POST['id'], FILTER_VALIDATE_INT) : 0;
+$foto_lama = isset($_POST['foto_lama']) ? trim($_POST['foto_lama']) : ""; // Ambil nama foto lama
 
-if (!empty($_POST['submit_menu_validate'])) {
-    $getFoto = mysqli_query($conn, "SELECT foto FROM tb_daftarmenu WHERE id = $id");
-    $dataFoto = mysqli_fetch_assoc($getFoto);
+$message_type = 'danger';
+$message_text = 'Terjadi kesalahan.';
 
-    if ($dataFoto) {
-        $filePath = "../img/" . $dataFoto['foto'];
-        if (file_exists($filePath)) {
-            unlink($filePath);
+// Validasi ID
+if ($id <= 0) {
+    $message_text = 'ID menu tidak valid.';
+} else {
+    $target_dir = "../img/menu/"; // Path ke folder gambar
+
+    // 1. Hapus Data dari Database (Prepared Statement)
+    $stmt_delete = mysqli_prepare($conn, "DELETE FROM tb_daftarmenu WHERE id = ?");
+    mysqli_stmt_bind_param($stmt_delete, "i", $id);
+
+    if (mysqli_stmt_execute($stmt_delete)) {
+        // Cek apakah ada baris yang terhapus
+        if (mysqli_stmt_affected_rows($stmt_delete) > 0) {
+             // 2. Hapus File Gambar dari Server (jika DB berhasil dihapus dan ada nama foto)
+            if (!empty($foto_lama)) {
+                $filePath = $target_dir . $foto_lama;
+                if (file_exists($filePath)) {
+                    unlink($filePath); // Hapus file
+                }
+            }
+            $message_type = 'success';
+            $message_text = 'Menu berhasil dihapus.';
+        } else {
+            $message_text = 'Menu dengan ID tersebut tidak ditemukan (mungkin sudah dihapus).';
+             $message_type = 'warning'; // Atau warning jika tidak ditemukan
         }
-    }
-
-    $query = mysqli_query($conn, "DELETE FROM tb_daftarmenu WHERE id = $id");
-    if ($query) {
-        mysqli_query($conn, "SET @count = 0");
-        mysqli_query($conn, "UPDATE tb_daftarmenu SET id = @count := @count + 1");
-        mysqli_query($conn, "ALTER TABLE tb_daftarmenu AUTO_INCREMENT = 1");
-
-        $message = "<script>alert('Menu Berhasil Dihapus');
-        window.location.href = '../Admin/Menu';
-        </script>";
     } else {
-        $message = "<script>alert('Gagal Menghapus Menu');
-        window.location.href = '../Admin/Menu';
-        </script>";
+        $message_text = 'Gagal menghapus menu dari database: ' . mysqli_stmt_error($stmt_delete);
     }
+    mysqli_stmt_close($stmt_delete);
 }
-echo $message;
+
+// Simpan pesan ke Session
+$_SESSION['status_message'] = ['type' => $message_type, 'text' => $message_text];
+
+// Redirect kembali ke halaman Menu
+header('Location: ../Admin/Menu.php');
+exit;
+
 ?>

@@ -1,292 +1,267 @@
 <?php
-include "Koneksi.php";
-$query = mysqli_query($conn, "SELECT * FROM tb_daftarmenu");
-while ($record = mysqli_fetch_array($query)) {
-    $result[] = $record;
+// ============================================
+// MULAI SESSION DI AWAL
+// Harus menjadi baris pertama sebelum output apa pun
+// ============================================
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// ============================================
+// INCLUDE KONEKSI DATABASE
+// Mencari Koneksi.php di folder yang sama (Admin)
+// ============================================
+require_once 'Koneksi.php';
+
+// Pastikan variabel koneksi $conn ada setelah include
+if (!isset($conn)) {
+    // Jika $conn tidak ada, hentikan atau tampilkan error fatal
+    die('<div class="alert alert-danger">Koneksi database gagal. Pastikan file Koneksi.php ada dan benar.</div>');
+}
+
+// ============================================
+// AMBIL DATA MENU DARI DATABASE
+// ============================================
+$query_menu = mysqli_query($conn, "SELECT id, foto, nama_menu, deskripsi_menu, harga, stok FROM tb_daftarmenu ORDER BY id DESC");
+
+// Inisialisasi $num_rows
+$num_rows = 0;
+
+if (!$query_menu) {
+    // Jika query gagal, siapkan pesan error (tapi jangan simpan ke session di sini,
+    // karena ini error saat load halaman, bukan hasil aksi form)
+    $error_message = mysqli_error($conn);
+    // Tampilkan error query langsung di halaman jika terjadi saat load
+    // (Pesan session hanya untuk hasil aksi form)
+} else {
+    $num_rows = mysqli_num_rows($query_menu);
 }
 ?>
-
-<div class="col-lg mt-2">
+<div class="col-lg-9 mt-2">
     <div class="card">
         <div class="card-header">
-            Daftar Menu
+            Halaman Menu Makanan
         </div>
         <div class="card-body">
-            <div class="row">
+
+            <!-- ============================================ -->
+            <!-- TEMPAT MENAMPILKAN PESAN STATUS DARI SESSION -->
+            <!-- ============================================ -->
+            <?php
+            if (isset($_SESSION['status_message'])) {
+                $message = $_SESSION['status_message'];
+                // Gunakan htmlspecialchars untuk mencegah XSS pada pesan
+                echo '<div class="alert alert-' . htmlspecialchars($message['type']) . ' alert-dismissible fade show" role="alert">';
+                echo htmlspecialchars($message['text']);
+                echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+                echo '</div>';
+                // Hapus pesan dari session setelah ditampilkan
+                unset($_SESSION['status_message']);
+            }
+
+            // Tampilkan juga error query jika ada (dari awal load halaman)
+            if (isset($error_message) && !empty($error_message)) {
+                 echo '<div class="alert alert-danger" role="alert">';
+                 echo 'Gagal mengambil data menu: ' . htmlspecialchars($error_message);
+                 echo '</div>';
+            }
+            ?>
+            <!-- ============================================ -->
+
+            <div class="row mb-3">
                 <div class="col d-flex justify-content-end">
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#TambahMenu"> Tambah Menu</button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahMenu">
+                        <i class="bi bi-plus-circle-fill"></i> Tambah Menu
+                    </button>
                 </div>
             </div>
-            <!-- Tambah Menu -->
-            <div class="modal fade" id="TambahMenu" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-xl">
+
+            <!-- Modal Tambah Menu -->
+            <div class="modal fade" id="modalTambahMenu" tabindex="-1" aria-labelledby="modalTambahMenuLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Tambah Menu</h1>
+                            <h5 class="modal-title" id="modalTambahMenuLabel">Tambah Menu Baru</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form class="needs-validation" novalidate action="../Proses/Input_menu.php" method="POST" enctype="multipart/form-data">
-                                <div class="input-group mb-3">
-                                    <input type="file" class="form-control" id="floatingInput" placeholder="File" name="foto" required>
-                                    <label class="input-group-text" for="floatingInput">Foto Menu</label>
-                                    <div class="invalid-feedback">
-                                        Masukan Foto Menu.
-                                    </div>
+                            <!-- Form action ke ../Proses/Input_menu.php -->
+                            <form action="../Proses/Input_menu.php" method="POST" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label for="tambahNamaMenu" class="form-label">Nama Menu</label>
+                                    <input type="text" class="form-control" id="tambahNamaMenu" name="nama" required>
                                 </div>
-                                <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="floatingInput" placeholder="Nama" name="nama" required>
-                                    <label for="floatingInput">Nama Menu</label>
-                                    <div class="invalid-feedback">
-                                        Masukan Nama Menu.
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="floatingPassword" placeholder="Deskripsi" name="deskripsi" required>
-                                        <label for="floatingInput">Deskripsi Menu</label>
-                                        <div class="invalid-feedback">
-                                            Masukan Deskripsi Menu.
-                                        </div>
-                                    </div>
+                                <div class="mb-3">
+                                    <label for="tambahDeskripsi" class="form-label">Deskripsi</label>
+                                    <textarea class="form-control" id="tambahDeskripsi" name="deskripsi" rows="3"></textarea>
                                 </div>
                                 <div class="row">
-                                    <div class="col">
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="floatingPassword" placeholder="Harga" name="harga" required>
-                                            <label for="floatingInput">Harga</label>
-                                            <div class="invalid-feedback">
-                                                Masukan Harga.
-                                            </div>
-                                        </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="tambahHarga" class="form-label">Harga (Rp)</label>
+                                        <input type="number" class="form-control" id="tambahHarga" name="harga" min="0" required>
                                     </div>
-                                    <div class="col">
-                                        <div class="form-floating mb-3">
-                                            <input type="number" class="form-control" id="floatingPassword" placeholder="Stok" name="stok" required>
-                                            <label for="floatingInput">Stok</label>
-                                            <div class="invalid-feedback">
-                                                Masukan Jumlah Stok.
-                                            </div>
-                                        </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="tambahStok" class="form-label">Stok</label>
+                                        <input type="number" class="form-control" id="tambahStok" name="stok" min="0" required>
                                     </div>
                                 </div>
+                                <div class="mb-3">
+                                    <label for="tambahFoto" class="form-label">Foto Menu</label>
+                                    <input class="form-control" type="file" id="tambahFoto" name="foto" accept="image/*" required>
+                                     <small class="text-muted">Upload gambar (format: jpg, jpeg, png, maks 5MB)</small>
+                                </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary" name="submit_menu_validate" value="123">Save</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                    <button type="submit" name="submit_menu_validate" class="btn btn-primary">Simpan</button>
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
+            <!-- Akhir Modal Tambah Menu -->
 
             <?php
-            foreach ($result as $row) {
+            // Tampilkan pesan 'belum ada data' hanya jika query berhasil DAN tidak ada baris
+            if ($query_menu && $num_rows == 0):
             ?>
-                <!-- View Data -->
-                <div class="modal fade" id="ViewData<?php echo $row['id'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-xl">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">View Menu</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form class="needs-validation" novalidate action="../Proses/Input_menu.php" method="POST">
-                                    <div class="form-floating mb-3">
-                                        <input disabled type="text" class="form-control" id="floatingInput" placeholder="Nama" name="nama" value="<?php echo $row['nama_menu'] ?>">
-                                        <label for="floatingInput">Nama Menu</label>
-                                    </div>
-                                    <div class="col">
-                                        <div class="form-floating mb-3">
-                                            <input disabled type="text" class="form-control" id="floatingPassword" placeholder="Deskripsi" name="deskripsi" value="<?php echo $row['deskripsi_menu'] ?>">
-                                            <label for="floatingInput">Deskripsi Menu</label>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col">
-                                            <div class="form-floating mb-3">
-                                                <input disabled type="text" class="form-control" id="floatingPassword" placeholder="Harga" name="harga" value="<?php echo $row['harga'] ?>">
-                                                <label for="floatingInput">Harga</label>
-                                            </div>
-                                        </div>
-                                        <div class="col">
-                                            <div class="form-floating mb-3">
-                                                <input disabled type="text" class="form-control" id="floatingPassword" placeholder="Stok" name="stok" value="<?php echo $row['stok'] ?>">
-                                                <label for="floatingInput">Stok</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
+                <div class="alert alert-info" role="alert">
+                    Belum ada data menu. Silakan tambahkan menu baru.
                 </div>
-
-                <!-- Edit Data -->
-                <div class="modal fade" id="EditData<?php echo $row['id'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-xl">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Tambah Menu</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form class="needs-validation" novalidate action="../Proses/Edit_menu.php" method="POST" enctype="multipart/form-data">
-                                    <div class="input-group mb-3">
-                                        <input type="hidden" value="<?php echo $row['id'] ?>" name="id">
-                                        <input type="file" class="form-control" id="floatingInput" placeholder="File" name="foto">
-                                        <label class="input-group-text" for="floatingInput">Foto Menu (Opsional)</label>
-                                        <div class="invalid-feedback">
-                                            Masukan Foto Menu.
-                                        </div>
-                                    </div>
-                                    <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="floatingInput" placeholder="Nama" name="nama" required value="<?php echo $row['nama_menu'] ?>">
-                                        <label for="floatingInput">Nama Menu</label>
-                                        <div class="invalid-feedback">
-                                            Masukan Nama Menu.
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="floatingPassword" placeholder="Deskripsi" name="deskripsi" required value="<?php echo $row['deskripsi_menu'] ?>">
-                                            <label for="floatingInput">Deskripsi Menu</label>
-                                            <div class="invalid-feedback">
-                                                Masukan Deskripsi Menu.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col">
-                                            <div class="form-floating mb-3">
-                                                <input type="text" class="form-control" id="floatingPassword" placeholder="Harga" name="harga" required value="<?php echo $row['harga'] ?>">
-                                                <label for="floatingInput">Harga</label>
-                                                <div class="invalid-feedback">
-                                                    Masukan Harga.
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col">
-                                            <div class="form-floating mb-3">
-                                                <input type="number" class="form-control" id="floatingPassword" placeholder="Stok" name="stok" required value="<?php echo $row['stok'] ?>">
-                                                <label for="floatingInput">Stok</label>
-                                                <div class="invalid-feedback">
-                                                    Masukan Jumlah Stok.
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary" name="submit_menu_validate" value="123">Save</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Hapus Data -->
-                <div class="modal fade" id="HapusData<?php echo $row['id'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-md">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Hapus Menu</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="col-lg-12">
-                                &nbsp;Apakah Anda Yakin Ingin Menghapus Menu <b><?php echo $row['nama_menu'] ?></b>
-                            </div>
-                            <div class="modal-body">
-                                <form class="needs-validation" novalidate action="../Proses/Delete_menu.php" method="POST">
-                                    <input type="hidden" value="<?php echo $row['id'] ?>" name="id">
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-danger" name="submit_menu_validate" value="123">Delete</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             <?php
-            }
-            if (empty($result)) {
-                echo "Data Menu Tidak Ada";
-            } else {
+            // Tampilkan tabel hanya jika query berhasil DAN ada baris
+            elseif ($query_menu && $num_rows > 0):
             ?>
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th scope="col">Id</th>
-                                <th scope="col">Foto Menu</th>
-                                <th scope="col">Nama</th>
-                                <th scope="col">Deskripsi Menu</th>
+                                <th scope="col">#</th>
+                                <th scope="col">Foto</th>
+                                <th scope="col">Nama Menu</th>
+                                <th scope="col">Deskripsi</th>
                                 <th scope="col">Harga</th>
                                 <th scope="col">Stok</th>
-                                <th scope="col">CRUD</th>
+                                <th scope="col">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-                            $id = 1;
-                            foreach ($result as $row) {
+                            $no = 1;
+                            // Loop data menu
+                            while ($row = mysqli_fetch_assoc($query_menu)) {
+                                // Path gambar relatif dari folder Admin ke folder img/menu
+                                $imgPathAdmin = '../img/menu/' . htmlspecialchars($row['foto']);
                             ?>
                                 <tr>
-                                    <th scope="row"><?php echo $id++ ?></th>
+                                    <th scope="row"><?= $no++ ?></th>
                                     <td>
-                                        <img src="../img/<?php echo $row['foto'] ?>"
-                                            class="img-thumbnail"
-                                            alt="Foto Menu"
-                                            style="width: 60px; height: 60px; object-fit: cover;">
+                                        <img src="<?= $imgPathAdmin ?>"
+                                             alt="<?= htmlspecialchars($row['nama_menu']) ?>"
+                                             width="80"
+                                             onerror="this.onerror=null; this.src='../img/placeholder.png'; this.alt='Gambar tidak ditemukan';"
+                                             loading="lazy">
                                     </td>
-                                    <td><?php echo $row['nama_menu'] ?></td>
-                                    <td><?php echo $row['deskripsi_menu'] ?></td>
-                                    <td><?php echo $row['harga'] ?></td>
-                                    <td><?php echo $row['stok'] ?></td>
+                                    <td><?= htmlspecialchars($row['nama_menu']) ?></td>
+                                    <td><?= htmlspecialchars($row['deskripsi_menu']) ?></td>
+                                    <td>Rp <?= number_format((float)$row['harga'], 0, ',', '.') ?></td>
+                                    <td><?= htmlspecialchars($row['stok']) ?></td>
                                     <td>
-                                        <div class="d-flex">
-                                            <button class="btn btn-info btn-sm me-1" data-bs-toggle="modal" data-bs-target="#ViewData<?php echo $row['id'] ?>"><i class="bi bi-eye"></i></button>
-                                            <button class="btn btn-warning btn-sm me-1" data-bs-toggle="modal" data-bs-target="#EditData<?php echo $row['id'] ?>"><i class="bi bi-pencil-square"></i></button>
-                                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#HapusData<?php echo $row['id'] ?>"><i class="bi bi-trash3"></i></button>
-                                        </div>
+                                        <!-- Tombol Edit -->
+                                        <button class="btn btn-warning btn-sm me-1" data-bs-toggle="modal" data-bs-target="#modalEditMenu<?= $row['id'] ?>" title="Edit">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                        <!-- Tombol Hapus -->
+                                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalHapusMenu<?= $row['id'] ?>" title="Hapus">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
                                     </td>
                                 </tr>
-                            <?php
-                            }
-                            ?>
+
+                                <!-- Modal Edit Menu untuk baris ini -->
+                                <div class="modal fade" id="modalEditMenu<?= $row['id'] ?>" tabindex="-1" aria-labelledby="modalEditMenuLabel<?= $row['id'] ?>" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="modalEditMenuLabel<?= $row['id'] ?>">Edit Menu: <?= htmlspecialchars($row['nama_menu']) ?></h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <!-- Form action ke ../Proses/Edit_menu.php -->
+                                                <form action="../Proses/Edit_menu.php" method="POST" enctype="multipart/form-data">
+                                                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                                                    <input type="hidden" name="foto_lama" value="<?= htmlspecialchars($row['foto']) ?>">
+
+                                                    <div class="mb-3 text-center">
+                                                        <img src="<?= $imgPathAdmin ?>" alt="Foto Lama" width="150" class="mb-2 img-thumbnail" onerror="this.onerror=null; this.src='../img/placeholder.png'; this.alt='Gambar lama tidak ditemukan';">
+                                                        <br><small>Foto Saat Ini</small>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label for="editNamaMenu<?= $row['id'] ?>" class="form-label">Nama Menu</label>
+                                                        <input type="text" class="form-control" id="editNamaMenu<?= $row['id'] ?>" name="nama" value="<?= htmlspecialchars($row['nama_menu']) ?>" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="editDeskripsi<?= $row['id'] ?>" class="form-label">Deskripsi</label>
+                                                        <textarea class="form-control" id="editDeskripsi<?= $row['id'] ?>" name="deskripsi" rows="3"><?= htmlspecialchars($row['deskripsi_menu']) ?></textarea>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="editHarga<?= $row['id'] ?>" class="form-label">Harga (Rp)</label>
+                                                            <input type="number" class="form-control" id="editHarga<?= $row['id'] ?>" name="harga" min="0" value="<?= htmlspecialchars($row['harga']) ?>" required>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="editStok<?= $row['id'] ?>" class="form-label">Stok</label>
+                                                            <input type="number" class="form-control" id="editStok<?= $row['id'] ?>" name="stok" min="0" value="<?= htmlspecialchars($row['stok']) ?>" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="editFoto<?= $row['id'] ?>" class="form-label">Ganti Foto Menu (Opsional)</label>
+                                                        <input class="form-control" type="file" id="editFoto<?= $row['id'] ?>" name="foto" accept="image/*">
+                                                        <small class="text-muted">Kosongkan jika tidak ingin mengganti foto. (Maks 5MB)</small>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                         <button type="submit" name="submit_menu_validate" class="btn btn-primary">Simpan Perubahan</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Akhir Modal Edit Menu -->
+
+                                <!-- Modal Hapus Menu untuk baris ini -->
+                                <div class="modal fade" id="modalHapusMenu<?= $row['id'] ?>" tabindex="-1" aria-labelledby="modalHapusMenuLabel<?= $row['id'] ?>" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="modalHapusMenuLabel<?= $row['id'] ?>">Konfirmasi Hapus</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Apakah Anda yakin ingin menghapus menu "<b><?= htmlspecialchars($row['nama_menu']) ?></b>"? <br>
+                                                <small class="text-danger">Tindakan ini tidak dapat dibatalkan.</small>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                <!-- Form action ke ../Proses/Delete_menu.php -->
+                                                <form action="../Proses/Delete_menu.php" method="POST" style="display: inline;">
+                                                     <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                                                     <input type="hidden" name="foto_lama" value="<?= htmlspecialchars($row['foto']) ?>">
+                                                     <button type="submit" name="submit_menu_validate" class="btn btn-danger">Ya, Hapus</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Akhir Modal Hapus Menu -->
+
+                            <?php } // Akhir loop while ?>
                         </tbody>
                     </table>
                 </div>
-            <?php
-            }
-            ?>
-        </div>
-    </div>
-</div>
-</div>
-
-<script>
-    (() => {
-        'use strict'
-
-        const forms = document.querySelectorAll('.needs-validation')
-
-        Array.from(forms).forEach(form => {
-            form.addEventListener('submit', event => {
-                if (!form.checkValidity()) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                }
-
-                form.classList.add('was-validated')
-            }, false)
-        })
-    })()
-</script>
+            <?php endif; // Akhir kondisi Cek $query_menu dan $num_rows ?>
+        </div> <!-- Akhir card-body -->
+    </div> <!-- Akhir card -->
+</div> <!-- Akhir col-lg-9 -->
