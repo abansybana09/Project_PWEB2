@@ -74,7 +74,8 @@ if (empty($name) || $harga === false || $harga < 0 || $stok === false || $stok <
 $_SESSION['status_message'] = ['type' => $message_type, 'text' => $message_text];
 
 // Redirect kembali ke halaman Menu di folder Admin
-header('Location: ../Admin/Menu.php');
+header('Location: ../Admin/Menu');
+
 exit; // Penting untuk menghentikan eksekusi setelah redirect
 
 ?>

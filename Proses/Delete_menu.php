@@ -44,7 +44,7 @@ if ($id <= 0) {
 $_SESSION['status_message'] = ['type' => $message_type, 'text' => $message_text];
 
 // Redirect kembali ke halaman Menu
-header('Location: ../Admin/Menu.php');
+header('Location: ../Admin/Menu');
 exit;
 
 ?>

@@ -8,17 +8,17 @@ class HomeModel {
             [
                 'title' => 'Menu Kami',
                 'image' => 'img/catering.png',
-                'link' => 'menu.php'
+                'link' => 'index.php?page=menu'
             ],
             [
                 'title' => 'Cabang Kami',
                 'image' => 'img/kerjasama.png',
-                'link' => 'cabang.php'
+                'link' => 'index.php?page=lokasi'
             ],
             [
                 'title' => 'Katering',
                 'image' => 'img/paket.png',
-                'link' => 'catering.php'
+                'link' => 'index.php?page=boxcatering'
             ]
         ];
     }
