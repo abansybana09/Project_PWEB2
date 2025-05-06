@@ -1,38 +1,20 @@
 <?php
-// ============================================
-// MULAI SESSION DI AWAL
-// Harus menjadi baris pertama sebelum output apa pun
-// ============================================
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
-// ============================================
-// INCLUDE KONEKSI DATABASE
-// Mencari Koneksi.php di folder yang sama (Admin)
-// ============================================
 require_once 'Koneksi.php';
 
-// Pastikan variabel koneksi $conn ada setelah include
 if (!isset($conn)) {
-    // Jika $conn tidak ada, hentikan atau tampilkan error fatal
     die('<div class="alert alert-danger">Koneksi database gagal. Pastikan file Koneksi.php ada dan benar.</div>');
 }
 
-// ============================================
-// AMBIL DATA MENU DARI DATABASE
-// ============================================
+
 $query_menu = mysqli_query($conn, "SELECT id, foto, nama_menu, deskripsi_menu, harga, stok FROM tb_daftarmenu ORDER BY id DESC");
 
-// Inisialisasi $num_rows
 $num_rows = 0;
 
 if (!$query_menu) {
-    // Jika query gagal, siapkan pesan error (tapi jangan simpan ke session di sini,
-    // karena ini error saat load halaman, bukan hasil aksi form)
     $error_message = mysqli_error($conn);
-    // Tampilkan error query langsung di halaman jika terjadi saat load
-    // (Pesan session hanya untuk hasil aksi form)
 } else {
     $num_rows = mysqli_num_rows($query_menu);
 }
@@ -44,29 +26,22 @@ if (!$query_menu) {
         </div>
         <div class="card-body">
 
-            <!-- ============================================ -->
-            <!-- TEMPAT MENAMPILKAN PESAN STATUS DARI SESSION -->
-            <!-- ============================================ -->
             <?php
             if (isset($_SESSION['status_message'])) {
                 $message = $_SESSION['status_message'];
-                // Gunakan htmlspecialchars untuk mencegah XSS pada pesan
                 echo '<div class="alert alert-' . htmlspecialchars($message['type']) . ' alert-dismissible fade show" role="alert">';
                 echo htmlspecialchars($message['text']);
                 echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
                 echo '</div>';
-                // Hapus pesan dari session setelah ditampilkan
                 unset($_SESSION['status_message']);
             }
 
-            // Tampilkan juga error query jika ada (dari awal load halaman)
             if (isset($error_message) && !empty($error_message)) {
-                 echo '<div class="alert alert-danger" role="alert">';
-                 echo 'Gagal mengambil data menu: ' . htmlspecialchars($error_message);
-                 echo '</div>';
+                echo '<div class="alert alert-danger" role="alert">';
+                echo 'Gagal mengambil data menu: ' . htmlspecialchars($error_message);
+                echo '</div>';
             }
             ?>
-            <!-- ============================================ -->
 
             <div class="row mb-3">
                 <div class="col d-flex justify-content-end">
@@ -85,7 +60,6 @@ if (!$query_menu) {
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <!-- Form action ke ../Proses/Input_menu.php -->
                             <form action="../Proses/Input_menu.php" method="POST" enctype="multipart/form-data">
                                 <div class="mb-3">
                                     <label for="tambahNamaMenu" class="form-label">Nama Menu</label>
@@ -108,7 +82,7 @@ if (!$query_menu) {
                                 <div class="mb-3">
                                     <label for="tambahFoto" class="form-label">Foto Menu</label>
                                     <input class="form-control" type="file" id="tambahFoto" name="foto" accept="image/*" required>
-                                     <small class="text-muted">Upload gambar (format: jpg, jpeg, png, maks 5MB)</small>
+                                    <small class="text-muted">Upload gambar (format: jpg, jpeg, png, maks 5MB)</small>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -122,14 +96,12 @@ if (!$query_menu) {
             <!-- Akhir Modal Tambah Menu -->
 
             <?php
-            // Tampilkan pesan 'belum ada data' hanya jika query berhasil DAN tidak ada baris
             if ($query_menu && $num_rows == 0):
             ?>
                 <div class="alert alert-info" role="alert">
                     Belum ada data menu. Silakan tambahkan menu baru.
                 </div>
             <?php
-            // Tampilkan tabel hanya jika query berhasil DAN ada baris
             elseif ($query_menu && $num_rows > 0):
             ?>
                 <div class="table-responsive">
@@ -148,19 +120,17 @@ if (!$query_menu) {
                         <tbody>
                             <?php
                             $no = 1;
-                            // Loop data menu
                             while ($row = mysqli_fetch_assoc($query_menu)) {
-                                // Path gambar relatif dari folder Admin ke folder img/menu
                                 $imgPathAdmin = '../img/menu/' . htmlspecialchars($row['foto']);
                             ?>
                                 <tr>
                                     <th scope="row"><?= $no++ ?></th>
                                     <td>
                                         <img src="<?= $imgPathAdmin ?>"
-                                             alt="<?= htmlspecialchars($row['nama_menu']) ?>"
-                                             width="80"
-                                             onerror="this.onerror=null; this.src='../img/placeholder.png'; this.alt='Gambar tidak ditemukan';"
-                                             loading="lazy">
+                                            alt="<?= htmlspecialchars($row['nama_menu']) ?>"
+                                            width="80"
+                                            onerror="this.onerror=null; this.src='../img/placeholder.png'; this.alt='Gambar tidak ditemukan';"
+                                            loading="lazy">
                                     </td>
                                     <td><?= htmlspecialchars($row['nama_menu']) ?></td>
                                     <td><?= htmlspecialchars($row['deskripsi_menu']) ?></td>
@@ -222,7 +192,7 @@ if (!$query_menu) {
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                                         <button type="submit" name="submit_menu_validate" class="btn btn-primary">Simpan Perubahan</button>
+                                                        <button type="submit" name="submit_menu_validate" class="btn btn-primary">Simpan Perubahan</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -247,9 +217,9 @@ if (!$query_menu) {
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                                                 <!-- Form action ke ../Proses/Delete_menu.php -->
                                                 <form action="../Proses/Delete_menu.php" method="POST" style="display: inline;">
-                                                     <input type="hidden" name="id" value="<?= $row['id'] ?>">
-                                                     <input type="hidden" name="foto_lama" value="<?= htmlspecialchars($row['foto']) ?>">
-                                                     <button type="submit" name="submit_menu_validate" class="btn btn-danger">Ya, Hapus</button>
+                                                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                                                    <input type="hidden" name="foto_lama" value="<?= htmlspecialchars($row['foto']) ?>">
+                                                    <button type="submit" name="submit_menu_validate" class="btn btn-danger">Ya, Hapus</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -257,11 +227,13 @@ if (!$query_menu) {
                                 </div>
                                 <!-- Akhir Modal Hapus Menu -->
 
-                            <?php } // Akhir loop while ?>
+                            <?php } // Akhir loop while
+                            ?>
                         </tbody>
                     </table>
                 </div>
-            <?php endif; // Akhir kondisi Cek $query_menu dan $num_rows ?>
+            <?php endif; // Akhir kondisi Cek $query_menu dan $num_rows
+            ?>
         </div> <!-- Akhir card-body -->
     </div> <!-- Akhir card -->
 </div> <!-- Akhir col-lg-9 -->

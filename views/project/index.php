@@ -12,16 +12,16 @@
     <div class="container text-center">
         <div class="row">
             <?php foreach ($data['features'] as $item): ?>
-            <div class="col-md-4">
-                <a href="<?= htmlspecialchars($item['link']) ?>" class="feature-link">
-                    <div class="feature">
-                        <img src="<?= htmlspecialchars($item['image']) ?>" 
-                             alt="<?= htmlspecialchars($item['title']) ?>" 
-                             width="161" height="159" class="rounded-circle">
-                        <h3><?= htmlspecialchars($item['title']) ?></h3>
-                    </div>
-                </a>
-            </div>
+                <div class="col-md-4">
+                    <a href="<?= htmlspecialchars($item['link']) ?>" class="feature-link">
+                        <div class="feature">
+                            <img src="<?= htmlspecialchars($item['image']) ?>"
+                                alt="<?= htmlspecialchars($item['title']) ?>"
+                                width="161" height="159" class="rounded-circle">
+                            <h3><?= htmlspecialchars($item['title']) ?></h3>
+                        </div>
+                    </a>
+                </div>
             <?php endforeach; ?>
         </div>
     </div>
@@ -32,12 +32,12 @@
     <div class="container section">
         <div class="row justify-content-center align-items-center text-center">
             <div class="col-md-4 mb-4 mb-md-0">
-                <iframe 
-                    src="<?= htmlspecialchars($data['location']['map_url']) ?>" 
-                    width="100%" 
-                    height="250" 
-                    style="border:0;" 
-                    allowfullscreen="" 
+                <iframe
+                    src="<?= htmlspecialchars($data['location']['map_url']) ?>"
+                    width="100%"
+                    height="250"
+                    style="border:0;"
+                    allowfullscreen=""
                     loading="lazy">
                 </iframe>
             </div>
