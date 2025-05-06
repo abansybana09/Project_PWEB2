@@ -15,10 +15,11 @@
     <div class="row justify-content-center">
         <!-- Jika data cabang berupa array multidimensi -->
         <?php foreach ($data as $cabang): ?>
-            <div class="menu-card1">
-                <img src="<?= htmlspecialchars($cabang['image']) ?>" alt="<?= htmlspecialchars($cabang['title']) ?>" class="branch-img">
-                <div class="location-tag"><?= htmlspecialchars($cabang['title']) ?></div>
-            </div>
+            <a href="<?= htmlspecialchars($cabang['maps_url']) ?>" target="_blank" class="menu-card1 text-decoration-none">
+    <img src="<?= htmlspecialchars($cabang['image']) ?>" alt="<?= htmlspecialchars($cabang['title']) ?>" class="branch-img">
+    <div class="location-tag"><?= htmlspecialchars($cabang['title']) ?></div>
+</a>
+
         <?php endforeach; ?>
     </div>
 </div>
