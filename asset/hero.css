@@ -147,7 +147,7 @@
   color: var(--putih);
   padding: 10px 15px;
   border: none;
-  border-radius: 4px;
+  border-radius: 25px;
   width: 100%;
   display: flex;
   align-items: center;
@@ -157,6 +157,10 @@
   font-size: 1rem;
   transition: all 0.3s;
   cursor: pointer;
+  -webkit-border-radius: 25px;
+  -moz-border-radius: 25px;
+  -ms-border-radius: 25px;
+  -o-border-radius: 25px;
 }
 
 .order-btn:hover {
@@ -164,8 +168,27 @@
   transform: translateY(-2px);
 }
 
-.whatsapp-icon {
-  font-size: 1.2em;
+.whatsapp-icon1 {
+  font-size: 1.2rem;
+}
+
+h2.text-center {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--merah-utama);
+  position: relative;
+  margin-bottom: 40px;
+  font-family: var(--font-judul);
+}
+
+h2.text-center::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 4px;
+  background-color: var(--merah-utama);
+  margin: 10px auto 0;
+  border-radius: 25px;
 }
 
 /* ========== MODAL ========== */
@@ -182,6 +205,7 @@
 .btn-success:hover {
   background-color: var(--hijau-tua);
 }
+
 
 /* ========== RESPONSIVE ========== */
 @media (max-width: 990px) {
@@ -201,15 +225,16 @@
 @media (max-width: 767px) {
   .hero {
     height: 400px;
+    margin-top: 20px;
   }
   
   .hero-text p {
-    font-size: 2em;
+    font-size: 1.5em;
     -webkit-text-stroke: 0.7px var(--hitam);
   }
   
   .menu-title {
-    font-size: 1.3rem;
+    font-size: 1rem;
   }
 }
 

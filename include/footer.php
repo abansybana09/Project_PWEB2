@@ -34,7 +34,7 @@
                     </a>
                 </div>
 
-                <div class="class">"Hatur nuhun tos nganjang ka Warung Mang Oman!"</div>
+                <div class="class">"Warung Mang Oman terkenal dengan ayam goreng renyah, nasi pulen, dan sambal pedas. Rasanya bikin nagih!!"</div>
                 <!-- <div class="footer-links">
                     <a href="Menu.php" class="text-white mx-2">Menu</a>
                     <a href="Lokasi.php" class="text-white mx-2">Lokasi</a>

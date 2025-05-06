@@ -16,7 +16,7 @@ function base_url($path = '') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Crimson&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poetsen+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <!-- Asset lokal -->
@@ -28,6 +28,7 @@ function base_url($path = '') {
     <link rel="stylesheet" href="<?= base_url('asset/lokasi.css') ?>">
     <link rel="stylesheet" href="<?= base_url('asset/navbar.css') ?>">
     <link rel="stylesheet" href="<?= base_url('asset/footer.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('asset/hero1.css') ?>">
 </head>
 <body>
 
@@ -44,7 +45,6 @@ function base_url($path = '') {
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link" href="<?= base_url('index.php?page=project') ?>">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= base_url('index.php?page=menu') ?>">Menu</a></li>
-                <li class="nav-item"><a class="nav-link" href="<?= base_url('index.php?page=boxcatering') ?>">Box Catering</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= base_url('index.php?page=lokasi') ?>">Lokasi</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= base_url('index.php?page=kontak') ?>">Kontak</a></li>
             </ul>
