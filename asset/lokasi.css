@@ -83,4 +83,79 @@
     color: var(--hijau);
   }
 
+  /* Responsive adjustments */
+@media (max-width: 992px) {
+  .lokasi h1 {
+    font-size: 1.8rem;
+  }
+  
+  .contact-methods {
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .lokasi {
+    padding: 2rem 1rem;
+  }
+  
+  .lokasi h1 {
+    font-size: 1.6rem;
+    margin-bottom: 2rem;
+  }
+  
+  .contact-method {
+    min-width: 200px;
+    padding: 1.2rem;
+  }
+  
+  .icon-circle {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .icon-circle i {
+    font-size: 25px;
+  }
+  
+  .whatsapp-icon1 {
+    font-size: 40px;
+  }
+}
+
+@media (max-width: 576px) {
+  .lokasi h1 {
+    font-size: 1.4rem;
+  }
+  
+  .lokasi h1::after {
+    width: 60px;
+    height: 3px;
+    bottom: -8px;
+  }
+  
+  .contact-methods {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .contact-method {
+    width: 100%;
+    max-width: none;
+  }
+  
+  .icon-circle {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 15px;
+  }
+  
+  .icon-circle i {
+    font-size: 22px;
+  }
+  
+  .whatsapp-icon1 {
+    font-size: 35px;
+  }
+}
   

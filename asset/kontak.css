@@ -1,27 +1,56 @@
- /* ========== KONTAK LENGKAP ========== */
- .col-md-6 {
-    padding: 2rem;
-    border-radius: 10px;
-  }
-  
-  .col-md-6 h4,
-  .col-md-6 label {
-    color: var(--hitam);
-    font-weight: bold;
-  }
-  
-  .col-md-6 .form-control {
-    background-color: transparent;
-    border: 1px solid var(--hitam);
-    color: var(--hitam);
-  }
-  
-  .col-md-6 .form-control:focus {
-    background-color: transparent;
-    border-color: var(--merah-utama);
-    color: var(--hitam);
-    box-shadow: none;
-  }
+/* ========== KONTAK LENGKAP ========== */
+.contact-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.contact-form, 
+.info-kantor {
+  flex: 1 1 100%;
+  padding: 1.5rem;
+  border-radius: 10px;
+  background-color: var(--putih);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-form:hover,
+.info-kantor:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.contact-form h4,
+.contact-form label,
+.info-kantor h5 {
+  color: var(--hitam);
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.contact-form .form-group {
+  margin-bottom: 1.25rem;
+}
+
+.contact-form .form-control {
+  background-color: transparent;
+  border: 1px solid var(--hitam);
+  color: var(--hitam);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  transition: border-color 0.3s ease;
+}
+
+.contact-form .form-control:focus {
+  background-color: transparent;
+  border-color: var(--merah-utama);
+  color: var(--hitam);
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
+}
   
   .col-md-6 .contact-options label {
     display: block;
@@ -34,38 +63,92 @@
     accent-color: var(--merah-utama);
   }
   
-  .col-md-6 .btn-primary {
+  .btn-primary {
     background-color: var(--merah-utama);
     border: none;
     font-weight: bold;
-    padding: 0.5rem 1.5rem;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    display: flex;
   }
   
-  .col-md-6 .btn-primary:hover {
+  .btn-primary:hover {
     background-color: var(--merah-hover);
+    transform: translateY(-2px);
   }
   
   .info-kantor {
-    border: none solid var(--hitam);
     color: var(--hitam);
-    padding: 2rem;
-    border-radius: 10px;
-    font-size: 0.95rem;
     position: relative;
-    box-shadow: 0 0 8px 8px rgba(0,0,0,0.25);
-    margin: 12px;
   }
   
-  .info-kantor h5 {
-    font-weight: bold;
+  .info-item {
+    display: flex;
+    align-items: flex-start;
     margin-bottom: 1rem;
   }
   
-  .info-kantor i {
-    margin-right: 8px;
-    color: var(--hitam);
+  .info-item i {
+    margin-right: 12px;
+    color: var(--merah-utama);
+    font-size: 1.2rem;
+    min-width: 24px;
   }
   
   .service-hours p {
-    margin: 1px;
+    margin: 0.25rem 0;
+    line-height: 1.5;
+  }
+  
+  /* Responsive Adjustments */
+  @media (min-width: 576px) {
+    .btn-primary {
+      width: 100px;
+    }
+    
+    .contact-options {
+      flex-direction: row;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .contact-form, 
+    .info-kantor {
+      flex: 1 1 calc(50% - 1rem);
+      padding: 2rem;
+    }
+    
+    .contact-form h4,
+    .info-kantor h5 {
+      font-size: 1.5rem;
+    }
+  }
+  
+  @media (min-width: 992px) {
+    .contact-container {
+      padding: 2rem;
+    }
+    
+    .info-item i {
+      font-size: 1.3rem;
+    }
+    
+    .btn-primary {
+      padding: 0.75rem 2.5rem;
+      font-size: 1rem;
+    }
+  }
+  
+  @media (min-width: 1200px) {
+    .contact-form {
+      padding: 2.5rem;
+    }
+    
+    .info-kantor {
+      padding: 2.5rem;
+    }
   }

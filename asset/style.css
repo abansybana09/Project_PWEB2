@@ -9,6 +9,7 @@
     --putih: #ffffff;
     --hitam: #000000;
     --abu: #dee2e6;
+    --putih-abu: #f8f8f8c0;
     --shadow-ringan: rgba(0,0,0,0.1);
     --shadow-tebal: rgba(0,0,0,0.2);
     
@@ -28,6 +29,7 @@
   html, body {
     overscroll-behavior: none;
     font-family: var(--font-utama);
+    background-color: var(--putih-abu);
   }
   
   .wrapper {

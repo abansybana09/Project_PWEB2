@@ -1,9 +1,13 @@
-
 /* ========== HERO SECTION ========== */
 .hero {
   position: relative;
-  height: 750px;
   overflow: hidden;
+  height: 100vh;
+  max-height: 900px;
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .hero-header {
@@ -17,6 +21,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
 }
 
 .hero-text {
@@ -29,6 +34,7 @@
   text-shadow: 1px 1px 3px var(--hitam);
   width: 90%;
   max-width: 800px;
+  padding: 20px;
 }
 
 .hero-text .highlight {
@@ -46,6 +52,16 @@
   -webkit-text-stroke: 1px var(--hitam);
   color: var(--putih);
   margin: 0.5em 0;
+  line-height: 1.2;
+}
+
+/* ========== MENU CARD CONTAINER ========== */
+.menu-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 0 15px;
 }
 
 /* ========== MENU CARD ========== */
@@ -53,9 +69,10 @@
   background-color: var(--putih);
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 4px var(--shadow-ringan);
+  box-shadow: 7px 7px 7px var(--shadow-ringan);
   padding: 15px;
   margin-bottom: 25px;
+  width: 100%;
   max-width: 300px;
   transition: transform 0.4s ease, box-shadow 0.4s ease;
   display: flex;
@@ -157,10 +174,6 @@
   font-size: 1rem;
   transition: all 0.3s;
   cursor: pointer;
-  -webkit-border-radius: 25px;
-  -moz-border-radius: 25px;
-  -ms-border-radius: 25px;
-  -o-border-radius: 25px;
 }
 
 .order-btn:hover {
@@ -179,6 +192,7 @@ h2.text-center {
   position: relative;
   margin-bottom: 40px;
   font-family: var(--font-judul);
+  text-align: center;
 }
 
 h2.text-center::after {
@@ -206,40 +220,106 @@ h2.text-center::after {
   background-color: var(--hijau-tua);
 }
 
-
-/* ========== RESPONSIVE ========== */
-@media (max-width: 990px) {
+/* ========== RESPONSIVE ADJUSTMENTS ========== */
+@media (max-width: 1200px) {
   .hero {
-    height: 500px;
+    height: 80vh;
+    min-height: 500px;
   }
-  
+
   .hero-text p {
-    font-size: 2.5em;
+    font-size: clamp(2rem, 6vw, 3.5rem);
   }
-  
+
   .menu-card {
-    max-width: 100%;
+    max-width: 280px;
+  }
+
+  h2.text-center {
+    font-size: 2.2rem;
   }
 }
 
-@media (max-width: 767px) {
+/* Improved 992px breakpoint */
+@media (max-width: 992px) {
   .hero {
-    height: 400px;
-    margin-top: 20px;
+    height: 70vh;
+    min-height: 450px;
   }
-  
+
   .hero-text p {
-    font-size: 1.5em;
-    -webkit-text-stroke: 0.7px var(--hitam);
+    font-size: clamp(1.8rem, 5vw, 3rem);
   }
-  
-  .menu-title {
-    font-size: 1rem;
+
+  .menu-container {
+    justify-content: center;
+  }
+
+  .menu-card {
+    max-width: 45%;
+    min-width: 280px;
+    margin: 0 auto 25px;
+  }
+
+  h2.text-center {
+    font-size: 2rem;
+  }
+
+  h2.text-center::after {
+    width: 70px;
+    height: 3px;
+  }
+
+  .menu-image {
+    height: 200px;
   }
 }
 
-@media (max-height: 500px) {
+
+
+/* Landscape and short height adjustments */
+@media (max-height: 500px) and (min-width: 576px) {
   .hero {
-    height: 300px;
+    height: 100vh;
+    min-height: auto;
   }
+
+  .hero-text {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  h2.text-center {
+    font-size: 1.8rem;
+  }
+
+  h2.text-center::after {
+    width: 50px;
+    height: 2.5px;
+  }
+}
+
+/* Special cases for very small devices */
+@media (max-width: 400px) {
+  .hero-text p {
+    -webkit-text-stroke: 0.5px var(--hitam);
+    font-size: 1.3rem;
+  }
+
+  .menu-image {
+    height: 160px;
+  }
+
+  .quantity-selector {
+    flex-wrap: wrap;
+  }
+}
+
+/* Image consistency rules */
+.hero-bg, .hero img {
+  aspect-ratio: 16/9;
+}
+
+.menu-image {
+  aspect-ratio: 1/1;
 }
