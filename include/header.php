@@ -28,6 +28,7 @@ function base_url($path = '') {
     <link rel="stylesheet" href="<?= base_url('asset/lokasi.css') ?>">
     <link rel="stylesheet" href="<?= base_url('asset/navbar.css') ?>">
     <link rel="stylesheet" href="<?= base_url('asset/footer.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('asset/hero1.css') ?>">
 </head>
 <body>
 
@@ -44,7 +45,6 @@ function base_url($path = '') {
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link" href="<?= base_url('index.php?page=project') ?>">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= base_url('index.php?page=menu') ?>">Menu</a></li>
-                <li class="nav-item"><a class="nav-link" href="<?= base_url('index.php?page=boxcatering') ?>">Box Catering</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= base_url('index.php?page=lokasi') ?>">Lokasi</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= base_url('index.php?page=kontak') ?>">Kontak</a></li>
             </ul>

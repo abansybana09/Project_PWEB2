@@ -19,20 +19,6 @@ spl_autoload_register(function ($class_name) {
 $page = isset($_GET['page']) ? trim($_GET['page']) : 'menu';
 
 switch ($page) {
-    case 'boxcatering':
-        if (class_exists('BoxCateringController')) {
-            $controller = new BoxCateringController();
-            if (method_exists($controller, 'index')) {
-                $controller->index();
-            } else {
-                echo 'Error: Method index tidak ditemukan di BoxCateringController.';
-                http_response_code(500);
-            }
-        } else {
-            echo 'Error: Controller BoxCateringController tidak ditemukan.';
-            http_response_code(404);
-        }
-        break;
 
     case 'kontak':
         if (class_exists('ContactController')) {
