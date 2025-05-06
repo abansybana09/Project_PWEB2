@@ -111,8 +111,8 @@ include __DIR__ . '/../../include/header.php';
 <?php include __DIR__ . '/../../include/script.php'; ?>
 
 <script>
-// Fungsi showOrderForm(buttonElement) dan submitOrder() tetap sama
-// Pastikan fungsi-fungsi ini ada di sini atau di script.php yang di-include
+// Fungsi showOrderForm dan submitOrder tetap sama
+// ... (Salin fungsi showOrderForm dan submitOrder dari jawaban sebelumnya jika belum ada di sini) ...
 function showOrderForm(buttonElement) {
     const card = buttonElement.closest('.menu-card');
     const titleElement = card.querySelector('.menu-title');
@@ -130,7 +130,6 @@ function showOrderForm(buttonElement) {
     const basePrice = parseFloat(priceElement.value);
     const whatsappLink = buttonElement.getAttribute('data-whatsapp');
 
-    // Ambil nilai quantity yang sudah divalidasi
     let currentQuantity = parseInt(quantity);
     const maxQty = parseInt(inputElement.getAttribute('max') || '1');
     if (isNaN(currentQuantity) || currentQuantity < 1) currentQuantity = 1;
@@ -210,79 +209,116 @@ function submitOrder() {
 }
 
 // ===========================================================
-// REVISI LOGIKA QUANTITY SELECTOR
+// PENDEKATAN BARU UNTUK QUANTITY SELECTOR
 // ===========================================================
 document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.quantity-selector').forEach(selector => {
+    console.log("DOM Content Loaded - Memulai inisialisasi quantity selectors");
+
+    const selectors = document.querySelectorAll('.quantity-selector');
+    console.log(`Ditemukan ${selectors.length} quantity selectors.`);
+
+    selectors.forEach((selector, index) => {
+        // Tambahkan ID unik untuk debugging jika belum ada
+        if (!selector.id) {
+            selector.id = `qs-${index}`;
+        }
+        console.log(`Inisialisasi untuk selector: #${selector.id}`);
+
         const minusBtn = selector.querySelector('.minus');
         const plusBtn = selector.querySelector('.plus');
         const input = selector.querySelector('.quantity-input');
         const card = selector.closest('.menu-card');
-        // Pastikan elemen-elemen ini ada sebelum melanjutkan
+
         if (!minusBtn || !plusBtn || !input || !card) {
-            console.warn("Elemen quantity selector tidak lengkap pada salah satu kartu.", selector);
-            return; // Lanjut ke kartu berikutnya
+            console.warn(`Elemen tidak lengkap untuk selector #${selector.id}`);
+            return; // Lanjut ke selector berikutnya
         }
+
+        // CEK DAN HAPUS LISTENER LAMA JIKA ADA (PENDEKATAN EKSTREM)
+        // Ini tidak ideal, tapi untuk debug bisa dicoba
+        const newMinusBtn = minusBtn.cloneNode(true);
+        minusBtn.parentNode.replaceChild(newMinusBtn, minusBtn);
+        const newPlusBtn = plusBtn.cloneNode(true);
+        plusBtn.parentNode.replaceChild(newPlusBtn, plusBtn);
+        const newInput = input.cloneNode(true);
+        input.parentNode.replaceChild(newInput, input);
+        // --- Akhir penghapusan listener lama ---
+
+        // Gunakan elemen yang baru setelah di-clone
+        const currentMinusBtn = selector.querySelector('.minus');
+        const currentPlusBtn = selector.querySelector('.plus');
+        const currentInput = selector.querySelector('.quantity-input');
+
 
         const basePriceElement = card.querySelector('.base-price');
         const totalPriceSpan = card.querySelector('.total-price');
 
         if (!basePriceElement || !totalPriceSpan) {
-            console.warn("Elemen harga tidak ditemukan pada salah satu kartu.", card);
-            return; // Lanjut ke kartu berikutnya
+            console.warn(`Elemen harga tidak ditemukan untuk selector #${selector.id}`);
+            return;
         }
 
         const basePrice = parseFloat(basePriceElement.value);
-        const maxQty = parseInt(input.getAttribute('max') || '10'); // Default max 10 jika tidak ada
+        const maxQty = parseInt(currentInput.getAttribute('max') || '10');
 
-        // Fungsi untuk update harga dan validasi input
-        function updateDisplay() {
-            let currentValue = parseInt(input.value);
+        function updateDisplayAndValidate() {
+            console.log(`[${selector.id}] updateDisplayAndValidate dipanggil. Nilai input awal: ${currentInput.value}`);
+            let currentValue = parseInt(currentInput.value);
 
-            // Validasi ketat
             if (isNaN(currentValue)) {
-                currentValue = 1; // Default jika input bukan angka
+                console.log(`[${selector.id}] Nilai NaN, diubah ke 1`);
+                currentValue = 1;
             }
-            currentValue = Math.max(1, Math.min(currentValue, maxQty)); // Batasi antara 1 dan maxQty
-
-            // Hanya update DOM jika nilainya benar-benar berubah dari yang diinput
-            // Ini untuk mencegah potensi loop dari event 'input' jika kita set .value lagi
-            if (input.value !== currentValue.toString()) {
-                 input.value = currentValue;
+            if (currentValue < 1) {
+                console.log(`[${selector.id}] Nilai < 1 (${currentValue}), diubah ke 1`);
+                currentValue = 1;
+            }
+            if (currentValue > maxQty) {
+                console.log(`[${selector.id}] Nilai > maxQty (${currentValue} > ${maxQty}), diubah ke ${maxQty}`);
+                currentValue = maxQty;
             }
 
+            currentInput.value = currentValue; // Set nilai yang sudah divalidasi
             const newTotal = basePrice * currentValue;
             totalPriceSpan.textContent = newTotal.toLocaleString('id-ID', { minimumFractionDigits: 0 });
+            console.log(`[${selector.id}] Nilai input akhir: ${currentInput.value}, Harga: ${totalPriceSpan.textContent}`);
         }
 
-        minusBtn.addEventListener('click', () => {
-            let currentValue = parseInt(input.value) || 1; // Default ke 1 jika NaN
-            if (currentValue > 1) {
-                input.value = currentValue - 1;
-                updateDisplay(); // Update setelah nilai diubah
+        currentMinusBtn.addEventListener('click', function handleMinus() {
+            console.log(`[${selector.id}] Tombol MINUS diklik`);
+            let val = parseInt(currentInput.value) || 1;
+            if (val > 1) {
+                currentInput.value = val - 1;
+                updateDisplayAndValidate();
+            } else {
+                 console.log(`[${selector.id}] Nilai sudah 1, tidak bisa dikurangi lagi.`);
             }
         });
 
-        plusBtn.addEventListener('click', () => {
-            let currentValue = parseInt(input.value) || 1; // Default ke 1 jika NaN
-            if (currentValue < maxQty) {
-                input.value = currentValue + 1;
-                updateDisplay(); // Update setelah nilai diubah
+        currentPlusBtn.addEventListener('click', function handlePlus() {
+            console.log(`[${selector.id}] Tombol PLUS diklik`);
+            let val = parseInt(currentInput.value) || 1;
+            if (val < maxQty) {
+                currentInput.value = val + 1;
+                updateDisplayAndValidate();
+            } else {
+                console.log(`[${selector.id}] Nilai sudah mencapai maks (${maxQty}), tidak bisa ditambah lagi.`);
             }
         });
 
-        // Event 'change' lebih cocok untuk validasi akhir setelah user selesai input
-        // Event 'input' bisa terlalu sering memicu jika validasinya mengubah .value lagi
-        input.addEventListener('change', () => {
-            updateDisplay(); // Validasi dan update saat user selesai mengubah input
+        currentInput.addEventListener('change', function handleInputChange() {
+             console.log(`[${selector.id}] Input CHANGE event`);
+            updateDisplayAndValidate();
         });
-        input.addEventListener('blur', () => { // Juga saat kehilangan fokus
-            updateDisplay();
+        currentInput.addEventListener('blur', function handleInputBlur() {
+            console.log(`[${selector.id}] Input BLUR event`);
+            updateDisplayAndValidate();
         });
 
 
-        // Inisialisasi harga saat halaman pertama kali dimuat
-        updateDisplay();
+        // Inisialisasi tampilan
+        updateDisplayAndValidate();
+        console.log(`[${selector.id}] Inisialisasi selesai.`);
     });
 });
 </script>
