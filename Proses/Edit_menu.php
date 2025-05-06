@@ -1,7 +1,6 @@
 <?php
-session_start(); // Mulai session di awal
-include '../Admin/Koneksi.php'; // Include koneksi
-
+session_start();
+include '../Admin/Koneksi.php';
 $id = isset($_POST['id']) ? filter_var($_POST['id'], FILTER_VALIDATE_INT) : 0;
 $name = isset($_POST['nama']) ? trim(htmlentities($_POST['nama'])) : "";
 $deskripsi = isset($_POST['deskripsi']) ? trim(htmlentities($_POST['deskripsi'])) : "";
@@ -11,9 +10,9 @@ $foto_lama = isset($_POST['foto_lama']) ? trim($_POST['foto_lama']) : "";
 
 $message_type = 'danger';
 $message_text = 'Terjadi kesalahan.';
-$foto_sql = ""; // Bagian query untuk update foto
-$params_type = "ssiii"; // Tipe parameter dasar (nama, desk, harga, stok, id)
-$params_value = [$name, $deskripsi, $harga, $stok, $id]; // Nilai parameter dasar
+$foto_sql = "";
+$params_type = "ssiii";
+$params_value = [$name, $deskripsi, $harga, $stok, $id];
 
 // --- Validasi dasar ---
 if ($id <= 0 || empty($name) || $harga === false || $harga < 0 || $stok === false || $stok < 0) {
@@ -94,20 +93,13 @@ if ($id <= 0 || empty($name) || $harga === false || $harga < 0 || $stok === fals
                 unlink($target_dir . $foto_nama_baru);
             }
         }
-
         mysqli_stmt_close($stmt_update);
     }
-
-    // Pastikan stmt_check ditutup sekali saja
     if (isset($stmt_check) && $stmt_check instanceof mysqli_stmt) {
         mysqli_stmt_close($stmt_check);
     }
 }
-
-// Simpan pesan ke session
 $_SESSION['status_message'] = ['type' => $message_type, 'text' => $message_text];
 
-// Redirect kembali ke halaman Menu
 header('Location: ../Admin/Menu');
 exit;
-?>
