@@ -41,21 +41,26 @@
                     loading="lazy">
                 </iframe>
             </div>
-            <div class="col-md-4 mb-4 mb-md-0">
-                <div class="icon-circle mb-3">
-                    <i class="fas fa-map-marker-alt"></i>
-                </div>
-                <h5 class="fw-bold text-secondary">Lokasi Cabang Kami</h5>
-            </div>
+            <div class="col-md-4 mb-4 mb-md-0 text-center">
+            <a href="<?= htmlspecialchars($data['branch']['link'] ?? '#') ?>">
+        <div class="icon-circle mb-3 bg-light">
+            <!-- Icon default jika tidak ada di $data -->
+            <i class="fas fa-map-marker-alt fa-2x"></i>
+        </div>
+        <!-- Judul default jika tidak ada di $data -->
+        <h5 class="fw-bold text-secondary">Lokasi Kami</h5>
+    </a>
+</div>
+
 
             <div class="col-md-4">
                 <a href="https://wa.me/<?= htmlspecialchars($data['location']['whatsapp_number']) ?>?text=<?= urlencode($data['location']['whatsapp_message']) ?>" target="_blank">
                     <i class="fab fa-whatsapp whatsapp-icon1"></i>
                 </a>
                 <div class="whatsapp-text mt-2">Chat us</div>
-                <div class="text-success">on Whatsapp for Catering & Partnership</div>
+                <div class="text-success">on Whatsapp for Partnership</div>
             </div>
-        </div>
+        </>
     </div>
 </section>
 

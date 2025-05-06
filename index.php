@@ -38,23 +38,6 @@ $page = isset($_GET['page']) ? trim($_GET['page']) : 'menu';
 // ============================================
 switch ($page) {
 
-    case 'boxcatering':
-        // Nama class biasanya PascalCase: BoxCateringController
-        if (class_exists('BoxCateringController')) {
-            $controller = new BoxCateringController();
-            // Ganti 'index' jika methodnya berbeda
-            if (method_exists($controller, 'index')) {
-                $controller->index();
-            } else {
-                echo 'Error: Method index tidak ditemukan di BoxCateringController.';
-                http_response_code(500); // Server error
-            }
-        } else {
-            echo 'Error: Controller BoxCateringController tidak ditemukan.';
-            http_response_code(404); // Not Found
-        }
-        break;
-
     case 'kontak':
          // Nama class biasanya PascalCase: ContactController
         if (class_exists('ContactController')) {

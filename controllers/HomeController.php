@@ -14,6 +14,7 @@ class HomeController {
         // Menggabungkan semua data yang dibutuhkan view
         $data = [
             'features' => $this->model->getFeatures(),
+            'branch' => $this->model->getBranchInfo(),
             'location' => $this->model->getLocationInfo(),
             'hero' => [
                 'title' => 'Warung Mang Oman',

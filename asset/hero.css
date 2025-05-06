@@ -164,8 +164,27 @@
   transform: translateY(-2px);
 }
 
-.whatsapp-icon {
-  font-size: 1.2em;
+.whatsapp-icon1 {
+  font-size: 1.2rem;
+}
+
+h2.text-center {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--merah-utama);
+  position: relative;
+  margin-bottom: 40px;
+  font-family: var(--font-judul);
+}
+
+h2.text-center::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 4px;
+  background-color: var(--merah-utama);
+  margin: 10px auto 0;
+  border-radius: 2px;
 }
 
 /* ========== MODAL ========== */
@@ -182,6 +201,7 @@
 .btn-success:hover {
   background-color: var(--hijau-tua);
 }
+
 
 /* ========== RESPONSIVE ========== */
 @media (max-width: 990px) {
