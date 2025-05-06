@@ -111,44 +111,178 @@ include __DIR__ . '/../../include/header.php';
 <?php include __DIR__ . '/../../include/script.php'; ?>
 
 <script>
+// Fungsi showOrderForm(buttonElement) dan submitOrder() tetap sama
+// Pastikan fungsi-fungsi ini ada di sini atau di script.php yang di-include
+function showOrderForm(buttonElement) {
+    const card = buttonElement.closest('.menu-card');
+    const titleElement = card.querySelector('.menu-title');
+    const inputElement = card.querySelector('.quantity-input');
+    const priceElement = card.querySelector('.base-price');
+
+    if (!titleElement || !inputElement || !priceElement) {
+        console.error("Elemen menu tidak ditemukan dalam kartu:", card);
+        alert("Terjadi kesalahan saat memproses item ini.");
+        return;
+    }
+
+    const itemName = titleElement.textContent;
+    const quantity = inputElement.value;
+    const basePrice = parseFloat(priceElement.value);
+    const whatsappLink = buttonElement.getAttribute('data-whatsapp');
+
+    // Ambil nilai quantity yang sudah divalidasi
+    let currentQuantity = parseInt(quantity);
+    const maxQty = parseInt(inputElement.getAttribute('max') || '1');
+    if (isNaN(currentQuantity) || currentQuantity < 1) currentQuantity = 1;
+    if (currentQuantity > maxQty) currentQuantity = maxQty;
+
+    const totalPrice = basePrice * currentQuantity;
+
+    document.getElementById('orderItemName').value = itemName;
+    document.getElementById('orderQuantity').value = currentQuantity;
+    document.getElementById('orderTotalPrice').value = totalPrice;
+    document.getElementById('orderWhatsappLink').value = whatsappLink;
+
+    document.getElementById('orderDetails').innerHTML = `Nama Item: ${itemName}<br>Jumlah: ${currentQuantity}`;
+    document.getElementById('orderPrice').textContent = `Total Harga: Rp ${totalPrice.toLocaleString('id-ID')}`;
+
+    try {
+        const orderModalElement = document.getElementById('orderModal');
+        if (orderModalElement) {
+             const orderModal = new bootstrap.Modal(orderModalElement);
+             orderModal.show();
+        } else {
+             console.error("Elemen modal #orderModal tidak ditemukan.");
+             alert("Tidak dapat menampilkan form pemesanan.");
+        }
+    } catch (e) {
+        console.error("Error saat menampilkan modal:", e);
+        alert("Terjadi kesalahan saat menampilkan form pemesanan.");
+    }
+}
+
+function submitOrder() {
+    const itemName = document.getElementById('orderItemName').value;
+    const quantity = document.getElementById('orderQuantity').value;
+    const totalPrice = document.getElementById('orderTotalPrice').value;
+    const customerName = document.getElementById('customerName').value;
+    const customerPhone = document.getElementById('customerPhone').value;
+    const customerAddress = document.getElementById('customerAddress').value;
+    const baseWhatsappLink = document.getElementById('orderWhatsappLink').value;
+
+    if (!customerName || !customerPhone || !customerAddress) {
+        alert('Mohon lengkapi semua field yang bertanda *');
+        return;
+    }
+
+    let message = `Halo Mang Oman, saya mau pesan:\n\n`;
+    message += `Nama Pelanggan: ${customerName}\n`;
+    message += `No. HP: ${customerPhone}\n`;
+    message += `Alamat Pengiriman: ${customerAddress}\n\n`;
+    message += `Pesanan:\n`;
+    message += `- ${itemName} (${quantity} porsi)\n`;
+    message += `Total Harga: Rp ${parseInt(totalPrice).toLocaleString('id-ID')}\n\n`;
+    message += `Mohon konfirmasi pesanannya. Terima kasih.`;
+
+    const whatsappUrl = `${baseWhatsappLink}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+
+    try {
+        const orderModalElement = document.getElementById('orderModal');
+         if (orderModalElement) {
+            const orderModalInstance = bootstrap.Modal.getInstance(orderModalElement);
+            if (orderModalInstance) {
+                 orderModalInstance.hide();
+            }
+         }
+    } catch (e) {
+         console.error("Error saat menyembunyikan modal:", e);
+    }
+
+    setTimeout(() => {
+        const orderForm = document.getElementById('orderForm');
+        if(orderForm) orderForm.reset();
+        const orderDetails = document.getElementById('orderDetails');
+        if(orderDetails) orderDetails.innerHTML = `Nama Item: -<br>Jumlah: -`;
+        const orderPrice = document.getElementById('orderPrice');
+        if(orderPrice) orderPrice.textContent = `Total Harga: Rp -`;
+    }, 300);
+}
+
+// ===========================================================
+// REVISI LOGIKA QUANTITY SELECTOR
+// ===========================================================
 document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('.quantity-selector').forEach(selector => {
-    const minusBtn = selector.querySelector('.minus');
-    const plusBtn = selector.querySelector('.plus');
-    const input = selector.querySelector('.quantity-input');
-    const card = selector.closest('.menu-card');
-    const basePrice = parseFloat(card.querySelector('.base-price').value);
-    const totalPriceSpan = card.querySelector('.total-price');
-    const maxQty = parseInt(input.getAttribute('max') || 10);
+    document.querySelectorAll('.quantity-selector').forEach(selector => {
+        const minusBtn = selector.querySelector('.minus');
+        const plusBtn = selector.querySelector('.plus');
+        const input = selector.querySelector('.quantity-input');
+        const card = selector.closest('.menu-card');
+        // Pastikan elemen-elemen ini ada sebelum melanjutkan
+        if (!minusBtn || !plusBtn || !input || !card) {
+            console.warn("Elemen quantity selector tidak lengkap pada salah satu kartu.", selector);
+            return; // Lanjut ke kartu berikutnya
+        }
 
-    const updatePrice = () => {
-      let quantity = parseInt(input.value.replace(/\D/g, ''), 10); // Bersihkan input hanya angka
-      if (isNaN(quantity)) quantity = 1;
-      quantity = Math.max(1, Math.min(quantity, maxQty));
-      input.value = quantity;
-      totalPriceSpan.textContent = (basePrice * quantity).toLocaleString('id-ID', {
-        minimumFractionDigits: 0
-      });
-    };
+        const basePriceElement = card.querySelector('.base-price');
+        const totalPriceSpan = card.querySelector('.total-price');
 
-    minusBtn.addEventListener('click', () => {
-      let quantity = parseInt(input.value) || 1;
-      quantity = Math.max(1, quantity - 1);
-      input.value = quantity;
-      updatePrice();
+        if (!basePriceElement || !totalPriceSpan) {
+            console.warn("Elemen harga tidak ditemukan pada salah satu kartu.", card);
+            return; // Lanjut ke kartu berikutnya
+        }
+
+        const basePrice = parseFloat(basePriceElement.value);
+        const maxQty = parseInt(input.getAttribute('max') || '10'); // Default max 10 jika tidak ada
+
+        // Fungsi untuk update harga dan validasi input
+        function updateDisplay() {
+            let currentValue = parseInt(input.value);
+
+            // Validasi ketat
+            if (isNaN(currentValue)) {
+                currentValue = 1; // Default jika input bukan angka
+            }
+            currentValue = Math.max(1, Math.min(currentValue, maxQty)); // Batasi antara 1 dan maxQty
+
+            // Hanya update DOM jika nilainya benar-benar berubah dari yang diinput
+            // Ini untuk mencegah potensi loop dari event 'input' jika kita set .value lagi
+            if (input.value !== currentValue.toString()) {
+                 input.value = currentValue;
+            }
+
+            const newTotal = basePrice * currentValue;
+            totalPriceSpan.textContent = newTotal.toLocaleString('id-ID', { minimumFractionDigits: 0 });
+        }
+
+        minusBtn.addEventListener('click', () => {
+            let currentValue = parseInt(input.value) || 1; // Default ke 1 jika NaN
+            if (currentValue > 1) {
+                input.value = currentValue - 1;
+                updateDisplay(); // Update setelah nilai diubah
+            }
+        });
+
+        plusBtn.addEventListener('click', () => {
+            let currentValue = parseInt(input.value) || 1; // Default ke 1 jika NaN
+            if (currentValue < maxQty) {
+                input.value = currentValue + 1;
+                updateDisplay(); // Update setelah nilai diubah
+            }
+        });
+
+        // Event 'change' lebih cocok untuk validasi akhir setelah user selesai input
+        // Event 'input' bisa terlalu sering memicu jika validasinya mengubah .value lagi
+        input.addEventListener('change', () => {
+            updateDisplay(); // Validasi dan update saat user selesai mengubah input
+        });
+        input.addEventListener('blur', () => { // Juga saat kehilangan fokus
+            updateDisplay();
+        });
+
+
+        // Inisialisasi harga saat halaman pertama kali dimuat
+        updateDisplay();
     });
-
-    plusBtn.addEventListener('click', () => {
-      let quantity = parseInt(input.value) || 1;
-      quantity = Math.min(maxQty, quantity + 1);
-      input.value = quantity;
-      updatePrice();
-    });
-
-    input.addEventListener('input', updatePrice);
-
-    // Jalankan pertama kali untuk inisialisasi
-    updatePrice();
-  });
 });
 </script>
