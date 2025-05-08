@@ -1,11 +1,35 @@
 <?php
+// File: /Admin/Order.php
+
+// Pastikan session dimulai (jika belum di file utama yang include ini)
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-include "Koneksi.php";
+// Include Koneksi.php (pastikan path benar)
+require_once "Koneksi.php";
 
-$query = mysqli_query($conn, "SELECT * FROM tb_order ORDER BY id ASC");
+// Load variabel environment dari .env
+// Path ke folder yang berisi .env (root proyek)
+require_once __DIR__ . '/../vendor/autoload.php'; // Load Composer Autoloader
+try {
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..'); // Path ke folder PROJECR2
+    $dotenv->load();
+} catch (\Dotenv\Exception\InvalidPathException $e) {
+    // Handle error jika .env tidak ditemukan (opsional)
+    // die("Error: File .env tidak ditemukan. Pastikan file .env ada di root proyek.");
+    // Atau set default jika tidak ada .env (tidak disarankan untuk production)
+     error_log("Warning: File .env tidak ditemukan, menggunakan nilai default (jika ada).");
+}
+
+
+// Ambil Client Key dari environment variable untuk JavaScript
+// Gunakan nilai default jika getenv tidak mengembalikan apa-apa
+$midtransClientKey = getenv('MIDTRANS_CLIENT_KEY') ?: 'CLIENT_KEY_ANDA_JIKA_ENV_GAGAL';
+$isProduction = (getenv('MIDTRANS_IS_PRODUCTION') === 'true'); // Cek environment
+
+// Ambil data order
+$query = mysqli_query($conn, "SELECT * FROM tb_order ORDER BY id DESC"); // Urutkan dari terbaru mungkin lebih baik
 $result = [];
 $query_error = null;
 
@@ -25,6 +49,7 @@ if ($query) {
         </div>
         <div class="card-body">
             <?php
+            // Tampilkan pesan status dari session (setelah redirect dari proses)
             if (isset($_SESSION['status_message'])) {
                 $message = $_SESSION['status_message'];
                 echo '<div class="alert alert-' . htmlspecialchars($message['type']) . ' alert-dismissible fade show" role="alert">';
@@ -34,7 +59,8 @@ if ($query) {
                 unset($_SESSION['status_message']);
             }
 
-            if (isset($query_error) && !empty($query_error) && !isset($_SESSION['status_message'])) {
+            // Tampilkan error query jika ada
+            if (isset($query_error) && !empty($query_error)) {
                 echo '<div class="alert alert-danger" role="alert">';
                 echo htmlspecialchars($query_error);
                 echo '</div>';
@@ -58,94 +84,71 @@ if ($query) {
                                 <th scope="col">No HP</th>
                                 <th scope="col">Alamat</th>
                                 <th scope="col">Pesanan</th>
-                                <th scope="col">Jumlah Pesanan</th>
+                                <th scope="col">Jumlah</th>
                                 <th scope="col">Total Harga</th>
                                 <th scope="col">Pembayaran</th>
-                                <th scope="col">CRUD</th>
+                                <th scope="col">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-                            $display_id = 1;
+                            $display_no = 1; // Nomor urut tampilan
                             foreach ($result as $row) :
+                                // Tentukan apakah tombol bayar harus ditampilkan
+                                $isPaid = (strtolower($row['pembayaran']) === 'ya' || strtolower($row['pembayaran']) === 'success' || strtolower($row['pembayaran']) === 'settlement');
                             ?>
                                 <tr>
-                                    <th scope="row"><?= $display_id++ ?></th>
+                                    <th scope="row"><?= $display_no++ ?></th>
                                     <td><?= htmlspecialchars($row['pelanggan']) ?></td>
                                     <td><?= htmlspecialchars($row['nohp']) ?></td>
                                     <td><?= htmlspecialchars($row['alamat']) ?></td>
                                     <td><?= nl2br(htmlspecialchars($row['pesanan'])) ?></td>
                                     <td><?= htmlspecialchars($row['jumlah_pesan']) ?></td>
-                                    <td><?= htmlspecialchars($row['total_harga']) ?></td>
-                                    <td><?= htmlspecialchars($row['pembayaran']) ?></td>
+                                    <td><?= 'Rp ' . number_format((float)preg_replace('/[^0-9.]/', '', $row['total_harga']), 0, ',', '.') ?></td>
                                     <td>
-                                        <div class="d-flex">
-                                            <button class="btn btn-info btn-sm me-1" data-bs-toggle="modal" data-bs-target="#ViewData<?= $row['id'] ?>"><i class="bi bi-eye"></i></button>
-                                            <button class="btn btn-warning btn-sm me-1" data-bs-toggle="modal" data-bs-target="#EditData<?= $row['id'] ?>"><i class="bi bi-pencil-square"></i></button>
-                                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#HapusData<?= $row['id'] ?>"><i class="bi bi-trash3"></i></button>
+                                        <span class="badge <?= $isPaid ? 'bg-success' : 'bg-warning text-dark' ?>">
+                                            <?= htmlspecialchars($row['pembayaran']) ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-wrap"> <!-- flex-wrap agar tombol turun jika tidak muat -->
+                                            <button class="btn btn-info btn-sm me-1 mb-1" data-bs-toggle="modal" data-bs-target="#ViewData<?= $row['id'] ?>" title="Lihat Detail"><i class="bi bi-eye"></i></button>
+                                            <button class="btn btn-warning btn-sm me-1 mb-1" data-bs-toggle="modal" data-bs-target="#EditData<?= $row['id'] ?>" title="Edit Order"><i class="bi bi-pencil-square"></i></button>
+                                            <button class="btn btn-danger btn-sm me-1 mb-1" data-bs-toggle="modal" data-bs-target="#HapusData<?= $row['id'] ?>" title="Hapus Order"><i class="bi bi-trash3"></i></button>
+                                            <!-- Tombol Bayar Midtrans (hanya jika belum lunas) -->
+                                            <?php if (!$isPaid) : ?>
+                                                <button class="btn btn-primary btn-sm mb-1" onclick="initiateAdminSnapPayment(<?= $row['id'] ?>)" title="Bayar via Midtrans">
+                                                    <i class="bi bi-credit-card"></i> Bayar
+                                                </button>
+                                            <?php endif; ?>
                                         </div>
                                     </td>
                                 </tr>
 
-                                <!-- View Order Modal -->
+                                <!-- Modal View Data -->
                                 <div class="modal fade" id="ViewData<?= $row['id'] ?>" tabindex="-1" aria-hidden="true">
-                                    <div class="modal-dialog modal-xl">
+                                    <!-- ... (Kode Modal View Anda) ... -->
+                                     <div class="modal-dialog modal-xl">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Detail Order</h5>
+                                                <h5 class="modal-title">Detail Order ID: <?= $row['id'] ?></h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
                                                 <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="form-floating mb-3">
-                                                            <input disabled type="text" class="form-control" value="<?= htmlspecialchars($row['pelanggan']) ?>">
-                                                            <label>Nama Pelanggan</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-floating mb-3">
-                                                            <input disabled type="text" class="form-control" value="<?= htmlspecialchars($row['nohp']) ?>">
-                                                            <label>No HP</label>
-                                                        </div>
-                                                    </div>
+                                                    <div class="col-md-6"><p><strong>Pelanggan:</strong> <?= htmlspecialchars($row['pelanggan']) ?></p></div>
+                                                    <div class="col-md-6"><p><strong>No HP:</strong> <?= htmlspecialchars($row['nohp']) ?></p></div>
                                                 </div>
+                                                <p><strong>Alamat:</strong> <?= htmlspecialchars($row['alamat']) ?></p>
+                                                <p><strong>Pesanan:</strong><br><?= nl2br(htmlspecialchars($row['pesanan'])) ?></p>
+                                                <hr>
                                                 <div class="row">
-                                                    <div class="col-12">
-                                                        <div class="form-floating mb-3">
-                                                            <input disabled type="text" class="form-control" value="<?= htmlspecialchars($row['alamat']) ?>">
-                                                            <label>Alamat</label>
-                                                        </div>
-                                                    </div>
+                                                    <div class="col-md-4"><p><strong>Jumlah:</strong> <?= htmlspecialchars($row['jumlah_pesan']) ?></p></div>
+                                                    <div class="col-md-4"><p><strong>Total Harga:</strong> <?= 'Rp ' . number_format((float)preg_replace('/[^0-9.]/', '', $row['total_harga']), 0, ',', '.') ?></p></div>
+                                                    <div class="col-md-4"><p><strong>Status Pembayaran:</strong> <?= htmlspecialchars($row['pembayaran']) ?></p></div>
                                                 </div>
-                                                <div class="row">
-                                                    <div class="col-12">
-                                                        <div class="form-floating mb-3">
-                                                            <textarea disabled class="form-control" style="height: 100px"><?= htmlspecialchars($row['pesanan']) ?></textarea>
-                                                            <label>Pesanan</label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-4">
-                                                        <div class="form-floating mb-3">
-                                                            <input disabled type="text" class="form-control" value="<?= htmlspecialchars($row['jumlah_pesan']) ?>">
-                                                            <label>Jumlah Pesanan</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <div class="form-floating mb-3">
-                                                            <input disabled type="text" class="form-control" value="<?= htmlspecialchars($row['total_harga']) ?>">
-                                                            <label>Total Harga</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <div class="form-floating mb-3">
-                                                            <input disabled type="text" class="form-control" value="<?= htmlspecialchars($row['pembayaran']) ?>">
-                                                            <label>Pembayaran</label>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                <p><small>Midtrans Order ID: <?= htmlspecialchars($row['midtrans_order_id'] ?? '-') ?></small></p>
+                                                <p><small>Midtrans Transaction ID: <?= htmlspecialchars($row['midtrans_transaction_id'] ?? '-') ?></small></p>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
@@ -154,12 +157,13 @@ if ($query) {
                                     </div>
                                 </div>
 
-                                <!-- Edit Order Modal -->
+                                <!-- Modal Edit Data -->
                                 <div class="modal fade" id="EditData<?= $row['id'] ?>" tabindex="-1" aria-hidden="true">
-                                    <div class="modal-dialog modal-xl">
+                                    <!-- ... (Kode Modal Edit Anda) ... -->
+                                     <div class="modal-dialog modal-xl">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Edit Order</h5>
+                                                <h5 class="modal-title">Edit Order ID: <?= $row['id'] ?></h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <form action="../Proses/Edit_order.php" method="POST" class="needs-validation" novalidate>
@@ -209,17 +213,23 @@ if ($query) {
                                                         </div>
                                                         <div class="col-md-4">
                                                             <div class="form-floating mb-3">
-                                                                <input type="text" class="form-control" name="total_harga" required value="<?= htmlspecialchars($row['total_harga']) ?>">
-                                                                <label>Total Harga</label>
-                                                                <div class="invalid-feedback">Total harga wajib diisi.</div>
+                                                                <!-- Pastikan format harga sesuai saat disimpan -->
+                                                                <input type="number" step="any" class="form-control" name="total_harga" required value="<?= preg_replace('/[^0-9.]/', '', $row['total_harga']) ?>">
+                                                                <label>Total Harga (Angka)</label>
+                                                                <div class="invalid-feedback">Total harga wajib diisi (angka).</div>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
                                                             <div class="form-floating mb-3">
                                                                 <select class="form-select" name="pembayaran" required>
-                                                                    <option value="" disabled <?= empty($row['pembayaran']) ? 'selected' : '' ?>>Pilih Status Pembayaran</option>
-                                                                    <option value="Ya" <?= ($row['pembayaran'] == 'Ya') ? 'selected' : '' ?>>Ya</option>
-                                                                    <option value="Tidak" <?= ($row['pembayaran'] == 'Tidak') ? 'selected' : '' ?>>Tidak</option>
+                                                                    <option value="" disabled>Pilih Status</option>
+                                                                    <option value="Ya" <?= (strtolower($row['pembayaran']) == 'ya') ? 'selected' : '' ?>>Ya</option>
+                                                                    <option value="Tidak" <?= (strtolower($row['pembayaran']) == 'tidak') ? 'selected' : '' ?>>Tidak</option>
+                                                                    <option value="Pending" <?= (strtolower($row['pembayaran']) == 'pending') ? 'selected' : '' ?>>Pending</option>
+                                                                    <option value="Gagal" <?= (strtolower($row['pembayaran']) == 'gagal') ? 'selected' : '' ?>>Gagal</option>
+                                                                    <option value="Kadaluarsa" <?= (strtolower($row['pembayaran']) == 'kadaluarsa') ? 'selected' : '' ?>>Kadaluarsa</option>
+                                                                    <option value="Dibatalkan" <?= (strtolower($row['pembayaran']) == 'dibatalkan') ? 'selected' : '' ?>>Dibatalkan</option>
+                                                                    <option value="Challenge" <?= (strtolower($row['pembayaran']) == 'challenge') ? 'selected' : '' ?>>Challenge</option>
                                                                 </select>
                                                                 <label>Pembayaran</label>
                                                                 <div class="invalid-feedback">Status pembayaran wajib dipilih.</div>
@@ -236,12 +246,13 @@ if ($query) {
                                     </div>
                                 </div>
 
-                                <!-- Delete Order Modal -->
-                                <div class="modal fade" id="HapusData<?= $row['id'] ?>" tabindex="-1" aria-labelledby="exampleModalLabel<?= $row['id'] ?>" aria-hidden="true">
-                                    <div class="modal-dialog modal-md">
+                                <!-- Modal Hapus Data -->
+                                <div class="modal fade" id="HapusData<?= $row['id'] ?>" tabindex="-1" aria-hidden="true">
+                                    <!-- ... (Kode Modal Hapus Anda) ... -->
+                                     <div class="modal-dialog modal-md">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h1 class="modal-title fs-5" id="exampleModalLabel<?= $row['id'] ?>">Hapus Order</h1>
+                                                <h1 class="modal-title fs-5">Hapus Order ID: <?= $row['id'] ?></h1>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
@@ -265,10 +276,23 @@ if ($query) {
             <?php endif; ?>
         </div> <!-- Akhir div.card-body -->
     </div> <!-- Akhir div.card -->
+
+    <!-- Div untuk pesan status pembayaran Snap (opsional) -->
+    <div id="adminSnapMessage" class="mt-3"></div>
+
 </div> <!-- Akhir div.col-lg-9 -->
 
+<!-- =========================================================== -->
+<!-- SCRIPT MIDTRANS SNAP.JS (DARI CDN)                         -->
+<!-- =========================================================== -->
+<!-- Pilih URL sesuai environment (Sandbox/Production) -->
+<script type="text/javascript"
+    src="<?= $isProduction ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.sandbox.midtrans.com/snap/snap.js' ?>"
+    data-client-key="<?= htmlspecialchars($midtransClientKey) ?>"></script>
+<!-- =========================================================== -->
 
 <script>
+    // Fungsi untuk validasi form Bootstrap
     (() => {
         'use strict'
         const forms = document.querySelectorAll('.needs-validation')
@@ -281,7 +305,7 @@ if ($query) {
                 form.classList.add('was-validated')
             }, false)
         })
-    })()
+    })();
 
     // Script Search
     document.addEventListener('DOMContentLoaded', (event) => {
@@ -292,7 +316,7 @@ if ($query) {
                 const rows = document.querySelectorAll("#orderTable tbody tr");
 
                 rows.forEach(row => {
-                    const pelangganCell = row.cells[1];
+                    const pelangganCell = row.cells[1]; // Kolom kedua (index 1) adalah Pelanggan
                     if (pelangganCell) {
                         const pelanggan = pelangganCell.textContent.toLowerCase();
                         row.style.display = pelanggan.includes(filter) ? "" : "none";
@@ -301,4 +325,71 @@ if ($query) {
             });
         }
     });
+
+    // ===========================================================
+    // FUNGSI UNTUK MEMULAI PEMBAYARAN SNAP DARI ADMIN
+    // ===========================================================
+    async function initiateAdminSnapPayment(orderId) {
+        const snapMessageDiv = document.getElementById('adminSnapMessage');
+        snapMessageDiv.innerHTML = '<div class="alert alert-info">Meminta token pembayaran...</div>';
+
+        // Disable tombol yang diklik (opsional)
+        const clickedButton = event.target.closest('button');
+        if(clickedButton) clickedButton.disabled = true;
+
+        try {
+            // Panggil backend untuk mendapatkan Snap Token berdasarkan ID Order Internal
+            // Buat file PHP baru ini: ../Proses/CreateSnapTokenForOrder.php
+            const response = await fetch(`../Proses/CreateSnapToken.php?order_id=${orderId}`, {
+                method: 'GET' // Atau POST jika Anda lebih suka
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Gagal mendapatkan token: ${response.status}. ${errorText}`);
+            }
+
+            const result = await response.json();
+
+            if (result.success && result.snap_token) {
+                snapMessageDiv.innerHTML = ''; // Hapus pesan loading
+
+                // Panggil Snap Popup
+                snap.pay(result.snap_token, {
+                    onSuccess: function(paymentResult){
+                        console.log('Admin Payment Success:', paymentResult);
+                        snapMessageDiv.innerHTML = `<div class="alert alert-success alert-dismissible fade show" role="alert">Pembayaran untuk Order ID ${paymentResult.order_id} berhasil! Status: ${paymentResult.transaction_status}. Halaman akan dimuat ulang.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>`;
+                        // Muat ulang halaman setelah beberapa detik untuk melihat status terupdate
+                        setTimeout(() => { window.location.reload(); }, 4000);
+                    },
+                    onPending: function(paymentResult){
+                        console.log('Admin Payment Pending:', paymentResult);
+                        snapMessageDiv.innerHTML = `<div class="alert alert-warning alert-dismissible fade show" role="alert">Pembayaran untuk Order ID ${paymentResult.order_id} tertunda. Status: ${paymentResult.transaction_status}.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>`;
+                        if(clickedButton) clickedButton.disabled = false; // Enable lagi tombolnya
+                    },
+                    onError: function(paymentResult){
+                        console.log('Admin Payment Error:', paymentResult);
+                        snapMessageDiv.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert">Pembayaran untuk Order ID ${paymentResult.order_id} gagal. Pesan: ${paymentResult.status_message}.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>`;
+                        if(clickedButton) clickedButton.disabled = false; // Enable lagi tombolnya
+                    },
+                    onClose: function(){
+                        console.log('Admin Snap popup closed.');
+                        // Hanya tampilkan pesan jika belum ada pesan sukses/pending/error
+                         if (!snapMessageDiv.querySelector('.alert-success') && !snapMessageDiv.querySelector('.alert-warning') && !snapMessageDiv.querySelector('.alert-danger')) {
+                             snapMessageDiv.innerHTML = '<div class="alert alert-secondary alert-dismissible fade show" role="alert">Popup pembayaran ditutup.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
+                         }
+                        if(clickedButton) clickedButton.disabled = false; // Enable lagi tombolnya
+                    }
+                });
+
+            } else {
+                throw new Error(result.message || 'Token Snap tidak diterima dari server.');
+            }
+
+        } catch (error) {
+            console.error('Error saat initiateAdminSnapPayment:', error);
+            snapMessageDiv.innerHTML = `<div class="alert alert-danger alert-dismissible fade show" role="alert">Terjadi kesalahan: ${error.message}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>`;
+            if(clickedButton) clickedButton.disabled = false; // Enable lagi tombolnya
+        }
+    }
 </script>
