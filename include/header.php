@@ -50,9 +50,6 @@ function base_url($path = '')
                         <li class="nav-item"><a class="nav-link" href="<?= base_url('index.php?page=menu') ?>">Menu</a></li>
                         <li class="nav-item"><a class="nav-link" href="<?= base_url('index.php?page=lokasi') ?>">Lokasi</a></li>
                         <li class="nav-item"><a class="nav-link" href="<?= base_url('index.php?page=kontak') ?>">Kontak</a></li>
-                        <li class="nav-item ms-lg-3">
-                            <a class="btn btn-outline-primary" href="<?= base_url('Admin/Login.php') ?>">Admin</a>
-                        </li>
                     </ul>
                 </div>
             </div>

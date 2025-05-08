@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $generatedWhatsAppUrl = "https://wa.me/" . $cleanWhatsAppNumber . "?text=" . rawurlencode($waMessage);
 
-        $_SESSION['contact_form_success'] = "Diterima! Anda akan segera dialihkan ke WhatsApp untuk mengirim pesan.";
+        $_SESSION['contact_form_success'] = "Diterima! Anda akan segera dialihkan ke WhatsApp.";
         $_SESSION['contact_form_whatsapp_url'] = $generatedWhatsAppUrl;
 
     } else {
