@@ -1,184 +1,209 @@
 /* ========== FOOTER STYLES ========== */
 .footer-section {
-    background: linear-gradient(135deg, var(--hitam) 0%, #333333 100%);
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .footer-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 5px;
-    background: #555555;
-  }
-  
-  .footer-logo img {
-    transition: var(--trans-cepat);
-    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
-  }
-  
-  .footer-logo:hover img {
-    transform: rotate(10deg) scale(1.1);
-  }
-  
-  .social-icons {
-    display: flex;
-    justify-content: center;
-  }
-  
-  .social-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    color: #cccccc;
-    font-size: 18px;
-    transition: var(--trans-cepat);
-    text-decoration: none;
-  }
-  
-  .social-icon:hover {
-    background: #555555;
-    color: #ffffff;
-    transform: translateY(-3px) scale(1.1);
-  }
-  
-  .whatsapp-icon {
-    color: var(--hijau-tua);
-  }
-  
-  .footer-links a {
-    position: relative;
-    padding: 5px 0;
-    text-decoration: none;
-    color: #cccccc;
-    transition: var(--trans-cepat);
-  }
-  
-  .footer-links a::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: #555555;
-    transition: var(--trans-cepat);
-  }
-  
-  .footer-links a:hover {
-    color: #ffffff !important;
-  }
-  
-  .footer-links a:hover::after {
-    width: 100%;
-  }
+  background: linear-gradient(135deg, var(--hitam) 0%, #333333 100%);
+  position: relative;
+  overflow: hidden;
+}
 
-  .no-spinner {
-    appearance: textfield;
-    -moz-appearance: textfield;   /* Firefox */
-    -webkit-appearance: none;     /* Chrome, Safari */
-    width: 40px;
-    text-align: center;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 5px;
+.footer-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: #555555;
+}
+
+.footer-logo img {
+  transition: var(--trans-cepat);
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
+  /* TAMBAHAN: Tentukan ukuran default agar lebih mudah dikontrol di media query jika perlu */
+  /* max-width: 120px; */ /* Contoh ukuran default */
+}
+
+.footer-logo:hover img {
+  transform: rotate(10deg) scale(1.1);
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+}
+
+.social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: #cccccc;
+  font-size: 18px;
+  transition: var(--trans-cepat);
+  text-decoration: none;
+  margin: 0 5px; /* TAMBAHAN: Sedikit spasi antar ikon jika berdekatan */
+}
+
+.social-icon:hover {
+  background: #555555;
+  color: #ffffff;
+  transform: translateY(-3px) scale(1.1);
+}
+
+.whatsapp-icon {
+  color: var(--hijau-tua);
+}
+
+.footer-links a {
+  position: relative;
+  padding: 5px 0;
+  text-decoration: none;
+  color: #cccccc;
+  transition: var(--trans-cepat);
+  font-size: 1rem; /* TAMBAHAN: Tentukan font-size default agar mudah diubah */
+}
+
+.footer-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #555555;
+  transition: var(--trans-cepat);
+}
+
+.footer-links a:hover {
+  color: #ffffff !important;
+}
+
+.footer-links a:hover::after {
+  width: 100%;
+}
+
+.no-spinner {
+  appearance: textfield;
+  -moz-appearance: textfield;   /* Firefox */
+  -webkit-appearance: none;     /* Chrome, Safari */
+  width: 40px;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
 }
 
 /* Hilangkan spinner di Chrome, Safari, Edge */
 .no-spinner::-webkit-outer-spin-button,
 .no-spinner::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 /* Pastikan juga Firefox tidak menampilkan spinner */
 .no-spinner {
-    -moz-appearance: textfield;
-    appearance: textfield;
+  -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 .menu-price {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: var(--merah-utama);
-    margin: 10px 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--merah-utama);
+  margin: 10px 0;
 }
 
-  
-  /* Floating WhatsApp Button */
-  .whatsapp-float {
-    position: fixed;
-    width: 60px;
-    height: 60px;
-    bottom: 40px;
-    right: 40px;
-    background-color: var(--hijau-tua);
-    color: #FFF;
-    border-radius: 50px;
-    text-align: center;
-    font-size: 30px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: var(--trans-cepat);
-    animation: pulse 2s infinite;
-  }
-/* 
-  .whatsapp-float,
+
+/* Floating WhatsApp Button */
+.whatsapp-float {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  bottom: 40px;
+  right: 40px;
+  background-color: var(--hijau-tua);
+  color: #FFF;
+  border-radius: 50px;
+  text-align: center;
+  font-size: 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--trans-cepat);
+  animation: pulse 2s infinite;
+}
+/*
+.whatsapp-float,
 .whatsapp-float i {
-  text-decoration: none !important;
+text-decoration: none !important;
 } */
 
-  
-  .whatsapp-float:hover {
-    background-color: var(--hijau);
-    transform: scale(1.1);
-    animation: none;
+
+.whatsapp-float:hover {
+  background-color: var(--hijau);
+  transform: scale(1.1);
+  animation: none;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
+  70% { box-shadow: 0 0 0 15px rgba(76, 175, 80, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+}
+
+/* Animasi Footer */
+.footer-section > * {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: var(--trans-sedang);
+}
+
+/* Responsive Styles */
+@media (max-width: 767.98px) {
+  .footer-section {
+      padding: 2rem 0; /* MODIFIKASI: Kurangi padding dari 3rem menjadi 2rem atau 2.5rem */
+      /* Jika ada teks umum di footer, Anda bisa atur font-size global di sini */
+      /* font-size: 0.9rem; */ /* Contoh */
   }
-  
-  @keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
-    70% { box-shadow: 0 0 0 15px rgba(76, 175, 80, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+
+  .footer-logo img { /* TAMBAHAN: Jika logo perlu dikecilkan */
+      max-width: 80px; /* Contoh, sesuaikan dengan ukuran logo Anda */
+      /* atau width: 80px; jika ingin ukuran tetap */
   }
-  
-  /* Animasi Footer */
-  .footer-section > * {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: var(--trans-sedang);
+
+  .social-icon { /* TAMBAHAN: Kecilkan ikon sosial */
+      width: 35px;
+      height: 35px;
+      font-size: 16px;
+      margin: 0 4px; /* Sedikit kurangi margin jika perlu */
   }
-  
-  /* Responsive Styles */
-  @media (max-width: 767.98px) {
-    .footer-section {
-        padding: 3rem 0;
-    }
-    
-    .footer-links {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    
-    .footer-links a {
-        margin: 0 10px 10px;
-    }
-    
-    .whatsapp-float {
-        width: 50px;
-        height: 50px;
-        bottom: 20px;
-        right: 20px;
-        font-size: 25px;
-    }
+
+  .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
   }
+
+  .footer-links a {
+      margin: 0 8px 8px; /* MODIFIKASI: Sedikit kurangi margin jika perlu */
+      font-size: 0.9rem;  /* TAMBAHAN/MODIFIKASI: Kecilkan font link */
+      padding: 3px 0;     /* TAMBAHAN/MODIFIKASI: Sedikit kurangi padding vertikal link */
+  }
+
+  .whatsapp-float {
+      width: 45px;      /* MODIFIKASI: Kurangi dari 50px jika ingin lebih kecil lagi */
+      height: 45px;     /* MODIFIKASI: Kurangi dari 50px jika ingin lebih kecil lagi */
+      bottom: 15px;     /* MODIFIKASI: Sesuaikan posisi jika perlu */
+      right: 15px;      /* MODIFIKASI: Sesuaikan posisi jika perlu */
+      font-size: 22px;  /* MODIFIKASI: Kurangi dari 25px jika ingin ikon lebih kecil */
+  }
+
+  /* Jika ada elemen teks lain seperti copyright, Anda bisa targetkan juga */
+  /* .footer-copyright p { */
+  /*    font-size: 0.8rem; */
+  /* } */
+}

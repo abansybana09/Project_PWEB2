@@ -45,7 +45,7 @@
             <div class="info-kantor">
                 <h5><strong>KANTOR</strong></h5>
                 <p><i class="fas fa-map-marker-alt"></i> Jln. Jendral Sudirman No. 45 RT 03 RW 07</p>
-                <p><i class="fab fa-whatsapp"></i> 089630152631 (Ahmad Fauzil Adhim)</p>
+                <p><i class="fab fa-whatsapp"></i> 089630152631 (Mang Oman)</p>
                 <p><i class="fas fa-envelope"></i> info@warungmangoman.com</p>
                 <div class="service-hours mt-3">
                     <p><strong>Service Hours :</strong></p>
