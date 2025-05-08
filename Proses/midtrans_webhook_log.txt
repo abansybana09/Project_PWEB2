@@ -168,3 +168,124 @@ Raw Data: {"transaction_type":"on-us","transaction_time":"2025-05-08 17:34:41","
 
 [2025-05-08 12:34:48] DB Update SUKSES - Order ID: SNAP-1746700459-2992, Status Baru: Ya
 
+[2025-05-08 12:43:54] Webhook dipanggil.
+Raw Data: {"transaction_type":"off-us","transaction_time":"2025-05-08 17:43:54","transaction_status":"pending","transaction_id":"92385409-faaa-4f89-ae4b-322efc1fcb32","status_message":"midtrans payment notification","status_code":"201","signature_key":"7ab62af19f4a5ff5f013325cb2382f15c351b20ed36b0edc10b8079bcdec24acbe483ab0b700bff496f3f4d8af09f5a395e567401932209b72ec06b62afd88fd","payment_type":"qris","order_id":"SNAP-1746701019-7752","merchant_id":"G394749499","gross_amount":"10000.00","fraud_status":"accept","expiry_time":"2025-05-08 17:58:54","currency":"IDR"}
+
+[2025-05-08 12:43:54] Notif Parsed - Order ID: SNAP-1746701019-7752, Status: pending, Payment Type: qris, Fraud: accept
+
+[2025-05-08 12:43:54] Status tidak memerlukan update ke 'Ya' - Order ID: SNAP-1746701019-7752, Status Midtrans: pending
+
+[2025-05-08 12:44:10] Webhook dipanggil.
+Raw Data: {"transaction_type":"on-us","transaction_time":"2025-05-08 17:43:54","transaction_status":"settlement","transaction_id":"92385409-faaa-4f89-ae4b-322efc1fcb32","status_message":"midtrans payment notification","status_code":"200","signature_key":"4df2fa5ab6f4271e23ddbe2a6add8fc4baab0dd5274306cfb6a90342d1bb3900b34cbb0065fcfaf9da5b6bb30f7c87a34129554897dbb042946165567d0792c1","settlement_time":"2025-05-08 17:44:11","payment_type":"qris","order_id":"SNAP-1746701019-7752","merchant_id":"G394749499","issuer":"gopay","gross_amount":"10000.00","fraud_status":"accept","expiry_time":"2025-05-08 17:58:54","currency":"IDR","acquirer":"gopay"}
+
+[2025-05-08 12:44:11] Notif Parsed - Order ID: SNAP-1746701019-7752, Status: settlement, Payment Type: qris, Fraud: accept
+
+[2025-05-08 12:44:11] Mapping Status SUKSES - Order ID: SNAP-1746701019-7752, DB Status akan diupdate ke: Ya
+
+[2025-05-08 12:44:11] DB Update SUKSES - Order ID: SNAP-1746701019-7752, Status Baru: Ya
+
+[2025-05-08 12:45:03] Webhook dipanggil.
+Raw Data: 
+
+[2025-05-08 12:45:03] Webhook Exception: Midtrans API is returning API error. HTTP status code: 404 API response: <!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+
+    <!-- Responsive viewport declaration -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Cross compatibility -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Midtrans</title>
+    <meta name="description" content=""/>
+
+    <link rel="stylesheet" href="//v2/assets/css/all.css"/>
+
+</head>
+<body>
+<div class="container">
+    <div class="center desc"><p>404</p></div>
+    <div class="center click"><h3>
+        <a href="#">&#45; Ups &#45;</a>
+    </h3></div>
+</div>
+<footer>
+    <p class="center">&copy; <script>document.write(new Date().getFullYear())</script> PT Midtrans. All Rights Reserved</p>
+</footer>
+
+</body>
+</html>
+
+Raw Data: 
+
+[2025-05-08 12:45:05] Webhook dipanggil.
+Raw Data: 
+
+[2025-05-08 12:45:05] Webhook Exception: Midtrans API is returning API error. HTTP status code: 404 API response: <!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+
+    <!-- Responsive viewport declaration -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Cross compatibility -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Midtrans</title>
+    <meta name="description" content=""/>
+
+    <link rel="stylesheet" href="//v2/assets/css/all.css"/>
+
+</head>
+<body>
+<div class="container">
+    <div class="center desc"><p>404</p></div>
+    <div class="center click"><h3>
+        <a href="#">&#45; Ups &#45;</a>
+    </h3></div>
+</div>
+<footer>
+    <p class="center">&copy; <script>document.write(new Date().getFullYear())</script> PT Midtrans. All Rights Reserved</p>
+</footer>
+
+</body>
+</html>
+
+Raw Data: 
+
+[2025-05-08 12:45:06] Webhook dipanggil.
+Raw Data: 
+
+[2025-05-08 12:45:06] Webhook Exception: Midtrans API is returning API error. HTTP status code: 404 API response: <!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+
+    <!-- Responsive viewport declaration -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Cross compatibility -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Midtrans</title>
+    <meta name="description" content=""/>
+
+    <link rel="stylesheet" href="//v2/assets/css/all.css"/>
+
+</head>
+<body>
+<div class="container">
+    <div class="center desc"><p>404</p></div>
+    <div class="center click"><h3>
+        <a href="#">&#45; Ups &#45;</a>
+    </h3></div>
+</div>
+<footer>
+    <p class="center">&copy; <script>document.write(new Date().getFullYear())</script> PT Midtrans. All Rights Reserved</p>
+</footer>
+
+</body>
+</html>
+
+Raw Data: 
+
