@@ -1,0 +1,170 @@
+[2025-05-08 11:40:28] Webhook dipanggil.
+Raw Data: 
+
+[2025-05-08 11:40:28] Webhook Exception: Midtrans API is returning API error. HTTP status code: 404 API response: <!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+
+    <!-- Responsive viewport declaration -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Cross compatibility -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Midtrans</title>
+    <meta name="description" content=""/>
+
+    <link rel="stylesheet" href="//v2/assets/css/all.css"/>
+
+</head>
+<body>
+<div class="container">
+    <div class="center desc"><p>404</p></div>
+    <div class="center click"><h3>
+        <a href="#">&#45; Ups &#45;</a>
+    </h3></div>
+</div>
+<footer>
+    <p class="center">&copy; <script>document.write(new Date().getFullYear())</script> PT Midtrans. All Rights Reserved</p>
+</footer>
+
+</body>
+</html>
+
+Raw Data: 
+
+[2025-05-08 11:59:13] Webhook called
+Order ID: SNAP-1746698270-9937, Status: settlement
+SUCCESS: Updated order SNAP-1746698270-9937 to 'Ya'
+[2025-05-08 11:59:32] Webhook called
+Order ID: SNAP-1746698270-9937, Status: settlement
+SUCCESS: Updated order SNAP-1746698270-9937 to 'Ya'
+[2025-05-08 12:05:25] Webhook dipanggil.
+Raw Data: 
+
+[2025-05-08 12:05:25] Webhook Exception: Midtrans API is returning API error. HTTP status code: 404 API response: <!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+
+    <!-- Responsive viewport declaration -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Cross compatibility -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Midtrans</title>
+    <meta name="description" content=""/>
+
+    <link rel="stylesheet" href="//v2/assets/css/all.css"/>
+
+</head>
+<body>
+<div class="container">
+    <div class="center desc"><p>404</p></div>
+    <div class="center click"><h3>
+        <a href="#">&#45; Ups &#45;</a>
+    </h3></div>
+</div>
+<footer>
+    <p class="center">&copy; <script>document.write(new Date().getFullYear())</script> PT Midtrans. All Rights Reserved</p>
+</footer>
+
+</body>
+</html>
+
+Raw Data: 
+
+[2025-05-08 12:05:48] Webhook called
+ERROR: Midtrans API is returning API error. HTTP status code: 404 API response: <!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+
+    <!-- Responsive viewport declaration -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Cross compatibility -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Midtrans</title>
+    <meta name="description" content=""/>
+
+    <link rel="stylesheet" href="//v2/assets/css/all.css"/>
+
+</head>
+<body>
+<div class="container">
+    <div class="center desc"><p>404</p></div>
+    <div class="center click"><h3>
+        <a href="#">&#45; Ups &#45;</a>
+    </h3></div>
+</div>
+<footer>
+    <p class="center">&copy; <script>document.write(new Date().getFullYear())</script> PT Midtrans. All Rights Reserved</p>
+</footer>
+
+</body>
+</html>
+
+[2025-05-08 12:05:49] Webhook called
+ERROR: Midtrans API is returning API error. HTTP status code: 404 API response: <!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+
+    <!-- Responsive viewport declaration -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Cross compatibility -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Midtrans</title>
+    <meta name="description" content=""/>
+
+    <link rel="stylesheet" href="//v2/assets/css/all.css"/>
+
+</head>
+<body>
+<div class="container">
+    <div class="center desc"><p>404</p></div>
+    <div class="center click"><h3>
+        <a href="#">&#45; Ups &#45;</a>
+    </h3></div>
+</div>
+<footer>
+    <p class="center">&copy; <script>document.write(new Date().getFullYear())</script> PT Midtrans. All Rights Reserved</p>
+</footer>
+
+</body>
+</html>
+
+[2025-05-08 12:32:23] Webhook dipanggil.
+Raw Data: {"transaction_type":"off-us","transaction_time":"2025-05-08 17:32:23","transaction_status":"pending","transaction_id":"9ec8f2ca-5cba-4199-a6da-945126f38076","status_message":"midtrans payment notification","status_code":"201","signature_key":"3b3d9beaee804de43375f7984585aa843b95a1b419942a7e5fd8ab2902a3fe9784c7202271d622a204cfb36313844097241201e62a11110efb8a02d71b2ab14b","payment_type":"qris","order_id":"SNAP-1746700333-7657","merchant_id":"G394749499","gross_amount":"10000.00","fraud_status":"accept","expiry_time":"2025-05-08 17:47:23","currency":"IDR"}
+
+[2025-05-08 12:32:23] Notif Parsed - Order ID: SNAP-1746700333-7657, Status: pending, Payment Type: qris, Fraud: accept
+
+[2025-05-08 12:32:23] Status tidak memerlukan update ke 'Ya' - Order ID: SNAP-1746700333-7657, Status Midtrans: pending
+
+[2025-05-08 12:32:32] Webhook dipanggil.
+Raw Data: {"transaction_type":"on-us","transaction_time":"2025-05-08 17:32:23","transaction_status":"settlement","transaction_id":"9ec8f2ca-5cba-4199-a6da-945126f38076","status_message":"midtrans payment notification","status_code":"200","signature_key":"c786c007ec1617b94425b4fdd1f39f1241902197aa8b0381bbfdcb227e024494ece969e92bd08d1553bf77d505040d7fd3babd3be7e290ab7d45f3143ff32ef0","settlement_time":"2025-05-08 17:32:33","payment_type":"qris","order_id":"SNAP-1746700333-7657","merchant_id":"G394749499","issuer":"gopay","gross_amount":"10000.00","fraud_status":"accept","expiry_time":"2025-05-08 17:47:23","currency":"IDR","acquirer":"gopay"}
+
+[2025-05-08 12:32:32] Notif Parsed - Order ID: SNAP-1746700333-7657, Status: settlement, Payment Type: qris, Fraud: accept
+
+[2025-05-08 12:32:32] Mapping Status SUKSES - Order ID: SNAP-1746700333-7657, DB Status akan diupdate ke: Ya
+
+[2025-05-08 12:32:32] DB Update SUKSES - Order ID: SNAP-1746700333-7657, Status Baru: Ya
+
+[2025-05-08 12:34:41] Webhook dipanggil.
+Raw Data: {"transaction_type":"off-us","transaction_time":"2025-05-08 17:34:41","transaction_status":"pending","transaction_id":"481567ec-4732-4cf7-9fd9-8d41f09f92ae","status_message":"midtrans payment notification","status_code":"201","signature_key":"202bf815762e180a6ff3002d8a1c50ed9f8ed6491fa909fd8773759126c5536f5dc2a2ff0862f7833c2e2ea1a888fa33a2a3f96527611209b4081ef1adedbe12","payment_type":"qris","order_id":"SNAP-1746700459-2992","merchant_id":"G394749499","gross_amount":"10000.00","fraud_status":"accept","expiry_time":"2025-05-08 17:49:41","currency":"IDR"}
+
+[2025-05-08 12:34:41] Notif Parsed - Order ID: SNAP-1746700459-2992, Status: pending, Payment Type: qris, Fraud: accept
+
+[2025-05-08 12:34:41] Status tidak memerlukan update ke 'Ya' - Order ID: SNAP-1746700459-2992, Status Midtrans: pending
+
+[2025-05-08 12:34:48] Webhook dipanggil.
+Raw Data: {"transaction_type":"on-us","transaction_time":"2025-05-08 17:34:41","transaction_status":"settlement","transaction_id":"481567ec-4732-4cf7-9fd9-8d41f09f92ae","status_message":"midtrans payment notification","status_code":"200","signature_key":"4856948da9f75e773626a190f00c0d61902025a50b968862bfb2848dc979434635b676389576322615026630a7d324a615b09e8da96c2976f344baad108bb1c6","settlement_time":"2025-05-08 17:34:48","payment_type":"qris","order_id":"SNAP-1746700459-2992","merchant_id":"G394749499","issuer":"gopay","gross_amount":"10000.00","fraud_status":"accept","expiry_time":"2025-05-08 17:49:41","currency":"IDR","acquirer":"gopay"}
+
+[2025-05-08 12:34:48] Notif Parsed - Order ID: SNAP-1746700459-2992, Status: settlement, Payment Type: qris, Fraud: accept
+
+[2025-05-08 12:34:48] Mapping Status SUKSES - Order ID: SNAP-1746700459-2992, DB Status akan diupdate ke: Ya
+
+[2025-05-08 12:34:48] DB Update SUKSES - Order ID: SNAP-1746700459-2992, Status Baru: Ya
+
