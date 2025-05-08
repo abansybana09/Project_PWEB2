@@ -1,12 +1,14 @@
 <?php
 // Fungsi base_url agar tidak hardcode path
-function base_url($path = '') {
+function base_url($path = '')
+{
     return '/PROJECR2/' . ltrim($path, '/');
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,25 +32,29 @@ function base_url($path = '') {
     <link rel="stylesheet" href="<?= base_url('asset/footer.css') ?>">
     <link rel="stylesheet" href="<?= base_url('asset/hero1.css') ?>">
 </head>
+
 <body>
 
-<header>
-<nav class="navbar navbar-expand-lg navbar-light fixed-top">
-    <div class="container">
-        <a class="navbar-brand" href="<?= base_url('index.php') ?>">
-            <img src="<?= base_url('img/logo.png') ?>" alt="Logo Warung Mang" width="130" height="130" class="rounded-circle">
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" href="<?= base_url('index.php?page=project') ?>">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="<?= base_url('index.php?page=menu') ?>">Menu</a></li>
-                <li class="nav-item"><a class="nav-link" href="<?= base_url('index.php?page=lokasi') ?>">Lokasi</a></li>
-                <li class="nav-item"><a class="nav-link" href="<?= base_url('index.php?page=kontak') ?>">Kontak</a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
-</header>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+            <div class="container">
+                <a class="navbar-brand" href="<?= base_url('index.php') ?>">
+                    <img src="<?= base_url('img/logo.png') ?>" alt="Logo Warung Mang" width="130" height="130" class="rounded-circle">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto align-items-lg-center">
+                        <li class="nav-item"><a class="nav-link" href="<?= base_url('index.php?page=project') ?>">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="<?= base_url('index.php?page=menu') ?>">Menu</a></li>
+                        <li class="nav-item"><a class="nav-link" href="<?= base_url('index.php?page=lokasi') ?>">Lokasi</a></li>
+                        <li class="nav-item"><a class="nav-link" href="<?= base_url('index.php?page=kontak') ?>">Kontak</a></li>
+                        <li class="nav-item ms-lg-3">
+                            <a class="btn btn-outline-primary" href="<?= base_url('Admin/Login.php') ?>">Admin</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
