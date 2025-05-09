@@ -12,7 +12,7 @@
                 </div>
                 <div class="mt-auto pt-5">
                     <a href="Admin/Login.php" class="btn btn-sm btn-outline-light">
-                        <i class="fas fa-sign-in-alt me-1"></i> Login Admin </a>
+                        <i class="fas fa-sign-in-alt me-1"></i> Admin </a>
                 </div>
             </div>
             <!-- Informasi Kontak -->
