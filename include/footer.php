@@ -1,5 +1,5 @@
 <div class="wrapper">
-<footer class="footer-section bg-dark text-white py-5">
+<footer class="footer-section bg-dark text-white py-3">
     <div class="container">
         <div class="row">
             <!-- Logo dan Nama -->
@@ -14,7 +14,6 @@
                     <a href="Admin/Login.php" class="btn btn-sm btn-outline-light">
                         <i class="fas fa-sign-in-alt me-1"></i> Login Admin </a>
                 </div>
-
             </div>
             <!-- Informasi Kontak -->
             <div class="col-lg-4 text-center mb-4 mb-lg-0">
