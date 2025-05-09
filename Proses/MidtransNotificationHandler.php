@@ -2,7 +2,6 @@
 // File: /Proses/MidtransNotificationHandler.php
 error_log("===== MidtransNotificationHandler.php Dipanggil =====");
 
-// Gunakan path absolut
 $baseDir = dirname(__DIR__);
 require_once $baseDir . '/Admin/Koneksi.php';
 require_once $baseDir . '/vendor/autoload.php';
@@ -32,32 +31,29 @@ error_log("MidtransNotificationHandler.php: Server Key loaded.");
 \Midtrans\Config::$serverKey = $serverKey;
 \Midtrans\Config::$isProduction = $isProduction;
 
-$log_file = __DIR__ . '/midtrans_webhook_log.txt'; // Simpan log di folder Proses
+$log_file = __DIR__ . '/midtrans_webhook_log.txt';
 $raw_notification = file_get_contents('php://input');
 
-// ===========================================================
-// DEFINISI FUNGSI LOGGING YANG HILANG (TAMBAHKAN KEMBALI)
-// ===========================================================
-function log_to_file($message, $log_file, $raw_data = null) {
+function log_to_file($message, $log_file, $raw_data = null)
+{
     $timestamp = "[" . date("Y-m-d H:i:s") . "] ";
     $log_entry = $timestamp . $message . "\n";
-    if ($raw_data !== null) { $log_entry .= "Raw Data: " . $raw_data . "\n"; }
-    // Pastikan folder Proses writable oleh server
-    // LOCK_EX mencegah penulisan bersamaan yang bisa merusak file log
+    if ($raw_data !== null) {
+        $log_entry .= "Raw Data: " . $raw_data . "\n";
+    }
     file_put_contents($log_file, $log_entry . "\n", FILE_APPEND | LOCK_EX);
 }
-// ===========================================================
 
 // Pengecekan Koneksi DB
 if (!isset($conn) || !($conn instanceof mysqli) || $conn->connect_error) {
-     log_to_file("Webhook Error: Koneksi database tidak valid. Error: " . ($conn->connect_error ?? 'Koneksi tidak ada'), $log_file);
-     http_response_code(500);
-     exit("Koneksi DB Error.");
+    log_to_file("Webhook Error: Koneksi database tidak valid. Error: " . ($conn->connect_error ?? 'Koneksi tidak ada'), $log_file);
+    http_response_code(500);
+    exit("Koneksi DB Error.");
 }
 error_log("MidtransNotificationHandler.php: Koneksi DB valid.");
 
 try {
-    log_to_file("Webhook dipanggil.", $log_file, $raw_notification); // Sekarang fungsi ini dikenal
+    log_to_file("Webhook dipanggil.", $log_file, $raw_notification);
     $notif = new \Midtrans\Notification();
 
     $transaction_status = $notif->transaction_status;
@@ -72,19 +68,17 @@ try {
         throw new Exception("Data notifikasi tidak valid (order_id atau status kosong).");
     }
 
-    // Tentukan status untuk kolom 'pembayaran' ENUM('Ya', 'Tidak')
     $update_pembayaran_ke_ya = false;
 
     if ($transaction_status == 'capture') {
         if ($payment_type == 'credit_card') {
             if ($fraud_status == 'accept') $update_pembayaran_ke_ya = true;
         } else {
-             $update_pembayaran_ke_ya = true;
+            $update_pembayaran_ke_ya = true;
         }
     } else if ($transaction_status == 'settlement') {
-        $update_pembayaran_ke_ya = true; // LUNAS
+        $update_pembayaran_ke_ya = true;
     }
-    // Status lain tidak mengubah flag
 
     if ($update_pembayaran_ke_ya) {
         $status_db_final = 'Ya';
@@ -105,15 +99,22 @@ try {
         if ($stmt_update->execute()) {
             $affected_rows = $stmt_update->affected_rows;
             if ($affected_rows > 0) {
-                 log_to_file("DB Update SUKSES - Order ID: " . $order_id_midtrans . ", Status Baru: " . $status_db_final, $log_file);
+                log_to_file("DB Update SUKSES - Order ID: " . $order_id_midtrans . ", Status Baru: " . $status_db_final, $log_file);
             } else {
                 $stmt_check = $conn->prepare("SELECT id FROM tb_order WHERE midtrans_order_id = ?");
-                if($stmt_check){
-                    $stmt_check->bind_param("s", $order_id_midtrans); $stmt_check->execute(); $result_check = $stmt_check->get_result();
-                    if($result_check->num_rows === 0){ log_to_file("DB Update WARNING - Order ID: " . $order_id_midtrans . " TIDAK DITEMUKAN di DB.", $log_file); }
-                    else { log_to_file("DB Update INFO - Order ID: " . $order_id_midtrans . ", Tidak ada baris terpengaruh (Mungkin status sudah 'Ya'?).", $log_file); }
+                if ($stmt_check) {
+                    $stmt_check->bind_param("s", $order_id_midtrans);
+                    $stmt_check->execute();
+                    $result_check = $stmt_check->get_result();
+                    if ($result_check->num_rows === 0) {
+                        log_to_file("DB Update WARNING - Order ID: " . $order_id_midtrans . " TIDAK DITEMUKAN di DB.", $log_file);
+                    } else {
+                        log_to_file("DB Update INFO - Order ID: " . $order_id_midtrans . ", Tidak ada baris terpengaruh (Mungkin status sudah 'Ya'?).", $log_file);
+                    }
                     $stmt_check->close();
-                } else { log_to_file("DB Update INFO - Order ID: " . $order_id_midtrans . ", Tidak ada baris terpengaruh (Gagal cek).", $log_file); }
+                } else {
+                    log_to_file("DB Update INFO - Order ID: " . $order_id_midtrans . ", Tidak ada baris terpengaruh (Gagal cek).", $log_file);
+                }
             }
             http_response_code(200);
             echo "Notification processed.";
@@ -122,13 +123,11 @@ try {
             throw new Exception("DB Execute Error: " . $stmt_update->error);
         }
         $stmt_update->close();
-
     } else {
-         log_to_file("Status tidak memerlukan update ke 'Ya' - Order ID: " . $order_id_midtrans . ", Status Midtrans: " . $transaction_status, $log_file);
-         http_response_code(200);
-         echo "Notification received, status not requiring 'Ya' update.";
+        log_to_file("Status tidak memerlukan update ke 'Ya' - Order ID: " . $order_id_midtrans . ", Status Midtrans: " . $transaction_status, $log_file);
+        http_response_code(200);
+        echo "Notification received, status not requiring 'Ya' update.";
     }
-
 } catch (Exception $e) {
     log_to_file("Webhook Exception: " . $e->getMessage(), $log_file, $raw_notification);
     if (strpos($e->getMessage(), "DB") !== false || strpos($e->getMessage(), "SQL") !== false || strpos($e->getMessage(), "Koneksi") !== false) {
@@ -142,4 +141,3 @@ try {
 if (isset($conn) && $conn instanceof mysqli) {
     $conn->close();
 }
-?>

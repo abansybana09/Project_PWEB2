@@ -3,11 +3,18 @@
     <div class="container">
         <div class="row">
             <!-- Logo dan Nama -->
-            <div class="col-lg-4 text-center text-lg-start mb-4 mb-lg-0">
-                <div class="footer-logo mb-3">
-                    <img src="img/logo.png" alt="Warung Mang Oman" width="80" class="img-fluid">
+            <div class="col-lg-4 text-center text-lg-start mb-4 mb-lg-0 d-flex flex-column">
+                <div>
+                    <div class="footer-logo mb-3">
+                        <img src="img/logo.png" alt="Warung Mang Oman" width="80" class="img-fluid">
+                    </div>
+                    <h5 class="mb-2 text-uppercase fw-bold" style="color: var(--kuning);">Warung Mang Oman</h5>
                 </div>
-                <h5 class="mb-3 text-uppercase fw-bold" style="color: var(--kuning);">Warung Mang Oman</h5>
+                <div class="mt-auto pt-5">
+                    <a href="Admin/Login.php" class="btn btn-sm btn-outline-light">
+                        <i class="fas fa-sign-in-alt me-1"></i> Login Admin </a>
+                </div>
+
             </div>
             <!-- Informasi Kontak -->
             <div class="col-lg-4 text-center mb-4 mb-lg-0">
@@ -35,16 +42,11 @@
                 </div>
 
                 <div class="class">"Warung Mang Oman terkenal dengan ayam goreng renyah, nasi pulen, dan sambal pedas. Rasanya bikin nagih!!"</div>
-                <!-- <div class="footer-links">
-                    <a href="Menu.php" class="text-white mx-2">Menu</a>
-                    <a href="Lokasi.php" class="text-white mx-2">Lokasi</a>
-                    <a href="kontak.php" class="text-white mx-2">Kontak</a>
-                </div> -->
             </div>
         </div>
         <div class="row mt-4">
             <div class="col text-center">
-                <p class="mb-0">&copy; <span id="current-year">2025</span> Warung Mang Oman. All rights reserved.</p>
+                <p class="mb-0">© <span id="current-year">2025</span> Warung Mang Oman. All rights reserved.</p>
             </div>
         </div>
     </div>

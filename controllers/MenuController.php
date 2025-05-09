@@ -4,10 +4,12 @@
 // Tidak perlu require_once model jika sudah pakai autoloader di index.php
 // require_once __DIR__ . '/../models/Menu.php';
 
-class MenuController {
+class MenuController
+{
     private $model;
 
-    public function __construct() {
+    public function __construct()
+    {
         // Pastikan class MenuModel ada (jika tidak pakai autoloader, require_once di atas)
         if (!class_exists('MenuModel')) {
             die("Fatal Error: Class MenuModel tidak ditemukan.");
@@ -15,25 +17,17 @@ class MenuController {
         $this->model = new MenuModel();
     }
 
-    public function showMenu() {
+    public function showMenu()
+    {
         // Panggil model untuk mendapatkan data
         $data = $this->model->getAllMenuItems();
-
-        // Debugging: Lihat data yang diterima controller (hapus jika sudah OK)
-        // echo "Data di Controller:<br><pre>";
-        // var_dump($data);
-        // echo "</pre>";
-
-        // Load view dan kirimkan data
-        // Path relatif dari file controller ini ke file view
         $viewPath = __DIR__ . '/../views/menu/index.php';
 
         if (file_exists($viewPath)) {
             // Variabel $data akan tersedia di dalam file view yang di-include
             include $viewPath;
         } else {
-             echo "<div class='alert alert-danger'>Error Controller: File view tidak ditemukan di $viewPath</div>";
+            echo "<div class='alert alert-danger'>Error Controller: File view tidak ditemukan di $viewPath</div>";
         }
     }
 }
-?>

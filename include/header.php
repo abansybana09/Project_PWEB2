@@ -1,5 +1,4 @@
 <?php
-// Fungsi base_url agar tidak hardcode path
 function base_url($path = '')
 {
     return '/PROJECR2/' . ltrim($path, '/');
