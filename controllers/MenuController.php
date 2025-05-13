@@ -1,9 +1,5 @@
 <?php
 // File: controllers/MenuController.php
-
-// Tidak perlu require_once model jika sudah pakai autoloader di index.php
-// require_once __DIR__ . '/../models/Menu.php';
-
 class MenuController
 {
     private $model;
