@@ -401,3 +401,101 @@ Raw Data: {"transaction_time":"2025-05-08 20:59:45","transaction_status":"settle
 
 [2025-05-08 15:59:47] DB Update SUKSES - Order ID: SNAP-1746712782-4511, Status Baru: Ya
 
+[2025-05-14 02:59:12] Webhook dipanggil.
+Raw Data: {"transaction_time":"2023-11-15 18:45:13","transaction_status":"settlement","transaction_id":"513f1f01-c9da-474c-9fc9-d5c64364b709","status_message":"midtrans payment notification","status_code":"200","signature_key":"dbb9edba7c1b3d725a5b51aecd23e002151e6cf800fec1da1f10e840dbcb241e53c9a874cab105070b085b9096e39bcdcb76334cb56e7758216eefd35e397c62","settlement_time":"2023-11-15 22:45:13","payment_type":"gopay","order_id":"payment_notif_test_G394749499_13821aa0-61cd-470a-95b3-cebf887126c9","merchant_id":"G394749499","gross_amount":"105000.00","fraud_status":"accept","currency":"IDR"}
+
+[2025-05-14 02:59:12] Webhook Exception: Midtrans API is returning API error. HTTP status code: 404 API response: {"status_code":"404","status_message":"Transaction doesn't exist.","id":"6579c028-a47c-4119-b391-429e10af15be"}
+Raw Data: {"transaction_time":"2023-11-15 18:45:13","transaction_status":"settlement","transaction_id":"513f1f01-c9da-474c-9fc9-d5c64364b709","status_message":"midtrans payment notification","status_code":"200","signature_key":"dbb9edba7c1b3d725a5b51aecd23e002151e6cf800fec1da1f10e840dbcb241e53c9a874cab105070b085b9096e39bcdcb76334cb56e7758216eefd35e397c62","settlement_time":"2023-11-15 22:45:13","payment_type":"gopay","order_id":"payment_notif_test_G394749499_13821aa0-61cd-470a-95b3-cebf887126c9","merchant_id":"G394749499","gross_amount":"105000.00","fraud_status":"accept","currency":"IDR"}
+
+[2025-05-14 02:59:42] Webhook dipanggil.
+Raw Data: {"transaction_time":"2023-11-15 18:45:13","transaction_status":"settlement","transaction_id":"513f1f01-c9da-474c-9fc9-d5c64364b709","status_message":"midtrans payment notification","status_code":"200","signature_key":"dbb9edba7c1b3d725a5b51aecd23e002151e6cf800fec1da1f10e840dbcb241e53c9a874cab105070b085b9096e39bcdcb76334cb56e7758216eefd35e397c62","settlement_time":"2023-11-15 22:45:13","payment_type":"gopay","order_id":"payment_notif_test_G394749499_13821aa0-61cd-470a-95b3-cebf887126c9","merchant_id":"G394749499","gross_amount":"105000.00","fraud_status":"accept","currency":"IDR"}
+
+[2025-05-14 02:59:42] Webhook Exception: Midtrans API is returning API error. HTTP status code: 404 API response: {"status_code":"404","status_message":"Transaction doesn't exist.","id":"da14e7cd-e949-4a2f-a504-64ac7dcf8688"}
+Raw Data: {"transaction_time":"2023-11-15 18:45:13","transaction_status":"settlement","transaction_id":"513f1f01-c9da-474c-9fc9-d5c64364b709","status_message":"midtrans payment notification","status_code":"200","signature_key":"dbb9edba7c1b3d725a5b51aecd23e002151e6cf800fec1da1f10e840dbcb241e53c9a874cab105070b085b9096e39bcdcb76334cb56e7758216eefd35e397c62","settlement_time":"2023-11-15 22:45:13","payment_type":"gopay","order_id":"payment_notif_test_G394749499_13821aa0-61cd-470a-95b3-cebf887126c9","merchant_id":"G394749499","gross_amount":"105000.00","fraud_status":"accept","currency":"IDR"}
+
+[2025-05-14 03:00:20] Webhook dipanggil.
+Raw Data: {"transaction_type":"off-us","transaction_time":"2025-05-14 08:00:22","transaction_status":"pending","transaction_id":"6b04f058-5a02-4c26-acb6-533c95dd0c60","status_message":"midtrans payment notification","status_code":"201","signature_key":"4748be04bfe44f88c2580d98ecbda8f0443d071ccb152a30e8c58184eece8c2ace687133c03b089d8f1b202b4129e7e01d4ed30769dec12d175a08e897855d10","payment_type":"qris","order_id":"SNAP-1747184416-7650","merchant_id":"G394749499","gross_amount":"50000.00","fraud_status":"accept","expiry_time":"2025-05-14 08:15:22","currency":"IDR"}
+
+[2025-05-14 03:00:20] Notif Parsed - Order ID: SNAP-1747184416-7650, Status: pending, Payment Type: qris, Fraud: accept
+
+[2025-05-14 03:00:20] Status tidak memerlukan update ke 'Ya' - Order ID: SNAP-1747184416-7650, Status Midtrans: pending
+
+[2025-05-14 03:00:46] Webhook dipanggil.
+Raw Data: {"transaction_type":"off-us","transaction_time":"2025-05-14 08:00:22","transaction_status":"settlement","transaction_id":"6b04f058-5a02-4c26-acb6-533c95dd0c60","status_message":"midtrans payment notification","status_code":"200","signature_key":"bd886a2bd77a0d6735cc4a6a0cfc9b4d62201c502c81a0d99734910f19356349e00ede42326316626660529baaebbc0504db6119a6c6902e9808a1e56bc48042","settlement_time":"2025-05-14 08:00:48","payment_type":"qris","order_id":"SNAP-1747184416-7650","merchant_id":"G394749499","issuer":"dana","gross_amount":"50000.00","fraud_status":"accept","expiry_time":"2025-05-14 08:15:22","currency":"IDR","acquirer":"gopay"}
+
+[2025-05-14 03:00:46] Notif Parsed - Order ID: SNAP-1747184416-7650, Status: settlement, Payment Type: qris, Fraud: accept
+
+[2025-05-14 03:00:46] Mapping Status SUKSES - Order ID: SNAP-1747184416-7650, DB Status akan diupdate ke: Ya
+
+[2025-05-14 03:00:46] DB Update SUKSES - Order ID: SNAP-1747184416-7650, Status Baru: Ya
+
+[2025-05-14 03:01:54] Webhook dipanggil.
+Raw Data: {"transaction_type":"off-us","transaction_time":"2025-05-14 08:01:54","transaction_status":"pending","transaction_id":"3827f661-2eb0-4080-8881-3fc9ad6c7d98","status_message":"midtrans payment notification","status_code":"201","signature_key":"bbc886b4162fe20e6b0621d795e0e528c834218aa5b587a7076d17ac81d3914d39b21f692eff8d49d75106cb03d5966419f89b4d81e6f95844f1087e2e10d23e","payment_type":"qris","order_id":"SNAP-1747184506-2806","merchant_id":"G394749499","gross_amount":"30000.00","fraud_status":"accept","expiry_time":"2025-05-14 08:16:54","currency":"IDR"}
+
+[2025-05-14 03:01:55] Notif Parsed - Order ID: SNAP-1747184506-2806, Status: pending, Payment Type: qris, Fraud: accept
+
+[2025-05-14 03:01:55] Status tidak memerlukan update ke 'Ya' - Order ID: SNAP-1747184506-2806, Status Midtrans: pending
+
+[2025-05-14 03:02:25] Webhook dipanggil.
+Raw Data: {"transaction_type":"off-us","transaction_time":"2025-05-14 08:01:54","transaction_status":"settlement","transaction_id":"3827f661-2eb0-4080-8881-3fc9ad6c7d98","status_message":"midtrans payment notification","status_code":"200","signature_key":"85e787827f3f589ebc9fbad1c4a6060379b5ab26180df8d8cff51833a4529f6c6caf405443b1282ccebaabff7d271950d8dfba3048a2ca5b9576029d74128a46","settlement_time":"2025-05-14 08:02:28","payment_type":"qris","order_id":"SNAP-1747184506-2806","merchant_id":"G394749499","issuer":"airpay shopee","gross_amount":"30000.00","fraud_status":"accept","expiry_time":"2025-05-14 08:16:54","currency":"IDR","acquirer":"gopay"}
+
+[2025-05-14 03:02:26] Notif Parsed - Order ID: SNAP-1747184506-2806, Status: settlement, Payment Type: qris, Fraud: accept
+
+[2025-05-14 03:02:26] Mapping Status SUKSES - Order ID: SNAP-1747184506-2806, DB Status akan diupdate ke: Ya
+
+[2025-05-14 03:02:26] DB Update SUKSES - Order ID: SNAP-1747184506-2806, Status Baru: Ya
+
+[2025-05-14 03:03:27] Webhook dipanggil.
+Raw Data: {"transaction_type":"off-us","transaction_time":"2025-05-14 08:03:29","transaction_status":"pending","transaction_id":"0382b890-ea2d-4260-b463-c7b436cb18e3","status_message":"midtrans payment notification","status_code":"201","signature_key":"2f61ac141b4f80827cc3e4f009b0a7f878bdbdf053905ed7f9379f93a4c4af90913f17a4f031e7643a1c5b827017ace228d705896fa3cfbfe2cb9bd730588e68","payment_type":"qris","order_id":"SNAP-1747184603-3889","merchant_id":"G394749499","gross_amount":"30000.00","fraud_status":"accept","expiry_time":"2025-05-14 08:18:29","currency":"IDR"}
+
+[2025-05-14 03:03:28] Notif Parsed - Order ID: SNAP-1747184603-3889, Status: pending, Payment Type: qris, Fraud: accept
+
+[2025-05-14 03:03:28] Status tidak memerlukan update ke 'Ya' - Order ID: SNAP-1747184603-3889, Status Midtrans: pending
+
+[2025-05-14 03:03:39] Webhook dipanggil.
+Raw Data: {"transaction_type":"on-us","transaction_time":"2025-05-14 08:03:29","transaction_status":"settlement","transaction_id":"0382b890-ea2d-4260-b463-c7b436cb18e3","status_message":"midtrans payment notification","status_code":"200","signature_key":"8ef9b1461bc1d078839d4fd8cf1d66bc53763b6d2113c6695c32c111922202e2debe8db6a8aa06f9eeda6a49112aaa50452b5ac085c5fada9a65ec9dc5eae4d7","settlement_time":"2025-05-14 08:03:41","payment_type":"qris","order_id":"SNAP-1747184603-3889","merchant_id":"G394749499","issuer":"gopay","gross_amount":"30000.00","fraud_status":"accept","expiry_time":"2025-05-14 08:18:29","currency":"IDR","acquirer":"gopay"}
+
+[2025-05-14 03:03:40] Notif Parsed - Order ID: SNAP-1747184603-3889, Status: settlement, Payment Type: qris, Fraud: accept
+
+[2025-05-14 03:03:40] Mapping Status SUKSES - Order ID: SNAP-1747184603-3889, DB Status akan diupdate ke: Ya
+
+[2025-05-14 03:03:40] DB Update SUKSES - Order ID: SNAP-1747184603-3889, Status Baru: Ya
+
+[2025-05-14 03:04:20] Webhook dipanggil.
+Raw Data: {"transaction_time":"2023-11-15 18:45:13","transaction_status":"settlement","transaction_id":"513f1f01-c9da-474c-9fc9-d5c64364b709","status_message":"midtrans payment notification","status_code":"200","signature_key":"dbb9edba7c1b3d725a5b51aecd23e002151e6cf800fec1da1f10e840dbcb241e53c9a874cab105070b085b9096e39bcdcb76334cb56e7758216eefd35e397c62","settlement_time":"2023-11-15 22:45:13","payment_type":"gopay","order_id":"payment_notif_test_G394749499_13821aa0-61cd-470a-95b3-cebf887126c9","merchant_id":"G394749499","gross_amount":"105000.00","fraud_status":"accept","currency":"IDR"}
+
+[2025-05-14 03:04:20] Webhook Exception: Midtrans API is returning API error. HTTP status code: 404 API response: {"status_code":"404","status_message":"Transaction doesn't exist.","id":"c5ebe866-d5ea-4a87-9f28-50f3027bd206"}
+Raw Data: {"transaction_time":"2023-11-15 18:45:13","transaction_status":"settlement","transaction_id":"513f1f01-c9da-474c-9fc9-d5c64364b709","status_message":"midtrans payment notification","status_code":"200","signature_key":"dbb9edba7c1b3d725a5b51aecd23e002151e6cf800fec1da1f10e840dbcb241e53c9a874cab105070b085b9096e39bcdcb76334cb56e7758216eefd35e397c62","settlement_time":"2023-11-15 22:45:13","payment_type":"gopay","order_id":"payment_notif_test_G394749499_13821aa0-61cd-470a-95b3-cebf887126c9","merchant_id":"G394749499","gross_amount":"105000.00","fraud_status":"accept","currency":"IDR"}
+
+[2025-05-14 03:27:44] Webhook dipanggil.
+Raw Data: {"transaction_type":"off-us","transaction_time":"2025-05-14 08:27:46","transaction_status":"pending","transaction_id":"65c36456-72f1-4cae-a6ef-40bfa37f3b82","status_message":"midtrans payment notification","status_code":"201","signature_key":"baa3aa52d27c218b474b2ab9b72ae2a7cd3fa90e7e75e7e336dc463daecadaf080f15d4b714d57ad3cfd041ba4bc5fef5df7cb81c8336d2df273b3862fd0e63e","payment_type":"qris","order_id":"SNAP-1747186061-8340","merchant_id":"G394749499","gross_amount":"40000.00","fraud_status":"accept","expiry_time":"2025-05-14 08:42:46","currency":"IDR"}
+
+[2025-05-14 03:27:45] Notif Parsed - Order ID: SNAP-1747186061-8340, Status: pending, Payment Type: qris, Fraud: accept
+
+[2025-05-14 03:27:45] Status tidak memerlukan update ke 'Ya' - Order ID: SNAP-1747186061-8340, Status Midtrans: pending
+
+[2025-05-14 03:27:59] Webhook dipanggil.
+Raw Data: {"transaction_type":"on-us","transaction_time":"2025-05-14 08:27:46","transaction_status":"settlement","transaction_id":"65c36456-72f1-4cae-a6ef-40bfa37f3b82","status_message":"midtrans payment notification","status_code":"200","signature_key":"3e7675d43f6b344d500f73b20b076a3bf66e1a6044ff7847e58f036ee60ae1d7e5e2c15f7951b872558dad35252dcf76641053197c0ffc1e694d789345cc9932","settlement_time":"2025-05-14 08:28:01","payment_type":"qris","order_id":"SNAP-1747186061-8340","merchant_id":"G394749499","issuer":"gopay","gross_amount":"40000.00","fraud_status":"accept","expiry_time":"2025-05-14 08:42:46","currency":"IDR","acquirer":"gopay"}
+
+[2025-05-14 03:27:59] Notif Parsed - Order ID: SNAP-1747186061-8340, Status: settlement, Payment Type: qris, Fraud: accept
+
+[2025-05-14 03:27:59] Mapping Status SUKSES - Order ID: SNAP-1747186061-8340, DB Status akan diupdate ke: Ya
+
+[2025-05-14 03:27:59] DB Update SUKSES - Order ID: SNAP-1747186061-8340, Status Baru: Ya
+
+[2025-05-14 03:31:01] Webhook dipanggil.
+Raw Data: {"transaction_type":"off-us","transaction_time":"2025-05-14 08:31:04","transaction_status":"pending","transaction_id":"ac9ad629-a891-4ff1-bcee-eff4b30f5e96","status_message":"midtrans payment notification","status_code":"201","signature_key":"6ae20ecc4ec6feed2212cc56fde614db41e34fbc8ab517c4faec5519933f541e87c69f30b024d74d9fc83b3879dc3b23245b94bb1b7ee8e05bdd2da7be3cf62a","payment_type":"qris","order_id":"SNAP-1747186259-4497","merchant_id":"G394749499","gross_amount":"90000.00","fraud_status":"accept","expiry_time":"2025-05-14 08:46:04","currency":"IDR"}
+
+[2025-05-14 03:31:02] Notif Parsed - Order ID: SNAP-1747186259-4497, Status: pending, Payment Type: qris, Fraud: accept
+
+[2025-05-14 03:31:02] Status tidak memerlukan update ke 'Ya' - Order ID: SNAP-1747186259-4497, Status Midtrans: pending
+
+[2025-05-14 03:31:28] Webhook dipanggil.
+Raw Data: {"transaction_type":"off-us","transaction_time":"2025-05-14 08:31:04","transaction_status":"settlement","transaction_id":"ac9ad629-a891-4ff1-bcee-eff4b30f5e96","status_message":"midtrans payment notification","status_code":"200","signature_key":"97a7bd53e7dbcf015dedeb42817535b02f60a115d5c88e4711adb2e2941d139843c3c74124fb02ba3d6a1622b2c24c5e5cf29444ca99b096f664296559fa2628","settlement_time":"2025-05-14 08:31:31","payment_type":"qris","order_id":"SNAP-1747186259-4497","merchant_id":"G394749499","issuer":"airpay shopee","gross_amount":"90000.00","fraud_status":"accept","expiry_time":"2025-05-14 08:46:04","currency":"IDR","acquirer":"gopay"}
+
+[2025-05-14 03:31:29] Notif Parsed - Order ID: SNAP-1747186259-4497, Status: settlement, Payment Type: qris, Fraud: accept
+
+[2025-05-14 03:31:29] Mapping Status SUKSES - Order ID: SNAP-1747186259-4497, DB Status akan diupdate ke: Ya
+
+[2025-05-14 03:31:29] DB Update SUKSES - Order ID: SNAP-1747186259-4497, Status Baru: Ya
+
