@@ -65,7 +65,7 @@ class ContactController {
         
         if (empty($data['message'])) {
             $errors['message'] = "Pesan harus diisi";
-        } elseif (strlen($data['message']) < 10000) {
+        } elseif (strlen($data['message']) < 10) {
             $errors['message'] = "Pesan terlalu pendek";
         }
         
