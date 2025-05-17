@@ -43,7 +43,7 @@
                 <div class="class">"Warung Mang Oman terkenal dengan ayam goreng renyah, nasi pulen, dan sambal pedas. Rasanya bikin nagih!!"</div>
             </div>
         </div>
-        <div class="row mt-4">
+        <div class="row mt-2">
             <div class="col text-center">
                 <p class="mb-0">© <span id="current-year">2025</span> Warung Mang Oman. All rights reserved.</p>
             </div>

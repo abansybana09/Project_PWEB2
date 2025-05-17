@@ -37,12 +37,12 @@ function base_url($path = '')
     <header>
         <nav class="navbar navbar-expand-lg navbar-light fixed-top">
             <div class="container">
-                <a class="navbar-brand" href="<?= base_url('index.php') ?>">
+                <a class="navbar-brand" href="<?= base_url('index.php?page=project') ?>">
                     <img src="<?= base_url('img/logo.png') ?>" alt="Logo Warung Mang" width="130" height="130" class="rounded-circle">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
-                </button>
+                </button>   
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto align-items-lg-center">
                         <li class="nav-item"><a class="nav-link" href="<?= base_url('index.php?page=project') ?>">Home</a></li>
