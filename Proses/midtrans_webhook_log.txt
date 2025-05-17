@@ -401,3 +401,56 @@ Raw Data: {"transaction_time":"2025-05-08 20:59:45","transaction_status":"settle
 
 [2025-05-08 15:59:47] DB Update SUKSES - Order ID: SNAP-1746712782-4511, Status Baru: Ya
 
+[2025-05-15 18:13:51] Webhook dipanggil.
+Raw Data: 
+
+[2025-05-15 18:13:51] Webhook Exception: Midtrans API is returning API error. HTTP status code: 404 API response: <!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+
+    <!-- Responsive viewport declaration -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Cross compatibility -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Midtrans</title>
+    <meta name="description" content=""/>
+
+    <link rel="stylesheet" href="//v2/assets/css/all.css"/>
+
+</head>
+<body>
+<div class="container">
+    <div class="center desc"><p>404</p></div>
+    <div class="center click"><h3>
+        <a href="#">&#45; Ups &#45;</a>
+    </h3></div>
+</div>
+<footer>
+    <p class="center">&copy; <script>document.write(new Date().getFullYear())</script> PT Midtrans. All Rights Reserved</p>
+</footer>
+
+</body>
+</html>
+
+Raw Data: 
+
+[2025-05-15 18:14:27] Webhook dipanggil.
+Raw Data: {"transaction_time":"2023-11-15 18:45:13","transaction_status":"settlement","transaction_id":"513f1f01-c9da-474c-9fc9-d5c64364b709","status_message":"midtrans payment notification","status_code":"200","signature_key":"96e99278c286776e405ad31806be4fe52d2e27e7bfbfed123d42cef5d455e7f9b25bdd7f51a9c0571df7d2c9a9d478683c77347663655d00246328a04c948163","settlement_time":"2023-11-15 22:45:13","payment_type":"gopay","order_id":"payment_notif_test_G394749499_76a4cf0f-c122-4751-aec3-43f13097e925","merchant_id":"G394749499","gross_amount":"105000.00","fraud_status":"accept","currency":"IDR"}
+
+[2025-05-15 18:14:27] Webhook Exception: Midtrans API is returning API error. HTTP status code: 404 API response: {"status_code":"404","status_message":"Transaction doesn't exist.","id":"699bb8f0-61c3-4252-b64b-2f695c26cf5f"}
+Raw Data: {"transaction_time":"2023-11-15 18:45:13","transaction_status":"settlement","transaction_id":"513f1f01-c9da-474c-9fc9-d5c64364b709","status_message":"midtrans payment notification","status_code":"200","signature_key":"96e99278c286776e405ad31806be4fe52d2e27e7bfbfed123d42cef5d455e7f9b25bdd7f51a9c0571df7d2c9a9d478683c77347663655d00246328a04c948163","settlement_time":"2023-11-15 22:45:13","payment_type":"gopay","order_id":"payment_notif_test_G394749499_76a4cf0f-c122-4751-aec3-43f13097e925","merchant_id":"G394749499","gross_amount":"105000.00","fraud_status":"accept","currency":"IDR"}
+
+[2025-05-15 18:16:14] Webhook dipanggil.
+Raw Data: {"transaction_time":"2023-11-15 18:45:13","transaction_status":"settlement","transaction_id":"513f1f01-c9da-474c-9fc9-d5c64364b709","status_message":"midtrans payment notification","status_code":"200","signature_key":"96e99278c286776e405ad31806be4fe52d2e27e7bfbfed123d42cef5d455e7f9b25bdd7f51a9c0571df7d2c9a9d478683c77347663655d00246328a04c948163","settlement_time":"2023-11-15 22:45:13","payment_type":"gopay","order_id":"payment_notif_test_G394749499_76a4cf0f-c122-4751-aec3-43f13097e925","merchant_id":"G394749499","gross_amount":"105000.00","fraud_status":"accept","currency":"IDR"}
+
+[2025-05-15 18:16:15] Webhook Exception: Midtrans API is returning API error. HTTP status code: 404 API response: {"status_code":"404","status_message":"Transaction doesn't exist.","id":"df57c90e-a95d-45f5-839f-8a7792f5f20c"}
+Raw Data: {"transaction_time":"2023-11-15 18:45:13","transaction_status":"settlement","transaction_id":"513f1f01-c9da-474c-9fc9-d5c64364b709","status_message":"midtrans payment notification","status_code":"200","signature_key":"96e99278c286776e405ad31806be4fe52d2e27e7bfbfed123d42cef5d455e7f9b25bdd7f51a9c0571df7d2c9a9d478683c77347663655d00246328a04c948163","settlement_time":"2023-11-15 22:45:13","payment_type":"gopay","order_id":"payment_notif_test_G394749499_76a4cf0f-c122-4751-aec3-43f13097e925","merchant_id":"G394749499","gross_amount":"105000.00","fraud_status":"accept","currency":"IDR"}
+
+[2025-05-15 18:21:24] Webhook dipanggil.
+Raw Data: {"transaction_time":"2023-11-15 18:45:13","transaction_status":"settlement","transaction_id":"513f1f01-c9da-474c-9fc9-d5c64364b709","status_message":"midtrans payment notification","status_code":"200","signature_key":"96e99278c286776e405ad31806be4fe52d2e27e7bfbfed123d42cef5d455e7f9b25bdd7f51a9c0571df7d2c9a9d478683c77347663655d00246328a04c948163","settlement_time":"2023-11-15 22:45:13","payment_type":"gopay","order_id":"payment_notif_test_G394749499_76a4cf0f-c122-4751-aec3-43f13097e925","merchant_id":"G394749499","gross_amount":"105000.00","fraud_status":"accept","currency":"IDR"}
+
+[2025-05-15 18:21:25] Webhook Exception: Midtrans API is returning API error. HTTP status code: 404 API response: {"status_code":"404","status_message":"Transaction doesn't exist.","id":"daa6b5c7-cf38-46c8-856a-588800d1c4ed"}
+Raw Data: {"transaction_time":"2023-11-15 18:45:13","transaction_status":"settlement","transaction_id":"513f1f01-c9da-474c-9fc9-d5c64364b709","status_message":"midtrans payment notification","status_code":"200","signature_key":"96e99278c286776e405ad31806be4fe52d2e27e7bfbfed123d42cef5d455e7f9b25bdd7f51a9c0571df7d2c9a9d478683c77347663655d00246328a04c948163","settlement_time":"2023-11-15 22:45:13","payment_type":"gopay","order_id":"payment_notif_test_G394749499_76a4cf0f-c122-4751-aec3-43f13097e925","merchant_id":"G394749499","gross_amount":"105000.00","fraud_status":"accept","currency":"IDR"}
+
