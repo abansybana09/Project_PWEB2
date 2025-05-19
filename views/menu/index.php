@@ -56,7 +56,7 @@ include __DIR__ . '/../../include/header.php';
                 <input type="number" class="quantity-input no-spinner" value="1" min="1" max="<?= max(1, htmlspecialchars($item['stock'] ?? 1)) ?>" aria-label="Jumlah" data-item-id="<?= htmlspecialchars($item['id'] ?? uniqid()) ?>">
                 <button class="btn btn-outline-secondary btn-sm quantity-btn plus" aria-label="Tambah jumlah">+</button>
               </div>
-            </div>
+            </div> 
 
             <div class="menu-item-action mt-2">
               <button class="add-to-cart-btn btn btn-danger w-100"
@@ -160,6 +160,7 @@ include __DIR__ . '/../../include/header.php';
 <!-- Include Footer dan Script -->
 <?php include __DIR__ . '/../../include/footer.php'; ?>
 <?php include __DIR__ . '/../../include/script.php'; // Pastikan tidak ada duplikasi listener quantity di sini ?>
+
 
 <!-- Script Midtrans Snap -->
 <script type="text/javascript"

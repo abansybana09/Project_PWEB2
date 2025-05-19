@@ -62,17 +62,28 @@
   }
 
   .btn#viewCartButton {
-    background-color: var(--merah-terang);
-    border: none;
-    padding: 0.5rem 0.75rem;
-    border-radius: 20px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
+  background-color: var(--merah-terang);
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: transform 0.3s ease-in-out; /* transisi halus */
+  cursor: pointer;
 }
 
+/* Zoom in seluruh tombol saat hover */
+.btn#viewCartButton:hover {
+  transform: scale(1.1);
+}
+
+/* Zoom out saat tombol ditekan (klik) */
+.btn#viewCartButton:active {
+  transform: scale(0.95);
+}
 
   #cartItemCountHeader {
     font-size: 0.7rem;
@@ -105,6 +116,17 @@
     margin-right: 6px;
     font-size: 1.1rem;
   }
+
+  /* Hilangkan spinner (panah atas bawah) di input number */
+input.no-spinner::-webkit-inner-spin-button,
+input.no-spinner::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input.no-spinner {
+  -moz-appearance: textfield; /* Firefox */
+}
 
 /* ========== MENU CARD CONTAINER ========== */
 .menu-container {
@@ -374,3 +396,102 @@ h2.text-center::after {
 .menu-image {
   aspect-ratio: 1/1;
 }
+.cart-item {
+  display: flex;
+  justify-content: space-between; /* Spasi antar elemen utama */
+  align-items: center;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 0.5rem;
+  gap: 1rem; /* Jarak antar elemen */
+}
+
+.cart-item-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 0.375rem;
+  flex-shrink: 0;
+}
+
+.cart-item-details {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.cart-item-details h6 {
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+.cart-item-details .price {
+  color: #007bff;
+  font-weight: 500;
+}
+
+.cart-item-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.cart-item-quantity {
+  display: flex;
+  align-items: center;
+}
+
+.cart-item-quantity .form-control {
+  width: 50px;
+  text-align: center;
+  margin: 0 0.5rem;
+}
+
+.cart-item-remove-btn {
+  color: #dc3545;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.cart-item-remove-btn:hover {
+  color: #c82333;
+}
+
+        /* Responsif tambahan jika diperlukan */
+        @media (max-width: 576px) {
+            .cart-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .cart-item-image {
+                margin-right: 0;
+                margin-bottom: 0.75rem;
+                width: 100%; /* Gambar bisa lebih besar di mobile */
+                max-width: 120px; /* Tapi jangan terlalu besar */
+                height: auto;
+            }
+            .cart-item-remove-btn {
+                align-self: flex-end; /* Tombol hapus ke kanan bawah item di mobile */
+                margin-top: 0.5rem;
+            }
+            #cartTotalContainer {
+                text-align: center !important; /* Total di tengah pada mobile */
+            }
+            #cartModal .modal-footer {
+                flex-direction: column-reverse; /* Tombol stack vertikal */
+            }
+            #cartModal .modal-footer .btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            #cartModal .modal-footer .btn:last-child {
+                margin-bottom: 0;
+            }
+        }
+        
