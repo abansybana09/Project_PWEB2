@@ -20,10 +20,10 @@ include __DIR__ . '/../../include/header.php';
 </header>
 
 <div class="container mb-5 mt-5 pt-5">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0">Menu Kami</h2>
-    <button class="btn btn-primary position-relative" id="viewCartButton" data-bs-toggle="modal" data-bs-target="#cartModal">
-      <i class="bi bi-cart3"></i> Keranjang
+  <div class="d-flex justify-content-center align-items-center mb-4 position-relative">
+    <h2 class="mb-0 text-center">Menu Kami</h2>
+    <button class="btn position-absolute end-0" id="viewCartButton" data-bs-toggle="modal" data-bs-target="#cartModal">
+      <img src="img/putih.png" alt="troli" class="cart-icon">
       <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartItemCountHeader">
         0
         <span class="visually-hidden">item di keranjang</span>
@@ -59,7 +59,7 @@ include __DIR__ . '/../../include/header.php';
             </div>
 
             <div class="menu-item-action mt-2">
-              <button class="add-to-cart-btn btn btn-warning w-100"
+              <button class="add-to-cart-btn btn btn-danger w-100"
                 data-item-id="<?= htmlspecialchars($item['id'] ?? uniqid('item_')) ?>"
                 data-item-title="<?= htmlspecialchars($item['title'] ?? 'Menu') ?>"
                 data-base-price="<?= htmlspecialchars($item['price'] ?? 0) ?>"
