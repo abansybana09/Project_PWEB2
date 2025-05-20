@@ -176,7 +176,7 @@ if (!empty($query_error_messages)) { error_log("Admin/Order.php SQL Errors: " . 
                         <table class="table table-hover table-sm" id="orderTable">
                             <thead>
                                 <tr class="text-nowrap">
-                                    <th scope="col">No</th> <th scope="col">ID</th> <th scope="col">Pelanggan</th> <th scope="col">No HP</th>
+                                    <th scope="col">No</th> <th scope="col">ID</th> <th scope="col">Pelanggan</th> <th scope="col">No HP</th> <th scope="col">Alamat</th>
                                     <th scope="col" style="min-width: 200px;">Pesanan</th> <th scope="col">Jml</th> <th scope="col">Total</th>
                                     <th scope="col">Bayar</th> <th scope="col">Waktu</th> <th scope="col">Aksi</th>
                                 </tr>
@@ -192,6 +192,7 @@ if (!empty($query_error_messages)) { error_log("Admin/Order.php SQL Errors: " . 
                                         <td><?= htmlspecialchars($row['id']) ?></td>
                                         <td><?= htmlspecialchars($row['pelanggan']) ?></td>
                                         <td><?= htmlspecialchars($row['nohp']) ?></td>
+                                        <td><?= htmlspecialchars($row['alamat']) ?></td>
                                         <td><?= nl2br(htmlspecialchars($row['pesanan'])) ?></td>
                                         <td><?= htmlspecialchars($row['jumlah_pesan']) ?></td>
                                         <td><?= 'Rp ' . number_format((float)preg_replace('/[^0-9.]/', '', $row['total_harga']), 0, ',', '.') ?></td>
