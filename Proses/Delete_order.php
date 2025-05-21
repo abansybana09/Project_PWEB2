@@ -4,19 +4,9 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// =======================================================
-// DEBUGGING: Tampilkan semua parameter POST yang diterima
-// Hapus atau komentari ini setelah fungsi berjalan benar
-// echo "<pre style='background: #f2f2f2; padding: 15px; border: 1px solid #ccc;'>";
-// echo "<strong>DEBUG (Delete_order.php) - Data POST yang diterima:</strong>\n";
-// var_dump($_POST);
-// echo "</pre>";
-// die(); // Hentikan eksekusi untuk melihat var_dump jika perlu
-// =======================================================
+require_once '../Admin/Koneksi.php';
 
-require_once '../Admin/Koneksi.php'; // Pastikan path ini benar
-
-$message_type = 'danger'; // Default message type
+$message_type = 'danger';
 $message_text = 'Terjadi kesalahan yang tidak diketahui saat mencoba menghapus order.';
 
 // Ambil ID order dari POST dan pastikan itu integer
@@ -65,20 +55,7 @@ $_SESSION['status_message'] = [
     'text' => $message_text
 ];
 
-// =======================================================
-// PERBAIKAN REDIRECT
-// Sesuaikan path dan parameter routing utama Anda (misalnya x=Order atau page=order)
-// =======================================================
-$redirect_url = "../Admin/Order"; // Asumsi Main.php adalah entry point dan menggunakan x=Order
-// Jika Order.php diakses langsung:
-// $redirect_url = "../Admin/Order.php?x=Order";
-// Jika Anda ingin membawa parameter filter tanggal kembali, Anda perlu mengambilnya dari session atau cara lain
-// Untuk sekarang, kita redirect ke halaman order default
-// Jika Anda menyimpan filter di session:
-// if(isset($_SESSION['last_filter_url_params'])) {
-//    $redirect_url .= "&" . $_SESSION['last_filter_url_params'];
-// }
-
+$redirect_url = "../Admin/Order";
 header('Location: ' . $redirect_url);
 exit;
 ?>

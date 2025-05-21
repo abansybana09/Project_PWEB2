@@ -48,8 +48,8 @@ header('Content-Type: application/json');
 $pelanggan = trim($_POST['customer_name'] ?? '');
 $nohp = trim($_POST['customer_phone'] ?? '');
 $alamat = trim($_POST['customer_address'] ?? '');
-$items_json_string = $_POST['order_items'] ?? '[]'; // JSON string dari item keranjang
-$total_harga_overall_str = $_POST['order_total_price'] ?? '0'; // Total harga keseluruhan
+$items_json_string = $_POST['order_items'] ?? '[]';
+$total_harga_overall_str = $_POST['order_total_price'] ?? '0';
 
 error_log("CreateSnapToken.php (Keranjang): Data POST - Pelanggan: " . $pelanggan . ", Items JSON: " . $items_json_string);
 
@@ -60,7 +60,7 @@ if (empty($pelanggan) || empty($nohp) || empty($alamat) || empty($items_json_str
     exit;
 }
 
-$items_array = json_decode($items_json_string, true); // Konversi JSON string ke array PHP
+$items_array = json_decode($items_json_string, true);
 $total_harga_overall = filter_var($total_harga_overall_str, FILTER_VALIDATE_INT);
 
 if (json_last_error() !== JSON_ERROR_NONE || !is_array($items_array) || empty($items_array) || $total_harga_overall === false || $total_harga_overall <= 0) {
@@ -71,10 +71,8 @@ if (json_last_error() !== JSON_ERROR_NONE || !is_array($items_array) || empty($i
 
 // 1. Simpan Pesanan BARU ke tb_order
 $status_pembayaran_awal = 'Pending';
-$order_id_midtrans = 'CART-' . time() . '-' . rand(1000, 9999); // Order ID unik untuk Midtrans
+$order_id_midtrans = 'CART-' . time() . '-' . rand(1000, 9999);
 
-// Buat deskripsi pesanan untuk disimpan di kolom 'pesanan' di DB
-// Ini akan berisi semua item dengan newline
 $deskripsi_pesanan_db = "";
 $total_jumlah_item_db = 0;
 foreach ($items_array as $item) {
@@ -82,7 +80,7 @@ foreach ($items_array as $item) {
     $itemName = $item['name'] ?? 'Item tidak diketahui';
     $itemQuantity = isset($item['quantity']) ? (int)$item['quantity'] : 0;
 
-    $deskripsi_pesanan_db .= htmlspecialchars($itemName) . " (Qty: " . $itemQuantity . ")\n"; // Simpan dengan newline
+    $deskripsi_pesanan_db .= htmlspecialchars($itemName) . " (Qty: " . $itemQuantity . ")\n";
     $total_jumlah_item_db += $itemQuantity;
 }
 $deskripsi_pesanan_db = trim($deskripsi_pesanan_db);
@@ -105,8 +103,6 @@ if (!$stmt_insert) {
     exit;
 }
 
-// Tipe data bind_param (Pastikan cocok dengan tabel Anda)
-// pelanggan(s), nohp(s), alamat(s), deskripsi_pesanan_db(s), total_jumlah_item_db(i), total_harga_overall(i), status_awal(s), midtrans_id(s)
 $tipe_data_bind = "ssssiiss"; // Asumsi total_harga di DB adalah INT
 
 try {
@@ -130,13 +126,13 @@ error_log("CreateSnapToken.php (Keranjang): Order baru disimpan. ID Internal: " 
 $params = array(
     'transaction_details' => array(
         'order_id' => $order_id_midtrans,
-        'gross_amount' => $total_harga_overall, // Total harga keseluruhan
+        'gross_amount' => $total_harga_overall,
     ),
-    'item_details' => array(array( // Hanya satu item sebagai ringkasan
-        'id' => 'ORDER-' . $id_pesanan_internal,      // ID unik untuk ringkasan
-        'price' => $total_harga_overall,           // Harga adalah total keseluruhan
-        'quantity' => 1,                            // Kuantitas selalu 1 untuk ringkasan
-        'name' => substr('Pesanan dari ' . htmlspecialchars($pelanggan), 0, 50) // Nama ringkasan, batasi 50 char
+    'item_details' => array(array(
+        'id' => 'ORDER-' . $id_pesanan_internal,
+        'price' => $total_harga_overall,
+        'quantity' => 1,
+        'name' => substr('Pesanan dari ' . htmlspecialchars($pelanggan), 0, 50)
     )),
     'customer_details' => array(
         'first_name' => substr(htmlspecialchars($pelanggan), 0, 20),
