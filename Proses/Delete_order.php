@@ -14,9 +14,9 @@ if (session_status() == PHP_SESSION_NONE) {
 // die(); // Hentikan eksekusi untuk melihat var_dump jika perlu
 // =======================================================
 
-require_once dirname(__DIR__) . '/Admin/Koneksi.php'; // Menggunakan dirname(__DIR__) untuk path yang lebih robust
+require_once '../Admin/Koneksi.php'; // Pastikan path ini benar
 
-$message_type = 'danger'; // Default message type
+$message_type = 'danger';
 $message_text = 'Terjadi kesalahan yang tidak diketahui saat mencoba menghapus order.';
 
 // Ambil ID order dari POST dan pastikan itu integer positif
@@ -71,20 +71,15 @@ $_SESSION['status_message'] = [
 // PERBAIKAN REDIRECT
 // Sesuaikan path dan parameter routing utama Anda (misalnya x=Order atau page=order)
 // =======================================================
-$base_admin_url = "../Admin/"; // Path ke folder Admin dari folder Proses
-
-// Tentukan halaman tujuan dan parameter routingnya
-// Ganti 'Main.php?x=Order' dengan struktur URL halaman order admin Anda
-// Jika Order.php diakses langsung: 'Order.php?x=Order'
-// Jika melalui Main.php: 'Main.php?x=Order' (atau parameter routing yang sesuai)
-$target_page_with_route_param = "../Admin/Order"; // ASUMSI
-
-// Jika Anda menyimpan filter terakhir di session dan ingin kembali ke filter itu:
-// $filter_params = $_SESSION['last_admin_order_filter'] ?? '';
-// $redirect_url = $base_admin_url . $target_page_with_route_param . ($filter_params ? '&' . $filter_params : '');
-
-// Redirect sederhana ke halaman order (tanpa mempertahankan filter)
-$redirect_url = $base_admin_url . $target_page_with_route_param;
+$redirect_url = "../Admin/Order"; // Asumsi Main.php adalah entry point dan menggunakan x=Order
+// Jika Order.php diakses langsung:
+// $redirect_url = "../Admin/Order.php?x=Order";
+// Jika Anda ingin membawa parameter filter tanggal kembali, Anda perlu mengambilnya dari session atau cara lain
+// Untuk sekarang, kita redirect ke halaman order default
+// Jika Anda menyimpan filter di session:
+// if(isset($_SESSION['last_filter_url_params'])) {
+//    $redirect_url .= "&" . $_SESSION['last_filter_url_params'];
+// }
 
 header('Location: ' . $redirect_url);
 exit;
