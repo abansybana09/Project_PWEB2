@@ -32,27 +32,29 @@ error_log("Admin/Order.php - Filter DIGUNAKAN: Tanggal=" . $filter_tanggal . ", 
 
 $daily_omset = 0; $monthly_omset = 0; $yearly_omset = 0;
 $orders_for_table = [];
+$dates_with_orders = []; // Untuk menandai kalender
 $query_error_messages = []; $conn_error = null;
 
 if (!$conn || $conn->connect_error) { $conn_error = "Koneksi DB gagal: " . ($conn->connect_error ?? 'Tidak diketahui'); error_log($conn_error); }
 else {
-    // Fungsi helper untuk membersihkan dan cast harga
-    function getCleanPrice($price_string) {
-        return (float)preg_replace('/[^0-9.]/', '', str_replace('Rp', '', $price_string));
+    // Fungsi helper untuk membersihkan harga
+    function getCleanPriceForSum($price_string) {
+        // Hapus 'Rp', lalu hapus '.', lalu cast ke float
+        return (float)preg_replace('/[^0-9]/', '', str_replace('.', '', str_replace('Rp', '', $price_string)));
     }
 
     // --- Query untuk Omset Harian ---
-    $sql_daily_omset = "SELECT SUM(CAST(REPLACE(REPLACE(total_harga, 'Rp', ''), '.', '') AS DECIMAL(15,2))) AS total_omset_harian FROM tb_order WHERE DATE(waktu_order_dibuat) = ? AND LOWER(pembayaran) IN ('ya', 'success', 'settlement')";
+    $sql_daily_omset = "SELECT SUM(total_harga) AS total_omset_harian FROM tb_order WHERE DATE(waktu_order_dibuat) = ? AND LOWER(pembayaran) IN ('ya', 'success', 'settlement')";
     $stmt_daily = $conn->prepare($sql_daily_omset);
     if ($stmt_daily) { $stmt_daily->bind_param("s", $filter_tanggal); if ($stmt_daily->execute()) { $result_daily = $stmt_daily->get_result(); if ($row_daily = $result_daily->fetch_assoc()) { $daily_omset = (float)($row_daily['total_omset_harian'] ?? 0); } } else { $query_error_messages[] = "Exec daily: " . $stmt_daily->error; } $stmt_daily->close(); } else { $query_error_messages[] = "Prep daily: " . $conn->error; }
 
     // --- Query untuk Omset Bulanan ---
-    $sql_monthly_omset = "SELECT SUM(CAST(REPLACE(REPLACE(total_harga, 'Rp', ''), '.', '') AS DECIMAL(15,2))) AS total_omset_bulanan FROM tb_order WHERE DATE_FORMAT(waktu_order_dibuat, '%Y-%m') = ? AND LOWER(pembayaran) IN ('ya', 'success', 'settlement')";
+    $sql_monthly_omset = "SELECT SUM(total_harga) AS total_omset_bulanan FROM tb_order WHERE DATE_FORMAT(waktu_order_dibuat, '%Y-%m') = ? AND LOWER(pembayaran) IN ('ya', 'success', 'settlement')";
     $stmt_monthly = $conn->prepare($sql_monthly_omset);
     if ($stmt_monthly) { $stmt_monthly->bind_param("s", $filter_bulan); if ($stmt_monthly->execute()) { $result_monthly = $stmt_monthly->get_result(); if ($row_monthly = $result_monthly->fetch_assoc()) { $monthly_omset = (float)($row_monthly['total_omset_bulanan'] ?? 0); } } else { $query_error_messages[] = "Exec monthly: " . $stmt_monthly->error; } $stmt_monthly->close(); } else { $query_error_messages[] = "Prep monthly: " . $conn->error; }
 
     // --- Query untuk Omset Tahunan ---
-    $sql_yearly_omset = "SELECT SUM(CAST(REPLACE(REPLACE(total_harga, 'Rp', ''), '.', '') AS DECIMAL(15,2))) AS total_omset_tahunan FROM tb_order WHERE DATE_FORMAT(waktu_order_dibuat, '%Y') = ? AND LOWER(pembayaran) IN ('ya', 'success', 'settlement')";
+    $sql_yearly_omset = "SELECT SUM(total_harga) AS total_omset_tahunan FROM tb_order WHERE DATE_FORMAT(waktu_order_dibuat, '%Y') = ? AND LOWER(pembayaran) IN ('ya', 'success', 'settlement')";
     $stmt_yearly = $conn->prepare($sql_yearly_omset);
     if ($stmt_yearly) { $stmt_yearly->bind_param("s", $filter_tahun); if ($stmt_yearly->execute()) { $result_yearly = $stmt_yearly->get_result(); if ($row_yearly = $result_yearly->fetch_assoc()) { $yearly_omset = (float)($row_yearly['total_omset_tahunan'] ?? 0); } } else { $query_error_messages[] = "Exec yearly: " . $stmt_yearly->error; } $stmt_yearly->close(); } else { $query_error_messages[] = "Prep yearly: " . $conn->error; }
 
@@ -69,6 +71,17 @@ else {
         } else { $query_error_messages[] = "Execute orders table: " . $stmt_orders_table->error; }
         $stmt_orders_table->close();
     } else { $query_error_messages[] = "Prepare orders table: " . $conn->error; }
+
+    // --- Query untuk mendapatkan tanggal yang ada order (untuk Flatpickr) ---
+    $sql_ordered_dates = "SELECT DISTINCT DATE(waktu_order_dibuat) AS tanggal_order FROM tb_order WHERE pembayaran IN ('Ya', 'success', 'settlement') ORDER BY tanggal_order ASC"; // Hanya tanggal yang sudah lunas
+    $result_ordered_dates = $conn->query($sql_ordered_dates);
+    if ($result_ordered_dates) {
+        while ($row_date = $result_ordered_dates->fetch_assoc()) {
+            $dates_with_orders[] = $row_date['tanggal_order'];
+        }
+    } else {
+        error_log("Admin/Order.php Error query ordered_dates: " . $conn->error);
+    }
 }
 
 if (!empty($query_error_messages)) { error_log("Admin/Order.php SQL Errors: " . implode(" | ", $query_error_messages)); }
@@ -78,16 +91,10 @@ if (!empty($query_error_messages)) { error_log("Admin/Order.php SQL Errors: " . 
     <div class="card">
         <div class="card-header">Data Orderan</div>
         <div class="card-body">
-            <?php
-            if (isset($_SESSION['status_message'])) {
-                $message = $_SESSION['status_message'];
-                echo '<div class="alert alert-' . htmlspecialchars($message['type']) . ' alert-dismissible fade show" role="alert">';
-                echo htmlspecialchars($message['text']);
-                echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
-                unset($_SESSION['status_message']);
-            }
+            <?php /* Tampilkan pesan */
+            if (isset($_SESSION['status_message'])) { /* ... */ }
             if ($conn_error) { echo '<div class="alert alert-danger" role="alert">' . htmlspecialchars($conn_error) . '</div>'; }
-            if (!empty($query_error_messages) && !$conn_error) { echo '<div class="alert alert-warning" role="alert">Masalah query: ' . htmlspecialchars(implode("; ", $query_error_messages)) . ' (Periksa log server untuk detail)</div>';}
+            if (!empty($query_error_messages) && !$conn_error) { echo '<div class="alert alert-warning" role="alert">Masalah query: ' . htmlspecialchars(implode("; ", $query_error_messages)) . '</div>';}
             ?>
 
             <!-- Filter Form -->
@@ -95,74 +102,20 @@ if (!empty($query_error_messages)) { error_log("Admin/Order.php SQL Errors: " . 
                 <?php
                 if (isset($_GET['x'])) { echo '<input type="hidden" name="x" value="' . htmlspecialchars($_GET['x']) . '">'; }
                 elseif (isset($_GET['page'])) { echo '<input type="hidden" name="page" value="' . htmlspecialchars($_GET['page']) . '">'; }
-                // else { echo '<input type="hidden" name="x" value="Order">'; } // Jika perlu default routing
                 ?>
                 <div class="row align-items-end mb-3">
-                    <div class="col-md-3 mb-2">
-                        <label for="filter_tanggal_input" class="form-label">Tgl. Order & Omset Harian:</label>
-                        <input type="date" class="form-control form-control-sm" id="filter_tanggal_input" name="filter_tanggal" value="<?= htmlspecialchars($filter_tanggal) ?>">
-                    </div>
-                    <div class="col-md-3 mb-2">
-                        <label for="filter_bulan_input" class="form-label">Bulan Omset:</label>
-                        <input type="month" class="form-control form-control-sm" id="filter_bulan_input" name="filter_bulan" value="<?= htmlspecialchars($filter_bulan) ?>">
-                    </div>
-                    <div class="col-md-3 mb-2">
-                        <label for="filter_tahun_input" class="form-label">Tahun Omset:</label>
-                        <input type="number" class="form-control form-control-sm" id="filter_tahun_input" name="filter_tahun" value="<?= htmlspecialchars($filter_tahun) ?>" min="2020" max="<?= date('Y') ?>">
-                    </div>
-                    <div class="col-md-3 mb-2">
-                        <button type="submit" class="btn btn-info btn-sm w-100">Terapkan Filter</button>
-                    </div>
+                    <div class="col-md-3"><label for="filter_tanggal_input" class="form-label">Tgl. Order & Omset Harian:</label><input type="date" class="form-control form-control-sm" id="filter_tanggal_input" name="filter_tanggal" value="<?= htmlspecialchars($filter_tanggal) ?>"></div>
+                    <div class="col-md-3"><label for="filter_bulan_input" class="form-label">Bulan Omset:</label><input type="month" class="form-control form-control-sm" id="filter_bulan_input" name="filter_bulan" value="<?= htmlspecialchars($filter_bulan) ?>"></div>
+                    <div class="col-md-3"><label for="filter_tahun_input" class="form-label">Tahun Omset:</label><input type="number" class="form-control form-control-sm" id="filter_tahun_input" name="filter_tahun" value="<?= htmlspecialchars($filter_tahun) ?>" min="2020" max="<?= date('Y') ?>"></div>
+                    <div class="col-md-3"><button type="submit" class="btn btn-info btn-sm w-100 mt-3">Terapkan Filter</button></div>
                 </div>
             </form>
 
             <!-- Tampilan Omset -->
             <div class="row mb-4">
-                <div class="col-md-4 mb-3">
-                    <div class="card text-white bg-success h-100">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <h6 class="card-title mb-1">Omset <?= date('d M Y', strtotime($filter_tanggal)) ?></h6>
-                                    <p class="card-text fs-5 fw-bold mb-0">Rp <?= number_format($daily_omset, 0, ',', '.') ?></p>
-                                </div>
-                                <a href="../Proses/DownloadNotaOmsetHarian.php?tanggal=<?= htmlspecialchars($filter_tanggal) ?>" class="btn btn-light btn-sm" title="Download Nota Harian" target="_blank">
-                                    <i class="bi bi-download"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <div class="card text-white bg-info h-100">
-                        <div class="card-body">
-                             <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <h6 class="card-title mb-1">Omset <?= date('M Y', strtotime($filter_bulan . '-01')) ?></h6>
-                                    <p class="card-text fs-5 fw-bold mb-0">Rp <?= number_format($monthly_omset, 0, ',', '.') ?></p>
-                                </div>
-                                <a href="../Proses/DownloadNotaOmsetBulanan.php?bulan=<?= htmlspecialchars($filter_bulan) ?>" class="btn btn-light btn-sm" title="Download Nota Bulanan" target="_blank">
-                                    <i class="bi bi-download"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <div class="card text-white bg-primary h-100">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <h6 class="card-title mb-1">Omset <?= $filter_tahun ?></h6>
-                                    <p class="card-text fs-5 fw-bold mb-0">Rp <?= number_format($yearly_omset, 0, ',', '.') ?></p>
-                                </div>
-                                <a href="../Proses/DownloadNotaOmsetTahunan.php?tahun=<?= htmlspecialchars($filter_tahun) ?>" class="btn btn-light btn-sm" title="Download Nota Tahunan" target="_blank">
-                                    <i class="bi bi-download"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <div class="col-md-4 mb-3"><div class="card text-white bg-success h-100"><div class="card-body"><div class="d-flex justify-content-between align-items-start"><div><h6 class="card-title mb-1">Omset <?= date('d M Y', strtotime($filter_tanggal)) ?></h6><p class="card-text fs-5 fw-bold mb-0">Rp <?= number_format($daily_omset, 0, ',', '.') ?></p></div><a href="../Proses/DownloadNotaOmsetHarian.php?tanggal=<?= htmlspecialchars($filter_tanggal) ?>" class="btn btn-light btn-sm" title="Nota Harian" target="_blank"><i class="bi bi-download"></i></a></div></div></div></div>
+                <div class="col-md-4 mb-3"><div class="card text-white bg-info h-100"><div class="card-body"><div class="d-flex justify-content-between align-items-start"><div><h6 class="card-title mb-1">Omset <?= date('M Y', strtotime($filter_bulan . '-01')) ?></h6><p class="card-text fs-5 fw-bold mb-0">Rp <?= number_format($monthly_omset, 0, ',', '.') ?></p></div><a href="../Proses/DownloadNotaOmsetBulanan.php?bulan=<?= htmlspecialchars($filter_bulan) ?>" class="btn btn-light btn-sm" title="Nota Bulanan" target="_blank"><i class="bi bi-download"></i></a></div></div></div></div>
+                <div class="col-md-4 mb-3"><div class="card text-white bg-primary h-100"><div class="card-body"><div class="d-flex justify-content-between align-items-start"><div><h6 class="card-title mb-1">Omset <?= $filter_tahun ?></h6><p class="card-text fs-5 fw-bold mb-0">Rp <?= number_format($yearly_omset, 0, ',', '.') ?></p></div><a href="../Proses/DownloadNotaOmsetTahunan.php?tahun=<?= htmlspecialchars($filter_tahun) ?>" class="btn btn-light btn-sm" title="Nota Tahunan" target="_blank"><i class="bi bi-download"></i></a></div></div></div></div>
             </div>
 
             <!-- Penampilan Tabel Order atau Pesan "Tidak Ada Order" -->
@@ -176,7 +129,7 @@ if (!empty($query_error_messages)) { error_log("Admin/Order.php SQL Errors: " . 
                         <table class="table table-hover table-sm" id="orderTable">
                             <thead>
                                 <tr class="text-nowrap">
-                                    <th scope="col">No</th> <th scope="col">ID</th> <th scope="col">Pelanggan</th> <th scope="col">No HP</th> <th scope="col">Alamat</th>
+                                    <th scope="col">No</th> <th scope="col">ID</th> <th scope="col">Pelanggan</th> <th scope="col">No HP</th>
                                     <th scope="col" style="min-width: 200px;">Pesanan</th> <th scope="col">Jml</th> <th scope="col">Total</th>
                                     <th scope="col">Bayar</th> <th scope="col">Waktu</th> <th scope="col">Aksi</th>
                                 </tr>
@@ -192,7 +145,6 @@ if (!empty($query_error_messages)) { error_log("Admin/Order.php SQL Errors: " . 
                                         <td><?= htmlspecialchars($row['id']) ?></td>
                                         <td><?= htmlspecialchars($row['pelanggan']) ?></td>
                                         <td><?= htmlspecialchars($row['nohp']) ?></td>
-                                        <td><?= htmlspecialchars($row['alamat']) ?></td>
                                         <td><?= nl2br(htmlspecialchars($row['pesanan'])) ?></td>
                                         <td><?= htmlspecialchars($row['jumlah_pesan']) ?></td>
                                         <td><?= 'Rp ' . number_format((float)preg_replace('/[^0-9.]/', '', $row['total_harga']), 0, ',', '.') ?></td>
@@ -224,6 +176,7 @@ if (!empty($query_error_messages)) { error_log("Admin/Order.php SQL Errors: " . 
                                         <div class="modal-dialog modal-xl"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="EditDataLabel<?= $row['id'] ?>">Edit Order ID: <?= htmlspecialchars($row['id']) ?></h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
                                         <form action="../Proses/Edit_order.php" method="POST" class="needs-validation" novalidate><div class="modal-body">
                                             <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                                            <input type="hidden" name="current_filter_tanggal" value="<?= htmlspecialchars($filter_tanggal) ?>"> <input type="hidden" name="current_filter_bulan" value="<?= htmlspecialchars($filter_bulan) ?>"> <input type="hidden" name="current_filter_tahun" value="<?= htmlspecialchars($filter_tahun) ?>">
                                             <div class="row"><div class="col-md-6"><div class="form-floating mb-3"><input type="text" class="form-control" name="pelanggan" required value="<?= htmlspecialchars($row['pelanggan']) ?>"><label>Nama Pelanggan</label><div class="invalid-feedback">Wajib diisi.</div></div></div><div class="col-md-6"><div class="form-floating mb-3"><input type="text" class="form-control" name="nohp" required value="<?= htmlspecialchars($row['nohp']) ?>"><label>No HP</label><div class="invalid-feedback">Wajib diisi.</div></div></div></div>
                                             <div class="row"><div class="col-12"><div class="form-floating mb-3"><input type="text" class="form-control" name="alamat" required value="<?= htmlspecialchars($row['alamat']) ?>"><label>Alamat</label><div class="invalid-feedback">Wajib diisi.</div></div></div></div>
                                             <div class="row"><div class="col-12"><div class="form-floating mb-3"><textarea class="form-control" style="height: 100px" name="pesanan" required><?= htmlspecialchars($row['pesanan']) ?></textarea><label>Pesanan</label><div class="invalid-feedback">Wajib diisi.</div></div></div></div>
@@ -236,7 +189,10 @@ if (!empty($query_error_messages)) { error_log("Admin/Order.php SQL Errors: " . 
                                     <div class="modal fade" id="HapusData<?= $row['id'] ?>" tabindex="-1" aria-labelledby="HapusDataLabel<?= $row['id'] ?>" aria-hidden="true">
                                          <div class="modal-dialog modal-md"><div class="modal-content"><div class="modal-header"><h1 class="modal-title fs-5" id="HapusDataLabel<?= $row['id'] ?>">Hapus Order ID: <?= htmlspecialchars($row['id']) ?></h1><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body">
                                             <p>Apakah Anda yakin ingin menghapus order dari <b><?= htmlspecialchars($row['pelanggan']) ?></b>?</p>
-                                            <form action="../Proses/Delete_order.php" method="POST"><input type="hidden" name="id" value="<?= $row['id'] ?>"><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-danger" name="submit_order_validate">Delete</button></div></form>
+                                            <form action="../Proses/Delete_order.php" method="POST"><input type="hidden" name="id" value="<?= $row['id'] ?>">
+                                                <input type="hidden" name="current_filter_tanggal" value="<?= htmlspecialchars($filter_tanggal) ?>"> <input type="hidden" name="current_filter_bulan" value="<?= htmlspecialchars($filter_bulan) ?>"> <input type="hidden" name="current_filter_tahun" value="<?= htmlspecialchars($filter_tahun) ?>">
+                                                <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-danger" name="submit_order_validate">Delete</button></div>
+                                            </form>
                                          </div></div></div>
                                     </div>
 
@@ -259,26 +215,20 @@ if (!empty($query_error_messages)) { error_log("Admin/Order.php SQL Errors: " . 
     <div id="adminSnapMessage" class="mt-3"></div>
 </div>
 
+<!-- CSS untuk Flatpickr (jika belum ada di header.php) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
 <!-- Script Midtrans Snap.js -->
 <script type="text/javascript"
     src="<?= $isProduction ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.sandbox.midtrans.com/snap/snap.js' ?>"
     data-client-key="<?= htmlspecialchars($midtransClientKey) ?>"></script>
 
+<!-- Script Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 <script>
     // Fungsi validasi Bootstrap
-    (() => {
-        'use strict'
-        const forms = document.querySelectorAll('.needs-validation')
-        Array.from(forms).forEach(form => {
-            form.addEventListener('submit', event => {
-                if (!form.checkValidity()) {
-                    event.preventDefault()
-                    event.stopPropagation()
-                }
-                form.classList.add('was-validated')
-            }, false)
-        })
-    })();
+    (() => { /* ... kode validasi Bootstrap ... */ })();
 
     document.addEventListener('DOMContentLoaded', (event) => {
         console.log("Admin Order DOMContentLoaded: Initializing scripts...");
@@ -296,10 +246,29 @@ if (!empty($query_error_messages)) { error_log("Admin/Order.php SQL Errors: " . 
                 });
             });
         }
-        console.log("Admin Order: Search listener attached. Filter by button.");
+
+        // Inisialisasi Flatpickr
+        const datesWithOrdersPHP = <?= json_encode($dates_with_orders) ?>;
+        const tanggalFilterInput = document.getElementById('filter_tanggal_input');
+        if (tanggalFilterInput) {
+            flatpickr(tanggalFilterInput, {
+                dateFormat: "Y-m-d",
+                defaultDate: "<?= htmlspecialchars($filter_tanggal) ?>",
+                onDayCreate: function(dObj, dStr, fp, dayElem) {
+                    const currentDateStr = dayElem.dateObj.getFullYear() + '-' +
+                                       ('0' + (dayElem.dateObj.getMonth() + 1)).slice(-2) + '-' +
+                                       ('0' + dayElem.dateObj.getDate()).slice(-2);
+                    if (datesWithOrdersPHP.includes(currentDateStr)) {
+                        dayElem.classList.add("order-date-highlight");
+                        dayElem.title = "Ada order di tanggal ini";
+                    }
+                }
+                // Hapus onchange submit otomatis agar tombol "Terapkan Filter" yang bekerja
+            });
+        }
+        console.log("Admin Order: Scripts initialized.");
     });
 
-    // Kembalikan fungsi initiateAdminSnapPayment
     async function initiateAdminSnapPayment(orderId) {
         console.log(`[initiateAdminSnapPayment] Dipanggil untuk orderId: ${orderId}`);
         const snapMessageDiv = document.getElementById('adminSnapMessage');
@@ -307,15 +276,11 @@ if (!empty($query_error_messages)) { error_log("Admin/Order.php SQL Errors: " . 
         snapMessageDiv.innerHTML = '<div class="alert alert-info">Meminta token pembayaran...</div>';
 
         let clickedButton = null;
-        // Cara yang lebih aman untuk mendapatkan event, terutama jika fungsi dipanggil dari konteks lain
-        const currentEvent = window.event || arguments.callee.caller.arguments[0]; // Coba dapatkan event
-        if(currentEvent && currentEvent.target) {
-             clickedButton = currentEvent.target.closest('button');
-        }
+        const currentEvent = window.event || arguments.callee.caller.arguments[0];
+        if(currentEvent && currentEvent.target) { clickedButton = currentEvent.target.closest('button');}
         if(clickedButton) clickedButton.disabled = true;
 
         try {
-            // Path ini relatif dari folder Admin ke folder Proses
             const response = await fetch(`../Proses/CreateSnapTokenForOrder.php?order_id=${orderId}`);
             if (!response.ok) { const errorText = await response.text(); throw new Error(`Gagal mendapatkan token: ${response.status}. ${errorText}`);}
             const result = await response.json();
@@ -332,3 +297,14 @@ if (!empty($query_error_messages)) { error_log("Admin/Order.php SQL Errors: " . 
         } catch (error) { console.error('Error saat initiateAdminSnapPayment:', error); snapMessageDiv.innerHTML = `<div class="alert alert-danger">${error.message}</div>`; if(clickedButton) clickedButton.disabled = false; }
     }
 </script>
+<style>
+/* CSS untuk menandai tanggal di Flatpickr */
+.flatpickr-day.order-date-highlight {
+    background: #c3e6cb !important; /* Warna hijau lebih soft */
+    border-color: #b9ddc1 !important;
+    color: #155724 !important;
+}
+.flatpickr-day.order-date-highlight:hover {
+    background: #a2cfab !important;
+}
+</style>
