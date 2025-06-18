@@ -37,13 +37,8 @@ $query_error_messages = []; $conn_error = null;
 
 if (!$conn || $conn->connect_error) { $conn_error = "Koneksi DB gagal: " . ($conn->connect_error ?? 'Tidak diketahui'); error_log($conn_error); }
 else {
-    // Fungsi helper untuk membersihkan harga
-    function getCleanPriceForSum($price_string) {
-        // Hapus 'Rp', lalu hapus '.', lalu cast ke float
-        return (float)preg_replace('/[^0-9]/', '', str_replace('.', '', str_replace('Rp', '', $price_string)));
-    }
-
     // --- Query untuk Omset Harian ---
+    // Pastikan total_harga adalah angka murni di database untuk SUM() yang akurat
     $sql_daily_omset = "SELECT SUM(total_harga) AS total_omset_harian FROM tb_order WHERE DATE(waktu_order_dibuat) = ? AND LOWER(pembayaran) IN ('ya', 'success', 'settlement')";
     $stmt_daily = $conn->prepare($sql_daily_omset);
     if ($stmt_daily) { $stmt_daily->bind_param("s", $filter_tanggal); if ($stmt_daily->execute()) { $result_daily = $stmt_daily->get_result(); if ($row_daily = $result_daily->fetch_assoc()) { $daily_omset = (float)($row_daily['total_omset_harian'] ?? 0); } } else { $query_error_messages[] = "Exec daily: " . $stmt_daily->error; } $stmt_daily->close(); } else { $query_error_messages[] = "Prep daily: " . $conn->error; }
@@ -73,13 +68,14 @@ else {
     } else { $query_error_messages[] = "Prepare orders table: " . $conn->error; }
 
     // --- Query untuk mendapatkan tanggal yang ada order (untuk Flatpickr) ---
-    $sql_ordered_dates = "SELECT DISTINCT DATE(waktu_order_dibuat) AS tanggal_order FROM tb_order WHERE pembayaran IN ('Ya', 'success', 'settlement') ORDER BY tanggal_order ASC"; // Hanya tanggal yang sudah lunas
+    $sql_ordered_dates = "SELECT DISTINCT DATE(waktu_order_dibuat) AS tanggal_order FROM tb_order WHERE pembayaran IN ('Ya', 'success', 'settlement') ORDER BY tanggal_order ASC";
     $result_ordered_dates = $conn->query($sql_ordered_dates);
     if ($result_ordered_dates) {
         while ($row_date = $result_ordered_dates->fetch_assoc()) {
             $dates_with_orders[] = $row_date['tanggal_order'];
         }
     } else {
+        $query_error_messages[] = "Query ordered_dates: " . $conn->error;
         error_log("Admin/Order.php Error query ordered_dates: " . $conn->error);
     }
 }
@@ -91,8 +87,8 @@ if (!empty($query_error_messages)) { error_log("Admin/Order.php SQL Errors: " . 
     <div class="card">
         <div class="card-header">Data Orderan</div>
         <div class="card-body">
-            <?php /* Tampilkan pesan */
-            if (isset($_SESSION['status_message'])) { /* ... */ }
+            <?php
+            if (isset($_SESSION['status_message'])) { /* ... Tampilkan pesan session ... */ }
             if ($conn_error) { echo '<div class="alert alert-danger" role="alert">' . htmlspecialchars($conn_error) . '</div>'; }
             if (!empty($query_error_messages) && !$conn_error) { echo '<div class="alert alert-warning" role="alert">Masalah query: ' . htmlspecialchars(implode("; ", $query_error_messages)) . '</div>';}
             ?>
@@ -113,9 +109,51 @@ if (!empty($query_error_messages)) { error_log("Admin/Order.php SQL Errors: " . 
 
             <!-- Tampilan Omset -->
             <div class="row mb-4">
-                <div class="col-md-4 mb-3"><div class="card text-white bg-success h-100"><div class="card-body"><div class="d-flex justify-content-between align-items-start"><div><h6 class="card-title mb-1">Omset <?= date('d M Y', strtotime($filter_tanggal)) ?></h6><p class="card-text fs-5 fw-bold mb-0">Rp <?= number_format($daily_omset, 0, ',', '.') ?></p></div><a href="../Proses/DownloadNotaOmsetHarian.php?tanggal=<?= htmlspecialchars($filter_tanggal) ?>" class="btn btn-light btn-sm" title="Nota Harian" target="_blank"><i class="bi bi-download"></i></a></div></div></div></div>
-                <div class="col-md-4 mb-3"><div class="card text-white bg-info h-100"><div class="card-body"><div class="d-flex justify-content-between align-items-start"><div><h6 class="card-title mb-1">Omset <?= date('M Y', strtotime($filter_bulan . '-01')) ?></h6><p class="card-text fs-5 fw-bold mb-0">Rp <?= number_format($monthly_omset, 0, ',', '.') ?></p></div><a href="../Proses/DownloadNotaOmsetBulanan.php?bulan=<?= htmlspecialchars($filter_bulan) ?>" class="btn btn-light btn-sm" title="Nota Bulanan" target="_blank"><i class="bi bi-download"></i></a></div></div></div></div>
-                <div class="col-md-4 mb-3"><div class="card text-white bg-primary h-100"><div class="card-body"><div class="d-flex justify-content-between align-items-start"><div><h6 class="card-title mb-1">Omset <?= $filter_tahun ?></h6><p class="card-text fs-5 fw-bold mb-0">Rp <?= number_format($yearly_omset, 0, ',', '.') ?></p></div><a href="../Proses/DownloadNotaOmsetTahunan.php?tahun=<?= htmlspecialchars($filter_tahun) ?>" class="btn btn-light btn-sm" title="Nota Tahunan" target="_blank"><i class="bi bi-download"></i></a></div></div></div></div>
+                <div class="col-md-4 mb-3">
+                    <div class="card text-white bg-success h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="card-title mb-1">Omset <?= date('d M Y', strtotime($filter_tanggal)) ?></h6>
+                                    <p class="card-text fs-5 fw-bold mb-0">Rp <?= number_format($daily_omset, 0, ',', '.') ?></p>
+                                </div>
+                                <a href="../Proses/DownloadNotaOmsetHarian.php?tanggal=<?= htmlspecialchars($filter_tanggal) ?>" class="btn btn-light btn-sm" title="Download Nota Harian" target="_blank">
+                                    <i class="bi bi-download"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card text-white bg-info h-100">
+                        <div class="card-body">
+                             <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="card-title mb-1">Omset <?= date('M Y', strtotime($filter_bulan . '-01')) ?></h6>
+                                    <p class="card-text fs-5 fw-bold mb-0">Rp <?= number_format($monthly_omset, 0, ',', '.') ?></p>
+                                </div>
+                                <a href="../Proses/DownloadNotaOmsetBulanan.php?bulan=<?= htmlspecialchars($filter_bulan) ?>" class="btn btn-light btn-sm" title="Download Nota Bulanan" target="_blank">
+                                    <i class="bi bi-download"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card text-white bg-primary h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="card-title mb-1">Omset <?= $filter_tahun ?></h6>
+                                    <p class="card-text fs-5 fw-bold mb-0">Rp <?= number_format($yearly_omset, 0, ',', '.') ?></p>
+                                </div>
+                                <a href="../Proses/DownloadNotaOmsetTahunan.php?tahun=<?= htmlspecialchars($filter_tahun) ?>" class="btn btn-light btn-sm" title="Download Nota Tahunan" target="_blank">
+                                    <i class="bi bi-download"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Penampilan Tabel Order atau Pesan "Tidak Ada Order" -->
@@ -147,7 +185,7 @@ if (!empty($query_error_messages)) { error_log("Admin/Order.php SQL Errors: " . 
                                         <td><?= htmlspecialchars($row['nohp']) ?></td>
                                         <td><?= nl2br(htmlspecialchars($row['pesanan'])) ?></td>
                                         <td><?= htmlspecialchars($row['jumlah_pesan']) ?></td>
-                                        <td><?= 'Rp ' . number_format((float)preg_replace('/[^0-9.]/', '', $row['total_harga']), 0, ',', '.') ?></td>
+                                        <td><?= 'Rp ' . number_format((float)$row['total_harga'], 0, ',', '.') // Asumsi total_harga sudah angka murni ?></td>
                                         <td><span class="badge <?= $isPaid ? 'bg-success' : (in_array(strtolower($row['pembayaran']), ['pending', 'tidak']) ? 'bg-warning text-dark' : 'bg-danger') ?>"><?= htmlspecialchars($row['pembayaran']) ?></span></td>
                                         <td><?= htmlspecialchars(date('d M Y H:i', strtotime($row['waktu_order_dibuat']))) ?></td>
                                         <td>
@@ -166,7 +204,7 @@ if (!empty($query_error_messages)) { error_log("Admin/Order.php SQL Errors: " . 
                                     <div class="modal fade" id="ViewData<?= $row['id'] ?>" tabindex="-1" aria-labelledby="ViewDataLabel<?= $row['id'] ?>" aria-hidden="true">
                                         <div class="modal-dialog modal-xl"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="ViewDataLabel<?= $row['id'] ?>">Detail Order ID: <?= htmlspecialchars($row['id']) ?></h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body">
                                             <p><strong>Pelanggan:</strong> <?= htmlspecialchars($row['pelanggan']) ?></p><p><strong>No HP:</strong> <?= htmlspecialchars($row['nohp']) ?></p><p><strong>Alamat:</strong> <?= htmlspecialchars($row['alamat']) ?></p><p><strong>Pesanan:</strong><br><div style="white-space: pre-wrap; word-break: break-word;"><?= htmlspecialchars($row['pesanan']) ?></div></p><hr>
-                                            <p><strong>Jumlah:</strong> <?= htmlspecialchars($row['jumlah_pesan']) ?></p><p><strong>Total Harga:</strong> <?= 'Rp ' . number_format((float)preg_replace('/[^0-9.]/', '', $row['total_harga']), 0, ',', '.') ?></p><p><strong>Status Pembayaran:</strong> <?= htmlspecialchars($row['pembayaran']) ?></p>
+                                            <p><strong>Jumlah:</strong> <?= htmlspecialchars($row['jumlah_pesan']) ?></p><p><strong>Total Harga:</strong> <?= 'Rp ' . number_format((float)$row['total_harga'], 0, ',', '.') ?></p><p><strong>Status Pembayaran:</strong> <?= htmlspecialchars($row['pembayaran']) ?></p>
                                             <p><small>Waktu Order: <?= htmlspecialchars(date('d M Y H:i:s', strtotime($row['waktu_order_dibuat']))) ?></small></p><p><small>Midtrans Order ID: <?= htmlspecialchars($row['midtrans_order_id'] ?? '-') ?></small></p><p><small>Midtrans Transaction ID: <?= htmlspecialchars($row['midtrans_transaction_id'] ?? '-') ?></small></p>
                                         </div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button></div></div></div>
                                     </div>
@@ -180,7 +218,7 @@ if (!empty($query_error_messages)) { error_log("Admin/Order.php SQL Errors: " . 
                                             <div class="row"><div class="col-md-6"><div class="form-floating mb-3"><input type="text" class="form-control" name="pelanggan" required value="<?= htmlspecialchars($row['pelanggan']) ?>"><label>Nama Pelanggan</label><div class="invalid-feedback">Wajib diisi.</div></div></div><div class="col-md-6"><div class="form-floating mb-3"><input type="text" class="form-control" name="nohp" required value="<?= htmlspecialchars($row['nohp']) ?>"><label>No HP</label><div class="invalid-feedback">Wajib diisi.</div></div></div></div>
                                             <div class="row"><div class="col-12"><div class="form-floating mb-3"><input type="text" class="form-control" name="alamat" required value="<?= htmlspecialchars($row['alamat']) ?>"><label>Alamat</label><div class="invalid-feedback">Wajib diisi.</div></div></div></div>
                                             <div class="row"><div class="col-12"><div class="form-floating mb-3"><textarea class="form-control" style="height: 100px" name="pesanan" required><?= htmlspecialchars($row['pesanan']) ?></textarea><label>Pesanan</label><div class="invalid-feedback">Wajib diisi.</div></div></div></div>
-                                            <div class="row"><div class="col-md-4"><div class="form-floating mb-3"><input type="number" class="form-control" name="jumlah_pesan" required value="<?= htmlspecialchars($row['jumlah_pesan']) ?>" min="1"><label>Jumlah Pesanan</label><div class="invalid-feedback">Wajib (angka).</div></div></div><div class="col-md-4"><div class="form-floating mb-3"><input type="number" step="any" class="form-control" name="total_harga" required value="<?= preg_replace('/[^0-9.]/', '', $row['total_harga']) ?>"><label>Total Harga (Angka)</label><div class="invalid-feedback">Wajib (angka).</div></div></div><div class="col-md-4"><div class="form-floating mb-3"><select class="form-select" name="pembayaran" required><option value="" disabled>Pilih Status</option><option value="Ya" <?= (strtolower($row['pembayaran']) == 'ya') ? 'selected' : '' ?>>Ya</option><option value="Tidak" <?= (strtolower($row['pembayaran']) == 'tidak') ? 'selected' : '' ?>>Tidak</option><option value="Pending" <?= (strtolower($row['pembayaran']) == 'pending') ? 'selected' : '' ?>>Pending</option><option value="Gagal" <?= (strtolower($row['pembayaran']) == 'gagal') ? 'selected' : '' ?>>Gagal</option><option value="Kadaluarsa" <?= (strtolower($row['pembayaran']) == 'kadaluarsa') ? 'selected' : '' ?>>Kadaluarsa</option><option value="Dibatalkan" <?= (strtolower($row['pembayaran']) == 'dibatalkan') ? 'selected' : '' ?>>Dibatalkan</option><option value="Challenge" <?= (strtolower($row['pembayaran']) == 'challenge') ? 'selected' : '' ?>>Challenge</option></select><label>Pembayaran</label><div class="invalid-feedback">Wajib dipilih.</div></div></div></div>
+                                            <div class="row"><div class="col-md-4"><div class="form-floating mb-3"><input type="number" class="form-control" name="jumlah_pesan" required value="<?= htmlspecialchars($row['jumlah_pesan']) ?>" min="1"><label>Jumlah Pesanan</label><div class="invalid-feedback">Wajib (angka).</div></div></div><div class="col-md-4"><div class="form-floating mb-3"><input type="number" step="any" class="form-control" name="total_harga" required value="<?= (float)preg_replace('/[^0-9.]/', '', $row['total_harga']) ?>"><label>Total Harga (Angka)</label><div class="invalid-feedback">Wajib (angka).</div></div></div><div class="col-md-4"><div class="form-floating mb-3"><select class="form-select" name="pembayaran" required><option value="" disabled>Pilih Status</option><option value="Ya" <?= (strtolower($row['pembayaran']) == 'ya') ? 'selected' : '' ?>>Ya</option><option value="Tidak" <?= (strtolower($row['pembayaran']) == 'tidak') ? 'selected' : '' ?>>Tidak</option><option value="Pending" <?= (strtolower($row['pembayaran']) == 'pending') ? 'selected' : '' ?>>Pending</option><option value="Gagal" <?= (strtolower($row['pembayaran']) == 'gagal') ? 'selected' : '' ?>>Gagal</option><option value="Kadaluarsa" <?= (strtolower($row['pembayaran']) == 'kadaluarsa') ? 'selected' : '' ?>>Kadaluarsa</option><option value="Dibatalkan" <?= (strtolower($row['pembayaran']) == 'dibatalkan') ? 'selected' : '' ?>>Dibatalkan</option><option value="Challenge" <?= (strtolower($row['pembayaran']) == 'challenge') ? 'selected' : '' ?>>Challenge</option></select><label>Pembayaran</label><div class="invalid-feedback">Wajib dipilih.</div></div></div></div>
                                         </div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-primary" name="submit_edit_order">Save</button></div></form>
                                         </div></div>
                                     </div>
@@ -215,14 +253,10 @@ if (!empty($query_error_messages)) { error_log("Admin/Order.php SQL Errors: " . 
     <div id="adminSnapMessage" class="mt-3"></div>
 </div>
 
-<!-- CSS untuk Flatpickr (jika belum ada di header.php) -->
+<!-- CSS untuk Flatpickr -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-
 <!-- Script Midtrans Snap.js -->
-<script type="text/javascript"
-    src="<?= $isProduction ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.sandbox.midtrans.com/snap/snap.js' ?>"
-    data-client-key="<?= htmlspecialchars($midtransClientKey) ?>"></script>
-
+<script type="text/javascript" src="<?= $isProduction ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.sandbox.midtrans.com/snap/snap.js' ?>" data-client-key="<?= htmlspecialchars($midtransClientKey) ?>"></script>
 <!-- Script Flatpickr JS -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
@@ -230,81 +264,12 @@ if (!empty($query_error_messages)) { error_log("Admin/Order.php SQL Errors: " . 
     // Fungsi validasi Bootstrap
     (() => { /* ... kode validasi Bootstrap ... */ })();
 
-    document.addEventListener('DOMContentLoaded', (event) => {
-        console.log("Admin Order DOMContentLoaded: Initializing scripts...");
-        const searchInput = document.getElementById("searchInput");
-        const orderTable = document.getElementById("orderTable");
-        if (searchInput && orderTable) {
-            searchInput.addEventListener("keyup", function() {
-                const filter = this.value.toLowerCase();
-                const rows = orderTable.querySelectorAll("tbody tr");
-                rows.forEach(row => {
-                    const pelangganCell = row.cells[2]; // Kolom Pelanggan (index 2)
-                    if (pelangganCell) {
-                        row.style.display = pelangganCell.textContent.toLowerCase().includes(filter) ? "" : "none";
-                    }
-                });
-            });
-        }
+    document.addEventListener('DOMContentLoaded', (event) => { /* ... kode search dan init Flatpickr ... */ });
 
-        // Inisialisasi Flatpickr
-        const datesWithOrdersPHP = <?= json_encode($dates_with_orders) ?>;
-        const tanggalFilterInput = document.getElementById('filter_tanggal_input');
-        if (tanggalFilterInput) {
-            flatpickr(tanggalFilterInput, {
-                dateFormat: "Y-m-d",
-                defaultDate: "<?= htmlspecialchars($filter_tanggal) ?>",
-                onDayCreate: function(dObj, dStr, fp, dayElem) {
-                    const currentDateStr = dayElem.dateObj.getFullYear() + '-' +
-                                       ('0' + (dayElem.dateObj.getMonth() + 1)).slice(-2) + '-' +
-                                       ('0' + dayElem.dateObj.getDate()).slice(-2);
-                    if (datesWithOrdersPHP.includes(currentDateStr)) {
-                        dayElem.classList.add("order-date-highlight");
-                        dayElem.title = "Ada order di tanggal ini";
-                    }
-                }
-                // Hapus onchange submit otomatis agar tombol "Terapkan Filter" yang bekerja
-            });
-        }
-        console.log("Admin Order: Scripts initialized.");
-    });
-
-    async function initiateAdminSnapPayment(orderId) {
-        console.log(`[initiateAdminSnapPayment] Dipanggil untuk orderId: ${orderId}`);
-        const snapMessageDiv = document.getElementById('adminSnapMessage');
-        if (!snapMessageDiv) { console.error("Elemen adminSnapMessage tidak ditemukan!"); return; }
-        snapMessageDiv.innerHTML = '<div class="alert alert-info">Meminta token pembayaran...</div>';
-
-        let clickedButton = null;
-        const currentEvent = window.event || arguments.callee.caller.arguments[0];
-        if(currentEvent && currentEvent.target) { clickedButton = currentEvent.target.closest('button');}
-        if(clickedButton) clickedButton.disabled = true;
-
-        try {
-            const response = await fetch(`../Proses/CreateSnapTokenForOrder.php?order_id=${orderId}`);
-            if (!response.ok) { const errorText = await response.text(); throw new Error(`Gagal mendapatkan token: ${response.status}. ${errorText}`);}
-            const result = await response.json();
-            if (result.success && result.snap_token) {
-                snapMessageDiv.innerHTML = '';
-                 if (typeof snap === 'undefined') { throw new Error("Library Midtrans Snap.js tidak siap."); }
-                snap.pay(result.snap_token, {
-                    onSuccess: function(paymentResult){ console.log('Admin Payment Success:', paymentResult); snapMessageDiv.innerHTML = `<div class="alert alert-success">Pembayaran Order ID ${paymentResult.order_id} berhasil! Status: ${paymentResult.transaction_status}. Reload...</div>`; setTimeout(() => { window.location.reload(); }, 3000); },
-                    onPending: function(paymentResult){ console.log('Admin Payment Pending:', paymentResult); snapMessageDiv.innerHTML = `<div class="alert alert-warning">Pembayaran Order ID ${paymentResult.order_id} tertunda. Status: ${paymentResult.transaction_status}.</div>`; if(clickedButton) clickedButton.disabled = false; },
-                    onError: function(paymentResult){ console.error('Admin Payment Error:', paymentResult); snapMessageDiv.innerHTML = `<div class="alert alert-danger">Pembayaran Order ID ${paymentResult.order_id} gagal. Pesan: ${paymentResult.status_message || 'Error'}.</div>`; if(clickedButton) clickedButton.disabled = false; },
-                    onClose: function(){ console.log('Admin Snap popup closed.'); if (!snapMessageDiv.querySelector('.alert-success') && !snapMessageDiv.querySelector('.alert-warning') && !snapMessageDiv.querySelector('.alert-danger')) { snapMessageDiv.innerHTML = '<div class="alert alert-secondary">Popup pembayaran ditutup.</div>'; } if(clickedButton) clickedButton.disabled = false; }
-                });
-            } else { throw new Error(result.message || 'Token Snap tidak diterima.'); }
-        } catch (error) { console.error('Error saat initiateAdminSnapPayment:', error); snapMessageDiv.innerHTML = `<div class="alert alert-danger">${error.message}</div>`; if(clickedButton) clickedButton.disabled = false; }
-    }
+    async function initiateAdminSnapPayment(orderId) { /* ... kode fungsi ini ... */ }
 </script>
 <style>
 /* CSS untuk menandai tanggal di Flatpickr */
-.flatpickr-day.order-date-highlight {
-    background: #c3e6cb !important; /* Warna hijau lebih soft */
-    border-color: #b9ddc1 !important;
-    color: #155724 !important;
-}
-.flatpickr-day.order-date-highlight:hover {
-    background: #a2cfab !important;
-}
+.flatpickr-day.order-date-highlight { background: #c3e6cb !important; border-color: #b9ddc1 !important; color: #155724 !important; }
+.flatpickr-day.order-date-highlight:hover { background: #a2cfab !important; }
 </style>

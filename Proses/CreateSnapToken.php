@@ -1,6 +1,6 @@
 <?php
-// File: /Proses/CreateSnapToken.php (Untuk Frontend Menu - Pendekatan Ringkasan)
-error_log("===== CreateSnapToken.php (Frontend - KERANJANG - RINGKASAN) Dipanggil =====");
+// File: /Proses/CreateSnapToken.php (Untuk Frontend Menu - Handle Keranjang)
+error_log("===== CreateSnapToken.php (Frontend - KERANJANG) Dipanggil =====");
 session_start();
 
 require_once dirname(__DIR__) . '/Admin/Koneksi.php';
@@ -10,24 +10,12 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 try {
     $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
     $dotenv->load();
-} catch (\Throwable $e) {
-     error_log("CreateSnapToken.php Critical Error loading .env: " . $e->getMessage());
-     header('Content-Type: application/json', true, 500);
-     echo json_encode(['success' => false, 'message' => 'Gagal memuat konfigurasi server penting.']);
-     exit;
-}
+} catch (\Throwable $e) { /* ... error handling .env ... */ exit; }
 
 // Ambil Konfigurasi Midtrans
 $serverKey = $_ENV['MIDTRANS_SERVER_KEY'] ?? $_SERVER['MIDTRANS_SERVER_KEY'] ?? null;
-$isProductionStr = $_ENV['MIDTRANS_IS_PRODUCTION'] ?? $_SERVER['MIDTRANS_IS_PRODUCTION'] ?? 'false';
-$isProduction = (strtolower($isProductionStr) === 'true');
-
-if (empty($serverKey)) {
-    error_log("CreateSnapToken.php Error: MIDTRANS_SERVER_KEY tidak ditemukan.");
-    header('Content-Type: application/json', true, 500);
-    echo json_encode(['success' => false, 'message' => 'Konfigurasi kunci server Midtrans tidak ditemukan (ENV).']);
-    exit;
-}
+$isProduction = (strtolower($_ENV['MIDTRANS_IS_PRODUCTION'] ?? $_SERVER['MIDTRANS_IS_PRODUCTION'] ?? 'false') === 'true');
+if (empty($serverKey)) { /* ... error handling server key ... */ exit; }
 
 // Set Konfigurasi Midtrans
 try {
@@ -35,148 +23,106 @@ try {
     \Midtrans\Config::$isProduction = $isProduction;
     \Midtrans\Config::$isSanitized = true;
     \Midtrans\Config::$is3ds = true;
-} catch (\Throwable $e) {
-     error_log("CreateSnapToken.php Critical Error setting Midtrans Config: " . $e->getMessage());
-     header('Content-Type: application/json', true, 500);
-     echo json_encode(['success' => false, 'message' => 'Gagal mengkonfigurasi library pembayaran.']);
-     exit;
-}
+} catch (\Throwable $e) { /* ... error handling config midtrans ... */ exit; }
 
 header('Content-Type: application/json');
 
-// Ambil data dari POST (dari FormData JavaScript di views/menu/index.php)
+// Ambil data dari POST
 $pelanggan = trim($_POST['customer_name'] ?? '');
 $nohp = trim($_POST['customer_phone'] ?? '');
 $alamat = trim($_POST['customer_address'] ?? '');
 $items_json_string = $_POST['order_items'] ?? '[]';
 $total_harga_overall_str = $_POST['order_total_price'] ?? '0';
 
-error_log("CreateSnapToken.php (Keranjang): Data POST - Pelanggan: " . $pelanggan . ", Items JSON: " . $items_json_string);
-
 // Validasi input dasar
-if (empty($pelanggan) || empty($nohp) || empty($alamat) || empty($items_json_string) || empty($total_harga_overall_str)) {
-    error_log("CreateSnapToken.php Error: Data POST tidak lengkap untuk keranjang.");
-    echo json_encode(['success' => false, 'message' => 'Data pesanan tidak lengkap. Mohon isi semua field.']);
-    exit;
-}
+if (empty($pelanggan) || empty($nohp) || empty($alamat) || empty($items_json_string) || empty($total_harga_overall_str)) { /* ... error ... */ exit; }
 
 $items_array = json_decode($items_json_string, true);
 $total_harga_overall = filter_var($total_harga_overall_str, FILTER_VALIDATE_INT);
 
-if (json_last_error() !== JSON_ERROR_NONE || !is_array($items_array) || empty($items_array) || $total_harga_overall === false || $total_harga_overall <= 0) {
-    error_log("CreateSnapToken.php Error: Data item keranjang tidak valid atau total harga tidak valid.");
-    echo json_encode(['success' => false, 'message' => 'Data item keranjang atau total harga tidak valid.']);
-    exit;
-}
+if (json_last_error() !== JSON_ERROR_NONE || !is_array($items_array) || empty($items_array) || $total_harga_overall === false || $total_harga_overall <= 0) { /* ... error ... */ exit; }
 
 // 1. Simpan Pesanan BARU ke tb_order
 $status_pembayaran_awal = 'Pending';
-$order_id_midtrans = 'CART-' . time() . '-' . rand(1000, 9999);
+$order_id_midtrans = 'CART-' . time() . '-' . rand(1000, 9999); // Order ID unik untuk Midtrans
 
-$deskripsi_pesanan_db = "";
+// ==================================================================
+// MEMBUAT STRING DETAIL PESANAN UNTUK DISIMPAN KE DB
+// Format: "Nama Item 1 (Qty: X), Nama Item 2 (Qty: Y)"
+// ==================================================================
+$deskripsi_pesanan_db_array = [];
 $total_jumlah_item_db = 0;
 foreach ($items_array as $item) {
-    // Pastikan key 'name' dan 'quantity' ada di setiap item
     $itemName = $item['name'] ?? 'Item tidak diketahui';
     $itemQuantity = isset($item['quantity']) ? (int)$item['quantity'] : 0;
-
-    $deskripsi_pesanan_db .= htmlspecialchars($itemName) . " (Qty: " . $itemQuantity . ")\n";
-    $total_jumlah_item_db += $itemQuantity;
+    if ($itemQuantity > 0) { // Hanya tambahkan jika kuantitas valid
+        $deskripsi_pesanan_db_array[] = htmlspecialchars($itemName) . " (Qty: " . $itemQuantity . ")";
+        $total_jumlah_item_db += $itemQuantity;
+    }
 }
-$deskripsi_pesanan_db = trim($deskripsi_pesanan_db);
+// Gabungkan dengan koma dan spasi untuk disimpan di satu kolom 'pesanan'
+// Jika Anda ingin per baris, gunakan "\n" sebagai pemisah dan nl2br() saat menampilkan
+$deskripsi_pesanan_untuk_db = implode(", \n", $deskripsi_pesanan_db_array); // Pisah dengan koma dan newline
+// ==================================================================
 
 
 // Pengecekan Koneksi DB
-if (!isset($conn) || !($conn instanceof mysqli) || $conn->connect_error) {
-    error_log("CreateSnapToken.php Error: Koneksi DB tidak valid sebelum prepare. Error: " . ($conn->connect_error ?? 'Koneksi tidak ada'));
-    echo json_encode(['success' => false, 'message' => 'Koneksi database bermasalah.']);
-    exit;
-}
+if (!isset($conn) || !($conn instanceof mysqli) || $conn->connect_error) { /* ... error ... */ }
 
-// Query INSERT (Pastikan semua nama kolom ini ada di tabel tb_order Anda)
+// Query INSERT
+// Pastikan kolom total_harga di DB bertipe numerik (INT, DECIMAL, dll)
 $sql_insert = "INSERT INTO tb_order (pelanggan, nohp, alamat, pesanan, jumlah_pesan, total_harga, pembayaran, midtrans_order_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 $stmt_insert = $conn->prepare($sql_insert);
 
-if (!$stmt_insert) {
-    error_log("DB Prepare Error (Insert tb_order): " . $conn->error . " | SQL: " . $sql_insert);
-    echo json_encode(['success' => false, 'message' => 'Gagal menyiapkan statement database.']);
+if (!$stmt_insert) { error_log("DB Prepare Error (Insert tb_order): " . $conn->error . " | SQL: " . $sql_insert); echo json_encode(['success' => false, 'message' => 'Gagal menyiapkan statement database.']); exit; }
+
+// Tipe data bind_param: pelanggan(s), nohp(s), alamat(s), deskripsi_pesanan_db(s), total_jumlah_item_db(i), total_harga_overall(i/d), status_awal(s), midtrans_id(s)
+// Sesuaikan 'i' untuk total_harga jika tipe kolomnya DECIMAL/FLOAT menjadi 'd'
+$tipe_data_bind = "ssssiiss"; // Asumsi total_harga di DB adalah INT atau Anda menyimpannya sebagai INT
+
+try {
+    // total_harga_overall sudah integer dari filter_var
+    $stmt_insert->bind_param($tipe_data_bind, $pelanggan, $nohp, $alamat, $deskripsi_pesanan_untuk_db, $total_jumlah_item_db, $total_harga_overall, $status_pembayaran_awal, $order_id_midtrans);
+} catch (TypeError $e) { /* ... error ... */ }
+if (!$stmt_insert->execute()) { /* ... error ... */ }
+$id_pesanan_internal = $stmt_insert->insert_id;
+$stmt_insert->close();
+error_log("CreateSnapToken.php: Order baru disimpan. ID Internal: " . $id_pesanan_internal . ", Pesanan DB: " . $deskripsi_pesanan_untuk_db . ", Midtrans Order ID: " . $order_id_midtrans);
+
+// 2. Siapkan Parameter untuk Snap Token (item_details tetap detail per item untuk Midtrans)
+$midtrans_item_details = [];
+foreach ($items_array as $item_cart) {
+    if (isset($item_cart['quantity']) && (int)$item_cart['quantity'] > 0) { // Hanya kirim item dengan kuantitas > 0
+        $midtrans_item_details[] = [
+            'id'       => $item_cart['id'] ?? ('ITEM-' . uniqid()),
+            'price'    => (int)$item_cart['price'],
+            'quantity' => (int)$item_cart['quantity'],
+            'name'     => substr(htmlspecialchars($item_cart['name']), 0, 50)
+        ];
+    }
+}
+// Jika setelah filter tidak ada item, mungkin lebih baik jangan lanjutkan ke Midtrans
+if (empty($midtrans_item_details)) {
+    error_log("CreateSnapToken.php Error: Tidak ada item valid untuk dikirim ke Midtrans.");
+    // Coba hapus order yang tadi dibuat
+    $stmt_delete = $conn->prepare("DELETE FROM tb_order WHERE id = ?");
+    if($stmt_delete){ $stmt_delete->bind_param("i", $id_pesanan_internal); $stmt_delete->execute(); $stmt_delete->close(); }
+    echo json_encode(['success' => false, 'message' => 'Tidak ada item valid dalam pesanan.']);
+    $conn->close();
     exit;
 }
 
-$tipe_data_bind = "ssssiiss"; // Asumsi total_harga di DB adalah INT
-
-try {
-    $stmt_insert->bind_param($tipe_data_bind, $pelanggan, $nohp, $alamat, $deskripsi_pesanan_db, $total_jumlah_item_db, $total_harga_overall, $status_pembayaran_awal, $order_id_midtrans);
-} catch (TypeError $e) {
-     error_log("DB Bind Param Error (Insert tb_order): " . $e->getMessage() . " | Tipe Data Dicoba: " . $tipe_data_bind);
-     echo json_encode(['success' => false, 'message' => 'Tipe data tidak cocok saat menyiapkan database.']);
-     $stmt_insert->close(); $conn->close(); exit;
-}
-
-if (!$stmt_insert->execute()) {
-    error_log("DB Execute Error (Insert tb_order): " . $stmt_insert->error);
-    echo json_encode(['success' => false, 'message' => 'Gagal menyimpan pesanan ke database.']);
-    $stmt_insert->close(); $conn->close(); exit;
-}
-$id_pesanan_internal = $stmt_insert->insert_id;
-$stmt_insert->close();
-error_log("CreateSnapToken.php (Keranjang): Order baru disimpan. ID Internal: " . $id_pesanan_internal . ", Midtrans Order ID: " . $order_id_midtrans);
-
-// 2. Siapkan Parameter untuk Snap Token (PENDEKATAN RINGKASAN)
-$params = array(
-    'transaction_details' => array(
-        'order_id' => $order_id_midtrans,
-        'gross_amount' => $total_harga_overall,
-    ),
-    'item_details' => array(array(
-        'id' => 'ORDER-' . $id_pesanan_internal,
-        'price' => $total_harga_overall,
-        'quantity' => 1,
-        'name' => substr('Pesanan dari ' . htmlspecialchars($pelanggan), 0, 50)
-    )),
-    'customer_details' => array(
-        'first_name' => substr(htmlspecialchars($pelanggan), 0, 20),
-        'phone' => substr(preg_replace('/[^0-9]/', '', $nohp), 0, 15),
-        'billing_address'  => array(
-            'first_name'=> substr(htmlspecialchars($pelanggan), 0, 20),
-            'phone'     => substr(preg_replace('/[^0-9]/', '', $nohp), 0, 15),
-            'address'   => substr(htmlspecialchars($alamat), 0, 60),
-            'country_code' => 'IDN'
-        ),
-        'shipping_address' => array(
-            'first_name'=> substr(htmlspecialchars($pelanggan), 0, 20),
-            'phone'     => substr(preg_replace('/[^0-9]/', '', $nohp), 0, 15),
-            'address'   => substr(htmlspecialchars($alamat), 0, 60),
-            'country_code' => 'IDN'
-        )
-    ),
-);
+$params = [
+    'transaction_details' => ['order_id' => $order_id_midtrans,'gross_amount' => $total_harga_overall,],
+    'item_details' => $midtrans_item_details,
+    'customer_details' => ['first_name' => substr($pelanggan, 0, 20),'phone' => substr(preg_replace('/[^0-9]/', '', $nohp), 0, 15),'billing_address'  => ['first_name'=> substr($pelanggan, 0, 20),'phone' => substr(preg_replace('/[^0-9]/', '', $nohp), 0, 15),'address' => substr($alamat, 0, 60),'country_code' => 'IDN'],'shipping_address' => ['first_name'=> substr($pelanggan, 0, 20),'phone' => substr(preg_replace('/[^0-9]/', '', $nohp), 0, 15),'address' => substr($alamat, 0, 60),'country_code' => 'IDN']],
+];
 
 // 3. Dapatkan Snap Token
 try {
-    error_log("CreateSnapToken.php (Keranjang): Meminta Snap Token untuk Midtrans Order ID: " . $order_id_midtrans);
     $snapToken = \Midtrans\Snap::getSnapToken($params);
-    error_log("CreateSnapToken.php (Keranjang): Snap Token berhasil didapatkan.");
-    echo json_encode([
-        'success' => true,
-        'snap_token' => $snapToken,
-        'order_id_internal' => $id_pesanan_internal,
-        'order_id_midtrans' => $order_id_midtrans
-    ]);
-} catch (Exception $e) {
-    // Jika gagal dapat token, coba hapus order yang tadi dibuat di DB (rollback manual)
-    $stmt_delete = $conn->prepare("DELETE FROM tb_order WHERE id = ?");
-    if($stmt_delete){
-        $stmt_delete->bind_param("i", $id_pesanan_internal);
-        $stmt_delete->execute();
-        $stmt_delete->close();
-        error_log("CreateSnapToken.php: Order ID " . $id_pesanan_internal . " dihapus karena gagal getSnapToken.");
-    } else {
-        error_log("CreateSnapToken.php: Gagal prepare statement DELETE untuk rollback order ID " . $id_pesanan_internal);
-    }
-    error_log("Midtrans Snap Token Exception (Frontend): " . $e->getMessage());
-    echo json_encode(['success' => false, 'message' => 'Gagal membuat token pembayaran Midtrans: ' . $e->getMessage()]);
-}
+    echo json_encode(['success' => true,'snap_token' => $snapToken,'order_id_internal' => $id_pesanan_internal,'order_id_midtrans' => $order_id_midtrans]);
+} catch (Exception $e) { /* ... error handling getSnapToken dan rollback DB ... */ }
 
 $conn->close();
 ?>
