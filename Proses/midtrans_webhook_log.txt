@@ -86,3 +86,121 @@ Raw Data: {"transaction_type":"on-us","transaction_time":"2025-05-21 20:24:04","
 
 [2025-05-21 15:24:08] DB Update SUKSES - Order ID: CART-1747833836-2924, Status Baru: Ya
 
+[2025-05-22 03:33:24] Webhook dipanggil.
+Raw Data: 
+
+[2025-05-22 03:33:24] Webhook Exception: Midtrans API is returning API error. HTTP status code: 404 API response: <!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+
+    <!-- Responsive viewport declaration -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Cross compatibility -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Midtrans</title>
+    <meta name="description" content=""/>
+
+    <link rel="stylesheet" href="//v2/assets/css/all.css"/>
+
+</head>
+<body>
+<div class="container">
+    <div class="center desc"><p>404</p></div>
+    <div class="center click"><h3>
+        <a href="#">&#45; Ups &#45;</a>
+    </h3></div>
+</div>
+<footer>
+    <p class="center">&copy; <script>document.write(new Date().getFullYear())</script> PT Midtrans. All Rights Reserved</p>
+</footer>
+
+</body>
+</html>
+
+Raw Data: 
+
+[2025-05-22 03:36:41] Webhook dipanggil.
+Raw Data: {"transaction_type":"off-us","transaction_time":"2025-05-22 08:36:45","transaction_status":"pending","transaction_id":"158b4caf-def1-46dc-85a8-790b37bceb96","status_message":"midtrans payment notification","status_code":"201","signature_key":"0d0296fe9ce1eee093f265b5557f3887833d9f867764cdccbbba3aba7bdc131f9ba5b7e0660f396d811aad7a47d2cdf0de5413d23f75a5238b5436736adb8fd8","payment_type":"qris","order_id":"CART-1747877796-8001","merchant_id":"G394749499","gross_amount":"20000.00","fraud_status":"accept","expiry_time":"2025-05-22 08:51:45","currency":"IDR"}
+
+[2025-05-22 03:36:41] Notif Parsed - Order ID: CART-1747877796-8001, Status: pending, Payment Type: qris, Fraud: accept
+
+[2025-05-22 03:36:41] Status tidak memerlukan update ke 'Ya' - Order ID: CART-1747877796-8001, Status Midtrans: pending
+
+[2025-05-22 03:36:55] Webhook dipanggil.
+Raw Data: {"transaction_type":"on-us","transaction_time":"2025-05-22 08:36:45","transaction_status":"settlement","transaction_id":"158b4caf-def1-46dc-85a8-790b37bceb96","status_message":"midtrans payment notification","status_code":"200","signature_key":"e732f4be8d3ad52c273403679efc9b2e86a0c7520608abbd04ee6f2bde6a99122fe09e1998b884251d47c0a1b8cfb8580343f4d6b19310d5d26b90f26fd57ef3","settlement_time":"2025-05-22 08:36:59","payment_type":"qris","order_id":"CART-1747877796-8001","merchant_id":"G394749499","issuer":"gopay","gross_amount":"20000.00","fraud_status":"accept","expiry_time":"2025-05-22 08:51:45","currency":"IDR","acquirer":"gopay"}
+
+[2025-05-22 03:36:55] Notif Parsed - Order ID: CART-1747877796-8001, Status: settlement, Payment Type: qris, Fraud: accept
+
+[2025-05-22 03:36:55] Mapping Status SUKSES - Order ID: CART-1747877796-8001, DB Status akan diupdate ke: Ya
+
+[2025-05-22 03:36:56] DB Update SUKSES - Order ID: CART-1747877796-8001, Status Baru: Ya
+
+[2025-05-22 03:37:48] Webhook dipanggil.
+Raw Data: {"transaction_type":"off-us","transaction_time":"2025-05-22 08:37:52","transaction_status":"pending","transaction_id":"3d5e8d98-856f-4f53-93b5-03c7c25e4547","status_message":"midtrans payment notification","status_code":"201","signature_key":"c4d86d52af07a09b569eff1ea533051aa3166a5397c03208e95a286fe9746415a6f1a52e0d1e1e8cf5712207ad1b4bed12b3da98cf94fcb5f9511712357b57c8","payment_type":"qris","order_id":"CART-1747877865-4544","merchant_id":"G394749499","gross_amount":"30000.00","fraud_status":"accept","expiry_time":"2025-05-22 08:52:52","currency":"IDR"}
+
+[2025-05-22 03:37:49] Notif Parsed - Order ID: CART-1747877865-4544, Status: pending, Payment Type: qris, Fraud: accept
+
+[2025-05-22 03:37:49] Status tidak memerlukan update ke 'Ya' - Order ID: CART-1747877865-4544, Status Midtrans: pending
+
+[2025-05-22 03:38:02] Webhook dipanggil.
+Raw Data: {"transaction_type":"off-us","transaction_time":"2025-05-22 08:37:52","transaction_status":"settlement","transaction_id":"3d5e8d98-856f-4f53-93b5-03c7c25e4547","status_message":"midtrans payment notification","status_code":"200","signature_key":"68e42acaa02a8c24a553be28118c2dd5e34af97850e765d8f4b010034fb21bca4888de3de10d279c2238b7001272be5e33157cf874677cf1483781ea3acb888a","settlement_time":"2025-05-22 08:38:06","payment_type":"qris","order_id":"CART-1747877865-4544","merchant_id":"G394749499","issuer":"dana","gross_amount":"30000.00","fraud_status":"accept","expiry_time":"2025-05-22 08:52:52","currency":"IDR","acquirer":"gopay"}
+
+[2025-05-22 03:38:02] Notif Parsed - Order ID: CART-1747877865-4544, Status: settlement, Payment Type: qris, Fraud: accept
+
+[2025-05-22 03:38:02] Mapping Status SUKSES - Order ID: CART-1747877865-4544, DB Status akan diupdate ke: Ya
+
+[2025-05-22 03:38:02] DB Update SUKSES - Order ID: CART-1747877865-4544, Status Baru: Ya
+
+[2025-05-22 03:39:15] Webhook dipanggil.
+Raw Data: {"transaction_type":"off-us","transaction_time":"2025-05-22 08:39:20","transaction_status":"pending","transaction_id":"2ad686a6-4685-4dd8-8d5f-1b90b0b70a49","status_message":"midtrans payment notification","status_code":"201","signature_key":"b0cdd7cbfadc249b65b49a079cb297cc7ba46af605c1c956a9974ef23c0c23a9822e9e1b84e4879bb030590f464d6ea3906e1f7c9f037613e2c7f03e218a197e","payment_type":"qris","order_id":"CART-1747877952-3197","merchant_id":"G394749499","gross_amount":"20000.00","fraud_status":"accept","expiry_time":"2025-05-22 08:54:19","currency":"IDR"}
+
+[2025-05-22 03:39:15] Notif Parsed - Order ID: CART-1747877952-3197, Status: pending, Payment Type: qris, Fraud: accept
+
+[2025-05-22 03:39:15] Status tidak memerlukan update ke 'Ya' - Order ID: CART-1747877952-3197, Status Midtrans: pending
+
+[2025-05-22 03:39:27] Webhook dipanggil.
+Raw Data: {"transaction_type":"on-us","transaction_time":"2025-05-22 08:39:20","transaction_status":"settlement","transaction_id":"2ad686a6-4685-4dd8-8d5f-1b90b0b70a49","status_message":"midtrans payment notification","status_code":"200","signature_key":"ea9c0f44c4f814327682d56871c5841a3b8f3e979685fe4a08f248e89ea0d604bbaf0ce9efb45a01e020dd596f8c0b79549b1cefdb00e86c42354ad1dff0c93e","settlement_time":"2025-05-22 08:39:31","payment_type":"qris","order_id":"CART-1747877952-3197","merchant_id":"G394749499","issuer":"gopay","gross_amount":"20000.00","fraud_status":"accept","expiry_time":"2025-05-22 08:54:19","currency":"IDR","acquirer":"gopay"}
+
+[2025-05-22 03:39:28] Notif Parsed - Order ID: CART-1747877952-3197, Status: settlement, Payment Type: qris, Fraud: accept
+
+[2025-05-22 03:39:28] Mapping Status SUKSES - Order ID: CART-1747877952-3197, DB Status akan diupdate ke: Ya
+
+[2025-05-22 03:39:28] DB Update SUKSES - Order ID: CART-1747877952-3197, Status Baru: Ya
+
+[2025-06-12 03:36:51] Webhook dipanggil.
+Raw Data: 
+
+[2025-06-12 03:36:52] Webhook Exception: Midtrans API is returning API error. HTTP status code: 404 API response: <!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+
+    <!-- Responsive viewport declaration -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Cross compatibility -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Midtrans</title>
+    <meta name="description" content=""/>
+
+    <link rel="stylesheet" href="//v2/assets/css/all.css"/>
+
+</head>
+<body>
+<div class="container">
+    <div class="center desc"><p>404</p></div>
+    <div class="center click"><h3>
+        <a href="#">&#45; Ups &#45;</a>
+    </h3></div>
+</div>
+<footer>
+    <p class="center">&copy; <script>document.write(new Date().getFullYear())</script> PT Midtrans. All Rights Reserved</p>
+</footer>
+
+</body>
+</html>
+
+Raw Data: 
+
